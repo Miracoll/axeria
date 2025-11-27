@@ -10,7 +10,7 @@ from django.core.files.base import ContentFile
 from django.db.models import Sum
 import qrcode
 
-from account.models import Config, CopyTrade, InvestmentPlan, KycVerification, Payment, PaymentMethod, Portfolio, Trader, User, Withdrawal
+from account.models import Config, CopyTrade, IPAddress, InvestmentPlan, KycVerification, Payment, PaymentMethod, Portfolio, Trader, User, Withdrawal
 from utils.decorators import allowed_users
 
 # Create your views here.
@@ -22,13 +22,46 @@ def home(request):
     trader_count = User.objects.filter(groups__name='trader').count()
     deactivated_users_count = User.objects.filter(is_active=False, groups__name='trader').count()
     blocked_users_count = User.objects.filter(block=True, groups__name='trader').count()
+    payments = Payment.objects.filter(status='pending')
+    active_portfolios = Portfolio.objects.filter(status='active')
+    ip_addresses = IPAddress.objects.all()
     context = {
         'total_deposit':total_deposit,
         'trader_count':trader_count,
         'deactivated_users_count':deactivated_users_count,
         'blocked_users_count':blocked_users_count,
+        'payments':payments,
+        'active_portfolios':active_portfolios,
+        'ip_addresses': ip_addresses,
     }
     return render(request, 'manager/index.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def approve_payment(request):
+    if request.method == "POST":
+        payment_id = request.POST.get("payment_id")
+        p = Payment.objects.get(id=payment_id)
+        p.status = "completed"
+        p.save()
+
+        u = User.objects.get(id=p.user.id)
+        u.current_deposit += p.amount
+        u.save()
+
+        messages.success(request, "Payment approved successfully.")
+    return redirect("admin-home")
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def decline_payment(request):
+    if request.method == "POST":
+        payment_id = request.POST.get("payment_id")
+        p = Payment.objects.get(id=payment_id)
+        p.status = "failed"
+        p.save()
+        messages.error(request, "Payment declined.")
+    return redirect("admin-home")
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -262,6 +295,20 @@ def edit_users(request):
 @allowed_users(allowed_roles=['admin'])
 def manage_trade(request):
     trades = CopyTrade.objects.all().order_by('-opened_date')
+    if request.method == "POST":
+        trade_id = request.POST.get("trade_id")
+        action = request.POST.get("status")
+        try:
+            trade = CopyTrade.objects.get(id=trade_id)
+            if action == "active":
+                trade.is_active = True
+            elif action == "in-active":
+                trade.is_active = False
+            trade.save()
+            messages.success(request, "Trade status updated successfully.")
+            return redirect('admin-manage-trade')
+        except CopyTrade.DoesNotExist:
+            messages.error(request, "Trade record not found.")
     return render(request, 'manager/manage_trades.html', {'trades':trades})
 
 @login_required(login_url='login')

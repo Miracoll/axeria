@@ -1,5 +1,6 @@
 {% extends 'account/base.html' %}
 {% load static %}
+{% load humanize %}
 {% block content %}
 <div id="appCapsule">
     <div class="container my-4 py-4">
@@ -23,19 +24,19 @@
 
                         <div class="mb-2">
                             <div>
-                                <span class="badge bg-secondary">DURATION: {{ trade.trader.duration }} days</span>
+                                <span class="badge bg-secondary">DURATION: {{ trade.trader.duration_weeks }} week(s)</span>
                                 <span class="badge bg-secondary">AMOUNT COPYING: {{ trade.amount }}</span>
                                 <span class="badge bg-secondary">DAILY ROI: {{ trade.trader.daily_roi }}%</span>
                             </div>
                             <div style="text-align: center;">
-                                <span class="badge bg-secondary">TRADE PROGRESS: {{ trade.progress }}%</span>
+                                <span class="badge bg-secondary">TRADE PROGRESS: {{ trade.current_profit }}%</span>
                             </div>
                         </div>
 
                         <div class="mb-2">
                             <div class="d-flex justify-content-between">
                                 <span>Trade Duration:</span>
-                                <span>{{ trade.trader.duration }} days</span>
+                                <span>{{ trade.trader.duration_weeks }} weeks</span>
                             </div>
 
                             <div class="d-flex justify-content-between">
@@ -80,4 +81,79 @@
         </div>
     </div>
 </div>
+
+{% for trade in copytrades %}
+<!-- Add More Funds Modal for Trader 184 -->
+<div class="modal fade" id="copy-trader-{{trade.id}}">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-center">Top Trade Amount</h3>
+                <button class="btn text-white" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <center>WALLET BALANCE: <br/><b>${{request.user.current_deposit|intcomma}}</b></center>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="trader_id" value="{{trade.trader.id}}"/>
+                    <div class="form-group my-4">
+                        <label for="amount">Amount to Add:</label>
+                        <input type="text" class="form-control" id="amount" name="top_amount"/>
+                    </div>
+                    <button class="btn btn-primary w-100" type="submit" name="top">Add to Trade</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% for trade in copytrades %}
+<!-- Withdraw Funds Modal for Trader 184 -->
+<div class="modal fade" id="withdraw-modal-{{trade.id}}">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-center">Withdraw Funds from {{trade.trader.name|capfirst}}</h3>
+                <button class="btn text-white" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <center>AVAILABLE BALANCE: <br/><b>${{trade.current_profit}}</b></center>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="trader_id" value="{{trade.trader.id}}"/>
+                    <div class="form-group my-4">
+                        <label for="withdraw_amount">Amount Available For Withdraw:</label>
+                        <input type="number" class="form-control" id="withdraw_amount" name="withdraw_amount" style="background-color:black;color:white;"/>
+                    </div>
+
+                    <div class="withdrawprofit-form-group">
+                        <label class="withdrawprofit-label">Currency</label>
+                        <select class="withdrawprofit-select" name="currency" id="currency" required>
+                            <option value="Bitcoin (BTC)">Bitcoin (BTC)</option>
+                            <option value="Ethereum">Ethereum</option>
+                            <option value="Binance Coin (BNB)">Binance coin (BNB)</option>
+                            <option value="USDT (ERC 20)">USDT (ERC 20)</option>
+                            <option value="USDT (TRC 20)">USDT (TRC 20)</option>
+                            <option value="Solana">Solana</option>
+                            <option value="Ripple">Ripple</option>
+                        </select>
+                    </div>
+    
+                    <div class="withdrawprofit-form-group">
+                        <label class="withdrawprofit-label">Address</label>
+                        <input type="text" class="withdrawprofit-input" name="address" id="address" placeholder="" required>
+                    </div>
+
+                    <button class="btn btn-danger w-100" type="submit" name="withdraw">Withdraw Funds</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
 {% endblock content %}

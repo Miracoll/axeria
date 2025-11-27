@@ -66,9 +66,9 @@
                                         <td>${{ trade.amount_copying }}</td>
                                         <td>{{ trade.is_active|yesno|capfirst }}</td>
                                         <td>
-                                            <a class="btn btn-primary" href="#">
-                                                Manage
-                                            </a>
+                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#manageTradeModal-{{trade.id}}">
+                                                Take Trade
+                                            </button>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -90,4 +90,32 @@
 </div>
 
 <!-- put modal here -->
+{% for trade in trades %}
+<div class="modal fade" id="manageTradeModal-{{trade.id}}" tabindex="-1" role="dialog" aria-labelledby="manageTradeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="manageTradeModalLabel">Manage Trade for {{ trade.user.get_full_name|default:trade.user.username }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="trade_id" value="{{ trade.id }}">
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select class="form-control" id="status" name="status">
+                            <option value="active" {% if trade.is_active %}selected{% endif %}>Active</option>
+                            <option value="in-active" {% if not trade.is_active %}selected{% endif %}>In-Active</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
 {% endblock %}

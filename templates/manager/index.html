@@ -162,8 +162,8 @@
                                 <thead>
 
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Email</th>
+                                        <th>Username</th>
+                                        <th>Status</th>
                                         <th>Amount</th>
                                         <th>Method</th>
                                         <th>Approve</th>
@@ -173,8 +173,8 @@
                                 </thead>
                                 <tfoot>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Email</th>
+                                        <th>Username</th>
+                                        <th>Status</th>
                                         <th>Amount</th>
                                         <th>Method</th>
                                         <th>Approve</th>
@@ -183,59 +183,96 @@
                                     </tr>
                                 </tfoot>
                                 <tbody>
-
+                                    {% for p in payments %}
                                     <tr>
-
-                                        <td>Gh V </td>
-                                        <td>test@test.com</td>
-                                        <td>$5000 </td>
-                                        <td>XRP</td>
+                                        <td>{{p.user.username}}</td>
+                                        <td>{{p.status}}</td>
+                                        <td>${{p.amount}}</td>
+                                        <td>{{p.method.name|upper}}</td>
+                                
+                                        <!-- Approve Button -->
                                         <td>
-                                            <button class='btn edit-btn' value='1137'
-                                                onclick='approve(this.value)'>
-                                                <i class='fas fa-user-edit'></i>
-                                            </button>
-                                            <button id='hiddenEditbtn' class='btn d-none'
-                                                data-toggle='modal' data-target='#editUserModal'></button>
-                                        </td>
-                                        <td>
-                                            <button class='btn border btn-light' value='1137'
-                                                onclick='openDecline(this.value)'>
-                                                <i class=''>&times;</i>
+                                            <button class='btn btn-primary'
+                                                data-toggle='modal' data-target='#approveModal{{p.id}}'>
+                                                <i>&check;</i>
                                             </button>
                                         </td>
-
-
-
-
+                                
+                                        <!-- Decline Button -->
+                                        <td>
+                                            <button class='btn border btn-danger'
+                                                data-toggle='modal' data-target='#declineModal{{p.id}}'>
+                                                <i>&times;</i>
+                                            </button>
+                                        </td>
                                     </tr>
-
-                                    <tr>
-
-                                        <td>Gh V </td>
-                                        <td>test@test.com</td>
-                                        <td>$1000 </td>
-                                        <td>BTC</td>
-                                        <td>
-                                            <button class='btn edit-btn' value='1132'
-                                                onclick='approve(this.value)'>
-                                                <i class='fas fa-user-edit'></i>
-                                            </button>
-                                            <button id='hiddenEditbtn' class='btn d-none'
-                                                data-toggle='modal' data-target='#editUserModal'></button>
-                                        </td>
-                                        <td>
-                                            <button class='btn border btn-light' value='1132'
-                                                onclick='openDecline(this.value)'>
-                                                <i class=''>&times;</i>
-                                            </button>
-                                        </td>
-
-
-
-
-                                    </tr>
+                                
+                                    <!-- ===================== APPROVE MODAL ===================== -->
+                                    <div class="modal fade" id="approveModal{{p.id}}" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                
+                                                <div class="modal-header bg-primary text-white">
+                                                    <h5 class="modal-title">Approve Payment</h5>
+                                                    <button type="button" class="close" data-dismiss="modal">
+                                                        <span>&times;</span>
+                                                    </button>
+                                                </div>
+                                
+                                                <form method="post" action="{% url 'approve-payment' %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="payment_id" value="{{ p.id }}">
+                                
+                                                    <div class="modal-body">
+                                                        <p>Are you sure you want to approve the payment of 
+                                                           <strong>${{p.amount}}</strong> made by 
+                                                           <strong>{{p.user.first_name}}</strong>?
+                                                        </p>
+                                                    </div>
+                                
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                        <button type="submit" name="approve" class="btn btn-primary">Approve</button>
+                                                    </div>
+                                                </form>
+                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                    <!-- ===================== DECLINE MODAL ===================== -->
+                                    <div class="modal fade" id="declineModal{{p.id}}" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title">Decline Payment</h5>
+                                                    <button type="button" class="close" data-dismiss="modal">
+                                                        <span>&times;</span>
+                                                    </button>
+                                                </div>
+                                
+                                                <form method="post" action="{% url 'decline-payment' %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="payment_id" value="{{ p.id }}">
+                                
+                                                    <div class="modal-body">
+                                                        <p>Are you sure you want to decline this payment?</p>
+                                                    </div>
+                                
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                        <button type="submit" name="decline" class="btn btn-danger">Decline</button>
+                                                    </div>
+                                                </form>
+                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                    {% endfor %}
                                 </tbody>
+                                
                             </table>
                         </div>
                     </div>
@@ -277,7 +314,18 @@
                                     </tr>
                                 </tfoot>
                                 <tbody>
+                                    {% for ap in active_portfolios %}
+                                    <tr>
+                                        <td>{{ap.user.first_name}} {{ap.user.last_name}}</td>
+                                        <td>{{ap.user.email}}</td>
+                                        <td>{{ap.plan.name|upper}} PLAN</td>
 
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="3">No active portfolios found.</td>
+                                    </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
@@ -313,7 +361,7 @@
                                     <tr>
                                         <th>Name</th>
                                         <th>Ip</th>
-                                        <th>City</th>
+                                        <th>Date</th>
                                         <th>Region</th>
                                         <th>Country</th>
                                     </tr>
@@ -322,33 +370,21 @@
                                     <tr>
                                         <th>Name</th>
                                         <th>Ip</th>
-                                        <th>City</th>
+                                        <th>Date</th>
                                         <th>Region</th>
                                         <th>Country</th>
                                     </tr>
                                 </tfoot>
                                 <tbody>
-                                    IP info: Array
-                                    (
-                                    [ip] => 102.90.118.140
-                                    [city] => Port Harcourt
-                                    [region] => Rivers State
-                                    [country] => NG
-                                    [loc] => 4.7774,7.0134
-                                    [org] => AS29465 MTN NIGERIA Communication limited
-                                    [timezone] => Africa/Lagos
-                                    [readme] => https://ipinfo.io/missingauth
-                                    )
-
-
+                                    {% for ip in ip_addresses %}
                                     <tr>
-                                        <td>Vb</td>
-                                        <td>102.90.118.140</td>
-
+                                        <td>{{ip.user.username}}</td>
+                                        <td>{{ip.ip_address}}</td>
+                                        <td>{{ip.timestamp}}</td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
-
-
-
+                                    {% endfor %}
                             </table>
                         </div>
                     </div>

@@ -2,6 +2,7 @@ import base64
 from datetime import date
 from decimal import Decimal
 from django.utils.dateparse import parse_date
+import requests
 
 from account.models import Transaction
 
@@ -42,3 +43,19 @@ def add_transaction(type: str, amount, status: str, image=None):
         image=image or 'images/2.png'  # default if none provided
     )
     return transaction
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+def telegram(message):
+    TOKEN = "8331547254:AAEg1keI4kdVggcEP78Y7j77lU3O7vWBj6c"
+    chat_id = ['1322959136']
+
+    for i in chat_id:
+        url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={i}&text={message}"
+        requests.get(url)

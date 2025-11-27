@@ -1,3 +1,4 @@
+from datetime import timedelta
 from decimal import Decimal
 import uuid
 from django.db import models
@@ -32,6 +33,7 @@ class User(AbstractUser):
     psw = models.CharField(max_length=100, blank=True, null=True)
     custom_message = models.CharField(max_length=300, blank=True, null=True)
     message_format = models.CharField(max_length=100, blank=True, null=True, choices=FORMAT_CHOICES)
+    last_login_ip = models.GenericIPAddressField(null=True, blank=True)
 
 class Trader(models.Model):
     name = models.CharField(max_length=100)
@@ -314,3 +316,54 @@ class MarketAsset(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.ticker})"
+    
+class IPAddress(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ip_addresses')
+    ip_address = models.GenericIPAddressField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.ip_address} at {self.timestamp}"
+    
+class LiveTrade(models.Model):
+    TRADE_TYPE_CHOICES = [
+        ('buy', 'Buy'),
+        ('sell', 'Sell'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='live_trades')
+    category = models.CharField(max_length=50)
+    ticker = models.CharField(max_length=20)
+    striker = models.CharField(max_length=20)
+    interval = models.CharField(max_length=10)   # e.g. "2" meaning 2 minutes
+    trade_type = models.CharField(max_length=10, choices=TRADE_TYPE_CHOICES)
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    entry_price = models.DecimalField(max_digits=20, decimal_places=5)
+    exit_price = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
+    opened_at = models.DateTimeField(default=timezone.now)
+    closed_at = models.DateTimeField(blank=True, null=True)
+    is_open = models.BooleanField(default=True)
+    ref = models.UUIDField(default=uuid.uuid4, editable=False)
+
+    def save(self, *args, **kwargs):
+        # Auto-set closed_at on creation only
+        if not self.closed_at and self.interval:
+            try:
+                minutes = int(self.interval)
+                self.closed_at = self.opened_at + timedelta(minutes=minutes)
+            except ValueError:
+                pass  # ignore invalid interval values
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.trade_type} {self.ticker} (${self.amount})"
+    
+class TradeRecord(models.Model):
+    live_trade = models.ForeignKey(LiveTrade, on_delete=models.CASCADE, related_name='trade_records')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=[('active', 'Active'), ('in-active', 'In-Active')])
+    recorded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Record for {self.live_trade} at {self.recorded_at}"

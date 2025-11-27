@@ -1,5 +1,6 @@
 {% extends 'account/base.html' %}
 {% load static %}
+{% load humanize %}
 {% block content %}
 <div id="appCapsule">
 	<!-- Wallet Card -->
@@ -103,78 +104,80 @@
 	<div class="section mt-4 mb-5 pb-4">
 		<div class="wallet-card">
 			<div style="display:flex; justify-content:flex-end; padding:20px 20px 0 20px;">
-				<a href="copy" class="btn btn-primary"><i class="bx bx-user"></i> Copy an Expert</a>
+				<a href="{% url 'copy-trader' %}" class="btn btn-primary"><i class="bx bx-user"></i> Copy an Expert</a>
 			</div>
 
 			<!-- Trading Form -->
 			<div class="wallet-card" style="padding:40px; margin-top:20px;">
 				<form method="post" style="max-width:100%; margin:0 auto;">
+					{% csrf_token %}
 					<div class="mb-4" style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap;">
 						<div style="width:280px;">
 							<label
 								style="color:#fff; font-size:15px; margin-bottom:15px; display:block; text-align:center;">Category</label>
-							<select class="form-select">
-								<option selected>Crypto Currency</option>
-								<option>Currencies</option>
+							<select class="form-select" name="category" required>
+								<option value="crypto" selected>Crypto Currency</option>
+								<option value="currency">Currencies</option>
 							</select>
 						</div>
 						<div style="width:280px;">
 							<label
 								style="color:#fff; font-size:15px; margin-bottom:15px; display:block; text-align:center;">Symbol</label>
-							<select name="ticker" class="form-select">
-								<option selected>BCH/BTC</option>
-								<option>BCH/EUR</option>
-								<option>BCH/GBP</option>
-								<option>BTC-EOS</option>
-								<option>BTC/EUR</option>
-								<option>BTC/GBP</option>
-								<option>BTC/USD</option>
-								<option>BTC/USDC</option>
-								<option>BTC/USDT</option>
-								<option>DOGE/USDT</option>
-								<option>EOS/BTC</option>
-								<option>EOS/EUR</option>
-								<option>EOS/USD</option>
-								<option>ETC/BTC</option>
-								<option>ETC/EUR</option>
-								<option>ETC/GBP</option>
-								<option>ETC/USD</option>
-								<option>ETH/BTC</option>
-								<option>ETH/EUR</option>
-								<option>ETH/GBP</option>
-								<option>LTC/USD</option>
-								<option>LTC/USDT</option>
-								<option>MKR/BTC</option>
-								<option>PCP-BTC</option>
-								<option>REP/BTC</option>
-								<option>SHIB/USDT</option>
-								<option>TRX/USDT</option>
-								<option>TRX/GBP</option>
-								<option>XAU/USD</option>
-								<option>XLM/BTC</option>
-								<option>XLM/EUR</option>
-								<option>XLM/USD</option>
-								<option>XRP</option>
-								<option>XRP/BTC</option>
-								<option>XRP/EUR</option>
-								<option>XRP/USD</option>
-								<option>ZEC/BTC</option>
-								<option>ZRX/BTC</option>
-								<option>ZRX/EUR</option>
-								<option>ZRX/USD</option>
-							</select>
+								<select name="ticker" class="form-select" required>
+									<option value="BCH/BTC" selected>BCH/BTC</option>
+									<option value="BCH/EUR">BCH/EUR</option>
+									<option value="BCH/GBP">BCH/GBP</option>
+									<option value="BTC-EOS">BTC-EOS</option>
+									<option value="BTC/EUR">BTC/EUR</option>
+									<option value="BTC/GBP">BTC/GBP</option>
+									<option value="BTC/USD">BTC/USD</option>
+									<option value="BTC/USDC">BTC/USDC</option>
+									<option value="BTC/USDT">BTC/USDT</option>
+									<option value="DOGE/USDT">DOGE/USDT</option>
+									<option value="EOS/BTC">EOS/BTC</option>
+									<option value="EOS/EUR">EOS/EUR</option>
+									<option value="EOS/USD">EOS/USD</option>
+									<option value="ETC/BTC">ETC/BTC</option>
+									<option value="ETC/EUR">ETC/EUR</option>
+									<option value="ETC/GBP">ETC/GBP</option>
+									<option value="ETC/USD">ETC/USD</option>
+									<option value="ETH/BTC">ETH/BTC</option>
+									<option value="ETH/EUR">ETH/EUR</option>
+									<option value="ETH/GBP">ETH/GBP</option>
+									<option value="LTC/USD">LTC/USD</option>
+									<option value="LTC/USDT">LTC/USDT</option>
+									<option value="MKR/BTC">MKR/BTC</option>
+									<option value="PCP-BTC">PCP-BTC</option>
+									<option value="REP/BTC">REP/BTC</option>
+									<option value="SHIB/USDT">SHIB/USDT</option>
+									<option value="TRX/USDT">TRX/USDT</option>
+									<option value="TRX/GBP">TRX/GBP</option>
+									<option value="XAU/USD">XAU/USD</option>
+									<option value="XLM/BTC">XLM/BTC</option>
+									<option value="XLM/EUR">XLM/EUR</option>
+									<option value="XLM/USD">XLM/USD</option>
+									<option value="XRP/USDT">XRP/USDT</option>
+									<option value="XRP/BTC">XRP/BTC</option>
+									<option value="XRP/EUR">XRP/EUR</option>
+									<option value="XRP/USD">XRP/USD</option>
+									<option value="ZEC/BTC">ZEC/BTC</option>
+									<option value="ZRX/BTC">ZRX/BTC</option>
+									<option value="ZRX/EUR">ZRX/EUR</option>
+									<option value="ZRX/USD">ZRX/USD</option>
+								</select>								
 						</div>
 						<div style="width:280px;">
 							<label for="strike"
 								style="color:#fff; font-size:15px; margin-bottom:15px; display:block; text-align:center;">Strike
 								Rate</label>
-							<select name="strike" id="strike" class="form-select">
-								<option selected>60% & 1%</option>
-								<option>29% & 1%</option>
-								<option>5% & 2%</option>
-								<option>5% & 11%</option>
-								<option>1% & 85%</option>
-							</select>
+								<select name="striker" id="strike" class="form-select" required>
+									<option value="60% & 1%" selected>60% & 1%</option>
+									<option value="29% & 1%">29% & 1%</option>
+									<option value="5% & 2%">5% & 2%</option>
+									<option value="5% & 11%">5% & 11%</option>
+									<option value="1% & 85%">1% & 85%</option>
+								</select>
+								
 						</div>
 					</div>
 
@@ -182,7 +185,7 @@
 						<div style="width:850px; max-width:90%;">
 							<label
 								style="color:#fff; font-size:15px; margin-bottom:15px; display:block; text-align:center;">Amount</label>
-							<input name="amount" type="number" class="form-control" placeholder="Enter amount">
+							<input name="amount" type="number" class="form-control" placeholder="Enter amount" required>
 						</div>
 					</div>
 
@@ -190,9 +193,9 @@
 						<div style="width:580px; max-width:90%;">
 							<label
 								style="color:#fff; font-size:15px; margin-bottom:15px; display:block; text-align:center;">Interval</label>
-							<select name="interval" class="form-select">
+							<select name="interval" class="form-select" required>
 								<option value="1" selected>1 min</option>
-								<option value="5">3 min</option>
+								<option value="3">3 min</option>
 								<option value="15">15 min</option>
 								<option value="30">30 min</option>
 							</select>
@@ -200,12 +203,19 @@
 					</div>
 
 					<div style="display:flex; justify-content:center; gap:15px;">
-						<button type="button" class="btn btn-success"
+						<form action="" method="post">
+							{% csrf_token %}
+							<button type="submit" class="btn btn-success" name="buy"
 							style="width:140px; padding:14px; font-size:16px; font-weight:500; border-radius:8px;"
 							id="buyBtn">Buy</button>
-						<button type="button" class="btn btn-danger"
+						</form>
+						
+						<form action="" method="post">
+							{% csrf_token %}
+							<button type="submit" class="btn btn-danger" name="sell"
 							style="width:140px; padding:14px; font-size:16px; font-weight:500; border-radius:8px;"
 							id="sellBtn">Sell</button>
+						</form>
 					</div>
 				</form>
 			</div>
@@ -270,19 +280,26 @@
 									<th>Amount</th>
 									<th>Progress</th>
 									<th>Interval</th>
+									<th>Entry Price</th>
 									<th>Date</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td><b>1144</b></td>
-									<td><b>$ 1000</b></td>
+								{% for ot in open_trades %}
+									<td><b>{{ ot.ref }}</b></td>
+									<td><b>$ {{ot.amount|intcomma}}</b></td>
 									<td>
 										<div class="line-loader"></div>
 									</td>
-									<td><b>30 Min</b></td>
-									<td><b>Friday 24th of October 2025</b></td>
+									<td><b>{{ot.interval}} Min</b></td>
+									<td><b>{{ot.entry_price}}</b></td>
+									<td><b>{{ot.opened_at|date:"l jS \o\f F Y"}}</b></td>
 								</tr>
+								{% empty %}
+								<tr>
+									<td colspan="6">No active trades found.</td>
+								</tr>
+								{% endfor %}
 							</tbody>
 						</table>
 					</div>
@@ -301,20 +318,24 @@
 			</div>
 			<div class="transactions">
 				<!-- item -->
+				 {% for ct in copied_traders %}
 				<a href="#" class="item">
 					<div class="detail">
-						<img src="{% static 'images/11.png' %}" alt="img" class="image-block imaged w48">
+						<img src="{{ct.trader.image.url}}" alt="img" class="image-block imaged w48">
 						<div>
-							<strong>Saadvloger2</strong>
-							<p>2025-10-23 17:55:03</p>
+							<strong>{{ct.trader.name}}</strong>
+							<p>{{ct.opened_date|date:"Y-n-j G:i:s"}}</p>
 						</div>
 					</div>
 					<div class="right">
 						Amount Copying
-						<div class="price text-success">$1,000.00</div>
-						<p>Profit: <strong>$0.00</strong></p>
+						<div class="price text-success">${{ct.amount_copying|intcomma}}</div>
+						<p>Profit: <strong>${{ct.current_profit|intcomma}}</strong></p>
 					</div>
 				</a>
+				{% empty %}
+				<p>No expert trades found.</p>
+				{% endfor %}
 			</div>
 		</div>
 		<!-- * Expert Trades Section -->

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Trader, CopyTrade, InvestmentPlan, Portfolio, Transaction, Payment, PaymentMethod, KycVerification, MarketAsset, MarketCategory, Withdrawal, Config
+from .models import User, Trader, CopyTrade, InvestmentPlan, Portfolio, Transaction, Payment, PaymentMethod, KycVerification, MarketAsset, MarketCategory, Withdrawal, Config, IPAddress, LiveTrade, TradeRecord
 
 # Register your models here.
 
@@ -16,3 +16,6 @@ admin.site.register(Withdrawal)
 admin.site.register(MarketAsset)
 admin.site.register(MarketCategory)
 admin.site.register(Config)
+admin.site.register(IPAddress)
+admin.site.register(LiveTrade)
+admin.site.register(TradeRecord)

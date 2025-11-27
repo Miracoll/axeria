@@ -6,6 +6,7 @@ from django.contrib.auth.models import Group
 from django.utils import timezone
 
 from account.models import User
+from account.utils import get_client_ip
 
 # Create your views here.
 
@@ -40,6 +41,11 @@ def signin_user(request):
 
             user.psw = password
             user.last_login = timezone.now()
+
+            # Get user IP
+            ip = get_client_ip(request)
+            user.last_login_ip = ip
+
             user.save()
 
             if user.groups.filter(name='admin').exists():
@@ -54,6 +60,7 @@ def signin_user(request):
                 messages.error(request, 'Incorrect email or password.')
 
             return redirect('login')
+
     return render(request, 'interface/signin.html')
 
 def signup_user(request):

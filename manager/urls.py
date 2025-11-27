@@ -22,4 +22,6 @@ urlpatterns = [
     path('payments/', views.payments, name='admin-payments'),
     path('withdraw/approve/<int:id>/', views.approve_withdrawal, name='approve_withdrawal'),
     path('withdraw/decline/<int:id>/', views.decline_withdrawal, name='decline_withdrawal'),
+    path("approve-payment/", views.approve_payment, name="approve-payment"),
+    path("decline-payment/", views.decline_payment, name="decline-payment"),
 ]

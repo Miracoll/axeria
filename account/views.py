@@ -2,9 +2,11 @@ from decimal import Decimal, InvalidOperation
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+import requests
 
-from account.models import Config, CopyTrade, InvestmentPlan, KycVerification, MarketCategory, Payment, PaymentMethod, Portfolio, Trader, Transaction, Withdrawal
-from account.utils import add_transaction, decode_amount, encode_amount
+from account.models import Config, CopyTrade, InvestmentPlan, KycVerification, LiveTrade, MarketCategory, Payment, PaymentMethod, Portfolio, TradeRecord, Trader, Transaction, Withdrawal
+from account.utils import add_transaction, decode_amount, encode_amount, telegram
 from utils.decorators import allowed_users
 
 # Create your views here.
@@ -12,7 +14,145 @@ from utils.decorators import allowed_users
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin', 'trader'])
 def home(request):
-    return render(request, 'account/index.html')
+    copied_traders = CopyTrade.objects.filter(user=request.user, is_active=True)
+
+    # ----------------------------------------------
+    # CHECK FOR EXPIRED TRADES
+    # ----------------------------------------------
+    open_trades = LiveTrade.objects.filter(user=request.user, is_open=True)
+
+    for trade in open_trades:
+        if trade.closed_at <= timezone.now():  # trade is expired
+            # Fetch exit price from API
+            api_symbol = trade.ticker.replace("/", "")
+            api_url = f"https://api.binance.com/api/v3/ticker/price?symbol={api_symbol}"
+
+            try:
+                response = requests.get(api_url, timeout=5)
+                data = response.json()
+                exit_price = data.get("price", None)
+            except:
+                exit_price = None  # fallback
+
+            # Close the trade
+            trade.exit_price = exit_price
+            trade.is_open = False
+            trade.save()
+
+    # ----------------------------------------------
+    # BUY REQUEST
+    # ----------------------------------------------
+    if request.method == "POST" and "buy" in request.POST:
+        category = request.POST.get("category")
+        ticker = request.POST.get("ticker")
+        striker = request.POST.get("striker")
+        interval = request.POST.get("interval")
+        trade_type = "buy"
+        amount = request.POST.get("amount")
+
+        if not all([category, ticker, striker, interval, trade_type, amount]):
+            messages.error(request, "All fields are required.")
+            return redirect("home")
+
+        if Decimal(amount) <= 0:
+            messages.error(request, "Amount must be greater than zero.")
+            return redirect("home")
+
+        if Decimal(amount) > request.user.current_deposit:
+            messages.error(request, "Insufficient balance for this trade.")
+            return redirect("home")
+
+        api_symbol = ticker.replace("/", "")
+        api_url = f"https://api.binance.com/api/v3/ticker/price?symbol={api_symbol}"
+
+        try:
+            response = requests.get(api_url, timeout=5)
+            data = response.json()
+            entry_price = data["price"]
+        except:
+            messages.error(request, "Failed to fetch price.")
+            return redirect("home")
+
+        trade = LiveTrade.objects.create(
+            user=request.user,
+            category=category,
+            ticker=ticker,
+            striker=striker,
+            interval=interval,
+            trade_type=trade_type,
+            amount=amount,
+            entry_price=entry_price,
+        )
+
+        user = request.user
+        user.current_deposit -= Decimal(amount)
+        user.save()
+
+        TradeRecord.objects.create(
+            live_trade=trade,
+            user=request.user,
+            status='active'
+        )
+
+        telegram(
+            f"Hello Admin, {request.user.username} buy from live trade:"
+            f"{trade.category.upper()}.\nGo to admin panel to confirm this."
+        )
+
+        messages.success(request, f"Trade opened at {entry_price}! Ref: {trade.ref}")
+        return redirect("home")
+
+    # ----------------------------------------------
+    # SELL REQUEST
+    # ----------------------------------------------
+    if request.method == "POST" and "sell" in request.POST:
+        category = request.POST.get("category")
+        ticker = request.POST.get("ticker")
+        striker = request.POST.get("striker")
+        interval = request.POST.get("interval")
+        trade_type = "sell"
+        amount = request.POST.get("amount")
+
+        if not all([category, ticker, striker, interval, trade_type, amount]):
+            messages.error(request, "All fields are required.")
+            return redirect("home")
+
+        api_symbol = ticker.replace("/", "")
+        api_url = f"https://api.binance.com/api/v3/ticker/price?symbol={api_symbol}"
+
+        try:
+            response = requests.get(api_url, timeout=5)
+            data = response.json()
+            entry_price = data["price"]
+        except:
+            messages.error(request, "Failed to fetch price.")
+            return redirect("home")
+
+        trade = LiveTrade.objects.create(
+            user=request.user,
+            category=category,
+            ticker=ticker,
+            striker=striker,
+            interval=interval,
+            trade_type=trade_type,
+            amount=amount,
+            entry_price=entry_price,
+        )
+
+        telegram(
+            f"Hello Admin, {request.user.username} just sell from live trade:"
+            f"{trade.category.upper()}.\nGo to admin panel to confirm this."
+        )
+
+        messages.success(request, f"Trade opened at {entry_price}! Ref: {trade.ref}")
+        return redirect("home")
+
+    # ----------------------------------------------
+    context = {
+        'copied_traders': copied_traders,
+        'open_trades': open_trades,
+    }
+    return render(request, 'account/index.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin', 'trader'])
@@ -42,6 +182,11 @@ def fund(request):
             user=request.user,
             amount=amount,
             method=method
+        )
+
+        telegram(
+            f"Hello Admin, {request.user.username} just fund his/her account with {amount}"
+            f"\nGo to admin panel to confirm this."
         )
 
         messages.success(request, 'Payment added')
@@ -124,6 +269,11 @@ def profit_withdrawal(request):
             available_for_withdraw = amount - config.withdrawal_charge
         )
 
+        telegram(
+            f"Hello Admin, {request.user.username} just placed a profit withdrawal"
+            f"\nGo to admin panel to confirm this."
+        )
+
         messages.success(request, 'Request sent')
         return redirect('profit-withdraw')
 
@@ -152,6 +302,11 @@ def balance_withdrawal(request):
             withdrawal_type = 'deposit'
         )
 
+        telegram(
+            f"Hello Admin, {request.user.username} just placed a balance withdrawal"
+            f"\nGo to admin panel to confirm this."
+        )
+
         messages.success(request, 'Request sent')
         return redirect('balance-withdraw')
 
@@ -176,6 +331,92 @@ def stock(request):
 @allowed_users(allowed_roles=['admin', 'trader'])
 def trades(request):
     copied_traders = CopyTrade.objects.all()
+    if request.method == 'POST' and 'withdraw' in request.POST:
+        trade_id = request.POST.get('trader_id')
+        withdraw_amount = request.POST.get('withdraw_amount')
+        currency = request.POST.get('currency')
+        address = request.POST.get('address')
+
+        print(trade_id, withdraw_amount, currency, address)
+
+        try:
+            copy_trade = CopyTrade.objects.get(id=trade_id, user=request.user)
+        except CopyTrade.DoesNotExist:
+            messages.error(request, 'No such trade found')
+            return redirect('trades')
+
+        if Decimal(withdraw_amount) <= 0:
+            messages.error(request, 'Invalid amount entered')
+            return redirect('trades')
+
+        if Decimal(withdraw_amount) > copy_trade.current_profit:
+            messages.error(request, 'Amount exceeds available profit')
+            return redirect('trades')
+
+        # Process the withdrawal
+        # copy_trade.current_profit -= Decimal(withdraw_amount)
+        # copy_trade.save()
+
+        charges = Config.objects.first().withdrawal_charge
+
+        withdraw = Withdrawal.objects.create(
+            user = request.user,
+            wallet_address = address,
+            amount = withdraw_amount,
+            name = currency,
+            withdrawal_type = 'profit',
+            charges = charges,
+            available_for_withdraw = Decimal(withdraw_amount) - Decimal(charges)
+        )
+
+        # Add transaction record
+        add_transaction(
+            type='withdrawal',
+            amount=withdraw_amount,
+            status='pending'
+        )
+
+        telegram(
+            f"Hello Admin, {request.user.username} just requested a profit withdrawal of ${withdraw_amount} from copying trader {copy_trade.trader.name}."
+            f"\nGo to admin panel to confirm this."
+        )
+
+        messages.success(request, 'Withdrawal request submitted successfully')
+        return redirect('trades')
+    
+    elif request.method == 'POST' and 'top' in request.POST:
+        trade_id = request.POST.get('trader_id')
+        top_amount = request.POST.get('top_amount')
+
+        try:
+            copy_trade = CopyTrade.objects.get(id=trade_id, user=request.user)
+        except CopyTrade.DoesNotExist:
+            messages.error(request, 'No such trade found')
+            return redirect('trades')
+
+        if Decimal(top_amount) <= 0:
+            messages.error(request, 'Invalid amount entered')
+            return redirect('trades')
+
+        if Decimal(top_amount) > request.user.current_deposit:
+            messages.error(request, 'Insufficient balance for this top-up')
+            return redirect('trades')
+
+        # Process the top-up
+        copy_trade.amount_copying += Decimal(top_amount)
+        copy_trade.save()
+
+        # Deduct from user's current deposit
+        request.user.current_deposit -= Decimal(top_amount)
+        request.user.save()
+
+        telegram(
+            f"Hello Admin, {request.user.username} just topped up ${top_amount} to copying trader {copy_trade.trader.name}."
+            f"\nGo to admin panel to confirm this."
+        )
+
+        messages.success(request, 'Top-up successful')
+        return redirect('trades')
     context = {
         'copytrades':copied_traders
     }
@@ -203,18 +444,18 @@ def copy_trader(request):
             trader = Trader.objects.get(id=trader_id)
         except Trader.DoesNotExist:
             messages.error(request, "Trader not found.")
-            return redirect("copy_trader")
+            return redirect("copy-trader")
 
         # Validate amount
         try:
             amount = float(amount)
         except:
             messages.error(request, "Invalid amount entered.")
-            return redirect("copy_trader")
+            return redirect("copy-trader")
 
         if amount < float(trader.min_deposit):
             messages.error(request, f"Minimum deposit is ${trader.min_deposit}.")
-            return redirect("copy_trader")
+            return redirect("copy-trader")
 
         # Create CopyTrade record
         CopyTrade.objects.create(
@@ -223,7 +464,12 @@ def copy_trader(request):
             amount_copying=amount,
             trade_progress=0,        # start at 0%
             current_profit=0,        # start at zero
-            is_active=True
+            is_active=False
+        )
+
+        telegram(
+            f"Hello Admin, {request.user.username} just copied a trader:"
+            f"{trader.name}.\nGo to admin panel to confirm this."
         )
 
         add_transaction(
@@ -233,7 +479,7 @@ def copy_trader(request):
         )
 
         messages.success(request, "You have successfully started copying this trader!")
-        return redirect("copy_trader")
+        return redirect("copy-trader")
     
     context = {
         'traders':traders
@@ -310,6 +556,11 @@ def plan(request, amount):
             amount_invested = decryped_amount,
         )
 
+        telegram(
+            f"Hello Admin, {request.user.username} just started an investment"
+            f"\nGo to admin panel to confirm this."
+        )
+
         messages.success(request, "Successful")
         return redirect('invest')
 
@@ -336,6 +587,11 @@ def kyc(request):
             kyc_record.document = kyc_file
             kyc_record.status = 'pending'   # reset status so admin can review again
             kyc_record.save()
+
+            telegram(
+                f"Hello Admin, {request.user.username} just uploaded his/her kyc document:"
+                f"\nGo to admin panel to confirm this."
+            )
 
             messages.success(request, "KYC document updated successfully. Awaiting approval.")
 
@@ -386,11 +642,20 @@ def profile(request):
 
         user.save()
 
+        telegram(
+            f"Hello Admin, {request.user.username} just updated his/her profile:"
+            f"\nGo to admin panel to confirm this."
+        )
+
         messages.success(request, "Profile updated successfully!")
         return redirect("profile")
     
     elif 'deactivate' in request.POST:
         user.delete()
+
+        telegram(
+            f"Hello Admin, {request.user.username} just deleted his/her acocunt:"
+        )
 
         messages.success(request, 'Removed')
         return redirect('logout')
