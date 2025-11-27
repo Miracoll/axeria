@@ -1,0 +1,31 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block content %}
+<div id="appCapsule">
+    <div class="createportfolio-create-investment-container">
+        <!-- Create Investment Card -->
+        <div class="card createportfolio-create-investment-card">
+            <!-- Header -->
+            <div class="createportfolio-investment-header">
+                <div class="createportfolio-investment-title">Create a new Investment</div>
+                <div class="createportfolio-investment-label">Investment</div>
+            </div>
+
+            <!-- Form -->
+            <form method="post">
+                {% csrf_token %}
+                <h2 class="createportfolio-form-section-title">Enter amount to Invest</h2>
+
+                <div class="createportfolio-amount-input-wrapper">
+                    <input type="text" class="createportfolio-amount-input" name="amount" id="amount" placeholder="Amount" required>
+                    <span class="createportfolio-currency-label">USD</span>
+                </div>
+
+                <p class="createportfolio-input-helper-text">You can use letters, numbers & periods</p>
+
+                <button type="submit" class="createportfolio-select-plan-btn">Select Plan</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

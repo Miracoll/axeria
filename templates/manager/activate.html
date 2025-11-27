@@ -1,0 +1,75 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div class="col-12">
+    <div class="card w-100 mx-auto">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Active?</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users %}
+                        <tr>
+                            <td>{{u.first_name}} {{u.last_name}}</td>
+                            <td>{{u.email}}</td>
+                            <td>{{u.is_active|yesno|capfirst}}</td>
+                            <td>
+                                {% if not u.is_active %}
+                                <form method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="user_id" value="{{ u.id }}">
+                                    <button type="submit" name="action" value="activate"
+                                        class="btn btn-success btn-sm">Activate</button>
+                                </form>
+                                {% else %}
+                                <form method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="user_id" value="{{ u.id }}">
+                                    <button type="submit" name="action" value="deactivate"
+                                        class="btn btn-danger btn-sm">Deactivate</button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Active?</th>
+                            <th>Action</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+    function activateUser(val, email) {
+        console.log("working");
+        $.ajax({
+            type: 'post',
+            url: 'ajax.html?action=activate.html',
+            data: { id: val, email: email },
+            success: function (data) {
+                swal("Great", data, "success")
+                    .then(res => {
+                        location.replace("activate.html")
+                    })
+            }
+        })
+    }
+</script>
+{% endblock %}

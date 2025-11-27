@@ -1,0 +1,110 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div id="content">
+
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+        <h1 class="h3 mb-2 text-gray-800">Edit Clients</h1>
+        <!-- Page Heading -->
+
+        <style>
+            #search {
+                padding: 10px 30px;
+                outline: none;
+                border-radius: 5px;
+                border: 1px solid black;
+            }
+        </style>
+
+
+        <form method="POST">
+            <div class="form-group">
+                <input name="users" type="text" id="search" onkeyup="showResult(this.value)"
+                    placeholder="Search For Users" Required>
+
+            </div>
+
+        </form>
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Data Tables </h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Preview Document</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Preview Document</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </tfoot>
+                        <tbody id="livesearch">
+                            {% if kycs %}
+                                {% for kyc in kycs %}
+                                    <tr>
+                                        <td>{{ kyc.user.get_full_name|default:kyc.user.username }}</td>
+                                        <td>{{ kyc.user.email }}</td>
+                                        <td>
+                                            <a href="{{ kyc.document.url }}" target="_blank">
+                                                <img src="{{ kyc.document.url }}" alt="KYC Document" style="width:50px;height:50px;">
+                                            </a>
+                                        </td>
+                                        <td>
+                                            {% if kyc.status == 'pending' %}
+                                                <span class="badge badge-warning">Pending</span>
+                                            {% elif kyc.status == 'approved' %}
+                                                <span class="badge badge-success">Approved</span>
+                                            {% elif kyc.status == 'rejected' %}
+                                                <span class="badge badge-danger" title="{{ kyc.rejected_reason }}">Rejected</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if kyc.status == 'pending' %}
+                                                <form method="post" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="kyc_id" value="{{ kyc.id }}">
+                                                    <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+                                                </form>
+                                                <form method="post" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="kyc_id" value="{{ kyc.id }}">
+                                                    <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm">Reject</button>
+                                                </form>
+                                            {% else %}
+                                                <em>No actions</em>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5">No KYC records found.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+
+</div>
+{% endblock %}

@@ -1,0 +1,223 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div id="content">
+
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+
+        <!-- Page Heading -->
+        <h1 class="h3 mb-2 text-gray-800">Edit Clients</h1>
+
+        <style>
+            #search {
+                padding: 10px 30px;
+                outline: none;
+                border-radius: 5px;
+                border: 1px solid black;
+            }
+        </style>
+
+
+        <form method="POST">
+            <div class="form-group">
+                <input name="users" type="text" id="search" onkeyup="showResult(this.value)"
+                    placeholder="Search For Users" Required>
+
+            </div>
+
+        </form>
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Data Tables </h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Minimum</th>
+                                <th>Duration</th>
+                                <th>ROI</th>
+                                <th>Investors</th>
+                                <th>Active</th>
+                                <th>Risk</th>
+                                <th>Rate</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Name</th>
+                                <th>Minimum</th>
+                                <th>Duration</th>
+                                <th>ROI</th>
+                                <th>Investors</th>
+                                <th>Active</th>
+                                <th>Risk</th>
+                                <th>Rate</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </tfoot>
+                        <tbody id="livesearch">
+                            {% for t in traders %}
+                            <tr>
+                                <td>{{ t.name }}</td>
+                                <td>{{ t.min_deposit }}</td>
+                                <td>{{ t.duration_weeks }}</td>
+                                <td>{{ t.total_investors }}</td>
+                                <td>{{ t.active_investors }}</td>
+                                <td>{{ t.daily_roi }}</td>
+                                <td>{{ t.risk_level }}</td>
+                                <td>{{ t.win_rate }}</td>
+                        
+                                <td>
+                                    <button class='btn btn-primary' value='{{ t.id }}' data-toggle='modal'
+                                        data-target='#edit-expert-{{ t.id }}'>
+                                        <i class=''>Edit</i>
+                                    </button>
+                                </td>
+                        
+                                <td>
+                                    <button class='btn btn-danger' value='{{ t.id }}' data-toggle="modal" data-target="#delete-expert-{{ t.id }}">
+                                        <i class=''>Delete User</i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="10" class="text-center">No traders found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    {% for t in traders %}
+    <div class="modal fade" id="edit-expert-{{ t.id }}">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+    
+                <div class="modal-header">
+                    <h3>Edit Expert</h3>
+                    <button class="btn btn-close" data-dismiss="modal">&times;</button>
+                </div>
+    
+                <div class="modal-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+    
+                        <input type="hidden" name="id" value="{{ t.id }}">
+    
+                        <div class="form-group my-2">
+                            <label>Name</label>
+                            <input type="text" name="name" value="{{ t.name }}" class="form-control">
+                        </div>
+    
+                        <div class="form-group my-2">
+                            <label>Min Deposit</label>
+                            <input type="text" name="min" value="{{ t.min_deposit }}" class="form-control">
+                        </div>
+    
+                        <div class="form-group my-2">
+                            <label>Plan Span</label>
+                            <input type="text" name="period" value="weeks" class="form-control">
+                        </div>
+    
+                        <div class="form-group my-2">
+                            <label>Duration (weeks)</label>
+                            <input type="number" name="duration" value="{{ t.duration_weeks }}" class="form-control">
+                        </div>
+    
+                        <div class="form-group my-2">
+                            <label>Trading Fee (%)</label>
+                            <input type="number" name="trade_fee" value="{{ t.trading_fee_percentage }}" class="form-control">
+                        </div>
+    
+                        <div class="form-group my-2">
+                            <label>ROI</label>
+                            <input type="number" name="roi" value="{{ t.daily_roi }}" class="form-control">
+                        </div>
+    
+                        <div class="form-group my-2">
+                            <label>Total Investors</label>
+                            <input type="number" name="investors" value="{{ t.total_investors }}" class="form-control">
+                        </div>
+    
+                        <div class="form-group my-2">
+                            <label>Active Investors</label>
+                            <input type="number" name="active" value="{{ t.active_investors }}" class="form-control">
+                        </div>
+    
+                        <div class="form-group my-2">
+                            <label>Risk Level</label>
+                            <input type="text" name="risk" value="{{ t.risk_level }}" class="form-control">
+                        </div>
+    
+                        <div class="form-group my-2">
+                            <label>Win Rate</label>
+                            <input type="text" name="rate" value="{{ t.win_rate }}" class="form-control">
+                        </div>
+    
+                        <div class="form-group my-2">
+                            <button type="submit" class="btn btn-primary" name="edit-expert">
+                                Save Changes
+                            </button>
+                        </div>
+    
+                    </form>
+                </div>
+    
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% for t in traders %}
+    <div class="modal fade" id="delete-expert-{{ t.id }}">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+    
+                <div class="modal-header">
+                    <h3>Edit Expert</h3>
+                    <button class="btn btn-close" data-dismiss="modal">&times;</button>
+                </div>
+    
+                <div class="modal-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <input type="hidden" name="id" value="{{ t.id }}">
+                        
+                        <p>
+                            Are you sure you wanna remove this trader?
+                        </p>
+
+                        <div class="form-group my-2">
+                            <button type="submit" class="btn btn-primary" name="delete-expert">
+                                Yes, Remove Trader
+                            </button>
+                        </div>
+    
+                    </form>
+                </div>
+    
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    
+</div>
+{% endblock %}

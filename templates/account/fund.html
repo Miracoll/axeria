@@ -1,0 +1,84 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block content %}
+<div id="appCapsule">
+    <!-- Custom Error Modal -->
+    <div id="customErrorModal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:99999;">
+        <!-- Backdrop -->
+        <div
+            style="position:absolute; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:1;">
+        </div>
+
+        <!-- Modal Content -->
+        <div
+            style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:2; width:90%; max-width:360px;">
+            <div
+                style="background-color:#fff; border-radius:8px; padding:35px 30px 25px 30px; box-shadow:0 10px 40px rgba(0,0,0,0.2); border:none;">
+                <!-- Error Icon -->
+                <div style="margin-bottom:20px; display:flex; justify-content:center;">
+                    <div
+                        style="width:70px; height:70px; margin:0 auto; border:3px solid #f4d4d4; border-radius:50%; display:flex; align-items:center; justify-content:center; background-color:#fff;">
+                        <svg viewBox="0 0 52 52" style="width:40px; height:40px; display:block; margin:0 auto;">
+                            <path
+                                style="stroke:#c96f6f; stroke-width:6; stroke-linecap:round; stroke-linejoin:round; fill:none;"
+                                d="M16 16 L36 36 M36 16 L16 36"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Title & Message -->
+                <h2
+                    style="font-size:22px; font-weight:400; color:#000 !important; margin-bottom:6px; text-align:center;">
+                    Error</h2>
+                <p style="font-size:14px; color:#666 !important; margin-bottom:25px; text-align:center;"
+                    id="errorModalMessage">Our bank servers are currently down, please try another deposit method</p>
+
+                <!-- OK Button (Right-aligned) -->
+                <div style="display:flex; justify-content:flex-end; margin-top:15px;">
+                    <button type="button" onclick="closeErrorModal()"
+                        style="background-color:#5ba3c5; border:2px solid #5ba3c5; border-radius:6px; color:#fff; font-size:14px; font-weight:500; padding:8px 30px; cursor:pointer; transition:all 0.2s; display:inline-block; width:auto; max-width:none;">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- * Custom Error Modal -->
+
+    <div class="fund-container">
+        <!-- Create Investment Card -->
+        <div class="card fund-card">
+            <!-- Header -->
+            <div class="fund-header">
+                <div class="fund-title">Fund your Account</div>
+                <div class="fund-label">Deposit</div>
+            </div>
+
+            <!-- Form -->
+            <form method="post">
+                {% csrf_token %}
+                <h2 class="form-section-title">Which currency do you prefer to pay with</h2>
+
+                <div class="currency-select-wrapper">
+                    <i class='bx bx-wallet currency-select-icon'></i>
+                    <select class="currency-select" name="currency" id="currency" required>
+                        {% for m in methods %}
+                        <option value='{{m.ref}}'>{{m.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <h2 class="form-section-title">Amount you want to deposit</h2>
+
+                <div class="amount-input-wrapper">
+                    <input type="text" class="amount-input" name="amount" id="amount" placeholder="Amount" required>
+                    <span class="currency-label">USD</span>
+                </div>
+
+                <p class="input-helper-text">You can use numbers & periods</p>
+
+                <button type="submit" class="deposit-btn">Deposit</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

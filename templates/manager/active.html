@@ -1,0 +1,90 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div id="content">
+
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+
+        <!-- Page Heading -->
+        <h1 class="h3 mb-2 text-gray-800">Trades</h1>
+
+        <style>
+            #search {
+                padding: 10px 30px;
+                outline: none;
+                border-radius: 5px;
+                border: 1px solid black;
+            }
+        </style>
+
+
+        <form method="POST">
+            <div class="form-group">
+                <input name="users" type="text" id="search" onkeyup="showResult(this.value)"
+                    placeholder="Search For Users" Required>
+
+            </div>
+
+        </form>
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Data Tables </h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Trader</th>
+                                <th>Opened Date</th>
+                                <th>Amount Copying</th>
+                                <th>Manage</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Name</th>
+                                <th>Trader</th>
+                                <th>Opened Date</th>
+                                <th>Amount Copying</th>
+                                <th>Manage</th>
+                            </tr>
+                        </tfoot>
+                        <tbody id="livesearch">
+                            {% if trades %}
+                                {% for trade in trades %}
+                                    <tr>
+                                        <td>{{ trade.user.get_full_name|default:trade.user.username }}</td>
+                                        <td>{{ trade.trader.name }}</td>
+                                        <td>{{ trade.opened_date }}</td>
+                                        <td>${{ trade.amount_copying }}</td>
+                                        <td>
+                                            <a class="btn btn-primary" href="#">
+                                                Manage
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="4">No trades found.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+
+</div>
+
+<!-- put modal here -->
+{% endblock %}

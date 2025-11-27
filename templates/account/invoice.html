@@ -1,0 +1,84 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block content %}
+<div id="appCapsule">
+    <div class="invoice-invoice-layout">
+        <!-- Left Column - Invoice Details -->
+        <div class="invoice-invoice-card">
+            <div class="invoice-invoice-section">
+                <div class="invoice-invoice-label">PAY TO :</div>
+                <div class="invoice-pay-to-address">
+                    <input type="text" value="{{payment.method.wallet_address}}" readonly id="payToAddress">
+                </div>
+                <button class="invoice-copy-btn" onclick="copyAddress()">
+                    <i class='bx bx-copy'></i> Copy
+                </button>
+            </div>
+
+            <div class="invoice-invoice-divider"></div>
+
+            <div class="invoice-invoice-section">
+                <div class="invoice-invoice-label">INVOICE AMOUNT :</div>
+                <div class="invoice-invoice-value">$ {{payment.amount}} on USD</div>
+            </div>
+
+            <div class="invoice-invoice-divider"></div>
+
+            <div class="invoice-invoice-section">
+                <div class="invoice-invoice-label">AMOUNT DUE :</div>
+                <div class="invoice-invoice-value">$ {{payment.amount}} on USD</div>
+            </div>
+
+            <div class="invoice-invoice-divider"></div>
+
+            <div class="invoice-invoice-section">
+                <div class="invoice-invoice-label">REMARK :</div>
+                <div class="invoice-invoice-value">You may split your payments into various amounts, be advised however that applicable network fees may be applied to subsequent incoming payments.</div>
+            </div>
+        </div>
+
+        <!-- Right Column - Transaction History -->
+        <div class="invoice-history-card">
+            <h2 class="invoice-history-title">Real-time historical records of your incoming invoice payments</h2>
+
+            <div class="invoice-history-table-wrapper">
+                <table class="invoice-history-table">
+                    <thead>
+                        <tr>
+                            <th>Transaction Id</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                        <tr>
+                            <td>#{{ payment.transaction_no }}</td>
+
+                            <td>${{ payment.amount }}</td>
+
+                            <td>
+                                {% if payment.status == 'pending' %}
+                                    <span class="invoice-status-badge invoice-status-pending">pending</span>
+                                {% elif payment.status == 'completed' %}
+                                    <span class="invoice-status-badge invoice-status-completed">completed</span>
+                                {% elif payment.status == 'failed' %}
+                                    <span class="invoice-status-badge invoice-status-failed">failed</span>
+                                {% endif %}
+                            </td>
+
+                            <td>{{ payment.created_at|date:"l jS \\of F Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center">No transactions found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

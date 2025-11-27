@@ -1,0 +1,98 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block content %}
+<div id="appCapsule">
+    <div class="plans-plans-container">
+        <h1 class="plans-plans-title">Erudite Plans</h1>
+
+        <!-- Top Row - 5 Plans -->
+        <div class="plans-plans-grid">
+            <!-- Ruby Plan -->
+            {% for plan in plans %}
+            <div class="plans-plan-card">
+                <div class="plans-plan-name">{{ plan.get_name_display }}</div>
+
+                <div class="plans-plan-percentage">
+                    {{ plan.percentage }}%
+                </div>
+
+                <div class="plans-plan-referral">
+                    Referral commission <span class="plans-plan-referral-value">
+                        {{ plan.referral_commission }}%
+                    </span>
+                </div>
+
+                <div class="plans-plan-divider"></div>
+
+                <div class="plans-plan-details">
+                    <ul>
+                        <li class="plans-plan-detail-item">
+                            <span class="plans-plan-detail-label">{{ plan.percentage }}%</span>
+                            <span class="plans-plan-detail-value">ROI/Daily</span>
+                        </li>
+
+                        <li class="plans-plan-detail-item">
+                            <span class="plans-plan-detail-label">{{ plan.trade_fee }}%</span>
+                            <span class="plans-plan-detail-value">Trade Fee</span>
+                        </li>
+
+                        <li class="plans-plan-detail-item">
+                            <span class="plans-plan-detail-label">
+                                {{ plan.term }} 
+                                {% if plan.duration_multiplier  == '1' %}
+                                day(s)
+                                {% elif plan.duration_multiplier == '7' %}
+                                week(s)
+                                {% else %}
+                                month(s)
+                                {% endif %}
+                            </span>
+                            <span class="plans-plan-detail-value">Duration</span>
+                        </li>
+
+                        <li class="plans-plan-detail-item">
+                            <span class="plans-plan-detail-label">
+                                ${{ plan.minimum_investment }}
+                            </span>
+                            <span class="plans-plan-detail-value">Minimum investment</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="ref" value="{{plan.id}}">
+                    <button class="plans-plan-choose-btn" type="submit">Choose Plan</button>
+                </form>
+                
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content plans-success-modal-content">
+            <div class="modal-body">
+                <div class="plans-success-icon-wrapper">
+                    <div class="plans-success-checkmark">
+                        <svg viewBox="0 0 52 52" class="plans-checkmark-svg">
+                            <circle class="plans-checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+                            <path class="plans-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                        </svg>
+                    </div>
+                </div>
+                <h2 class="plans-success-title">Great</h2>
+                <p class="plans-success-message">New ROI Investment Started</p>
+                <div class="plans-success-modal-footer">
+                    <button type="button" class="btn plans-btn-success-ok" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- * Success Modal -->
+{% endblock %}

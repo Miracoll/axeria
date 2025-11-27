@@ -1,0 +1,77 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<div id="appCapsule">
+    <div class="portfolios-portfolios-container">
+        <!-- Investment Summary Card -->
+        <div class="card portfolios-investment-summary-card">
+            <div class="card-header">
+                Investment summary
+            </div>
+
+            <div class="card-body">
+                <div class="portfolios-balance-row">
+                    <span class="label">Total balance</span>
+                    <span class="value">${{request.user.current_deposit|intcomma}}</span>
+                </div>
+
+                <div class="portfolios-investments-row">
+                    <span class="label">All Investments</span>
+                    <span class="badge">0</span>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <a href="{% url 'create-portfolio' %}">
+                    <button class="btn portfolios-btn-create-investment">
+                        Create Investment+
+                    </button>
+                </a>
+            </div>
+        </div>
+
+        <!-- Investments Chart Card -->
+        <div class="card portfolios-investments-chart-card">
+            <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+
+            <script>
+                var xValues = [];
+                var yValues = [];
+                var barColors = [
+                  '#b91d47',
+                  '#00aba9',
+                  '#2b5797',
+                  '#e8c3b9',
+                  '#1e7145',
+                  '#000000'
+                ];
+
+                new Chart('myChart', {
+                  type: 'pie',
+                  data: {
+                    labels: xValues,
+                    datasets: [{
+                      backgroundColor: barColors,
+                      data: yValues
+                    }]
+                  },
+                  options: {
+                    title: {
+                      display: true,
+                      text: 'Your investments'
+                    }
+                  }
+                });
+            </script>
+        </div>
+
+        <!-- My Portfolios Section -->
+        <h1 class="portfolios-portfolios-heading">My portfolios</h1>
+
+        <div class='alert portfolios-no-portfolios-alert'>
+            You have no portfolios set up.
+        </div>
+    </div>
+</div>
+{% endblock content %}

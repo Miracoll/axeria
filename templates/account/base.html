@@ -1,0 +1,359 @@
+{% load static %}
+{% load humanize %}
+<!doctype html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="theme-color" content="#000000">
+	<title>Dashboard - Axeria-Re</title>
+	<meta name="description" content="Axeria-Re">
+	<meta name="keywords" content="wallet, banking, fintech mobile template, cordova, phonegap, mobile, html, responsive" />
+
+	<link rel="icon" type="image/png" href="images/2.png" sizes="32x32">
+	<link rel="apple-touch-icon" sizes="180x180" href="images/2.png">
+	
+	<!-- ✅ Bootstrap CSS (must be present or the modal renders as plain content) -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+	<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/global-v2.css' %}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" integrity="sha512-rqQltXRuHxtPWhktpAZxLHUVJ3Eombn3hvk9PHjV/N5DMUYnzKPC1i3ub0mEXgFzsaZNeJcoE0YHq0j/GFsdGg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+	<style>
+		/* Critical z-index overrides - MUST be after all other CSS */
+		.appHeader, .appBottomMenu { z-index: 1040 !important; }
+		.modal-backdrop { z-index: 1050 !important; }
+		.modal { z-index: 1060 !important; }
+
+		#successModal {
+			z-index: 1060 !important;
+			pointer-events: auto !important;
+		}
+		#successModal .modal-dialog {
+			pointer-events: auto !important;
+			z-index: 1 !important;
+			position: relative !important;
+		}
+		#successModal .modal-content {
+			background-color: #fff !important;
+			pointer-events: auto !important;
+			position: relative !important;
+		}
+		#successModal .btn-success-ok {
+			pointer-events: auto !important;
+			cursor: pointer !important;
+		}
+	</style>
+	{% block extra_style %}
+	{% endblock %}
+</head>
+<body class="{{ body_class|default:'' }}">
+
+	<!-- App Header -->
+	<div class="appHeader bg-primary text-light">
+		<div class="left">
+			<a href="#" class="headerButton" data-bs-toggle="modal" data-bs-target="#sidebarPanel">
+				<ion-icon name="menu-outline"></ion-icon>
+			</a>
+		</div>
+		<div class="pageTitle">
+			<img src="{% static 'images/3.png' %}" alt="logo" class="logo">
+		</div>
+		<div class="right">
+			<a href="{% url 'transactions' %}" class="headerButton">
+				<ion-icon class="icon" name="notifications-outline"></ion-icon>
+				<span class="badge badge-danger"></span>
+			</a>
+			<a href="{% url 'profile' %}" class="headerButton">
+				<img src="{% static 'images/11.png' %}" alt="image" class="imaged w32">
+			</a>
+		</div>
+	</div>
+	<!-- * App Header -->
+
+	<!-- App Capsule -->
+	{% block content %}
+	{% endblock content %}
+	<!-- * App Capsule -->
+
+	<!-- Bottom menu, sidebar, etc (unchanged) -->
+	<div class="appBottomMenu">
+		<a href="{% url 'home' %}" class="item active"><div class="col"><ion-icon name="pie-chart-outline"></ion-icon><strong>Overview</strong></div></a>
+		<a href="{% url 'transactions' %}" class="item"><div class="col"><ion-icon name="document-text-outline"></ion-icon><strong>Transactions</strong></div></a>
+		<a href="{% url 'trades' %}" class="item"><div class="col"><ion-icon name="copy"></ion-icon><strong>My Trades</strong></div></a>
+		<a href="{% url 'invest' %}" class="item"><div class="col"><ion-icon name="apps-outline"></ion-icon><strong>Investments</strong></div></a>
+		<a href="{% url 'profile' %}" class="item"><div class="col"><ion-icon name="settings-outline"></ion-icon><strong>Settings</strong></div></a>
+	</div>
+
+	<div class="modal fade panelbox panelbox-left" id="sidebarPanel" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-body p-0">
+					<!-- profile box -->
+					<div class="profileBox pt-2 pb-2">
+						<div class="image-wrapper">
+							<img src="{% static 'images/11.png' %}" alt="image" class="imaged w36">
+						</div>
+						<div class="in">
+							<strong>{{request.user.first_name}} {{request.user.last_name}}</strong>
+						</div>
+						<a href="#" class="btn btn-link btn-icon sidebar-close" data-bs-dismiss="modal">
+							<ion-icon name="close-outline" style="color: #fff;"></ion-icon>
+						</a>
+					</div>
+					<!-- * profile box -->
+
+					<!-- balance -->
+					<div class="sidebar-balance">
+						<div class="listview-title">Balance</div>
+						<div class="in">
+							<h1 class="amount">$ {{request.user.current_deposit|intcomma}}</h1>
+						</div>
+					</div>
+					<!-- * balance -->
+
+					<!-- action group -->
+					<div class="action-group">
+						<a href="{% url 'fund' %}" class="action-button">
+							<div class="in">
+								<div class="iconbox">
+									<ion-icon name="add-outline"></ion-icon>
+								</div>
+								Deposit
+							</div>
+						</a>
+						<a href="{% url 'invest' %}" class="action-button">
+							<div class="in">
+								<div class="iconbox">
+									<ion-icon name="arrow-up-outline"></ion-icon>
+								</div>
+								Invest
+							</div>
+						</a>
+						<a href="{% url 'withdraw' %}" class="action-button">
+							<div class="in">
+								<div class="iconbox">
+									<ion-icon name="arrow-down-outline"></ion-icon>
+								</div>
+								Withdraw
+							</div>
+						</a>
+						<a href="{% url 'logout' %}" class="action-button">
+							<div class="in">
+								<div class="iconbox">
+									<ion-icon name="log-out-outline"></ion-icon>
+								</div>
+								Logout
+							</div>
+						</a>
+					</div>
+					<!-- * action group -->
+
+					<!-- menu -->
+					<div class="listview-title mt-1">Menu</div>
+					<ul class="listview flush transparent no-line image-listview">
+						<li>
+							<a href="{% url 'home' %}" class="item">
+								<div class="icon-box bg-primary">
+									<ion-icon name="pie-chart-outline"></ion-icon>
+								</div>
+								<div class="in">
+									Overview
+								</div>
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'assets' %}" class="item">
+								<div class="icon-box bg-primary">
+									<ion-icon name="albums"></ion-icon>
+								</div>
+								<div class="in">
+									Assets
+								</div>
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'stocks' %}" class="item">
+								<div class="icon-box bg-primary">
+									<ion-icon name="stats-chart"></ion-icon>
+								</div>
+								<div class="in">
+									Stocks
+								</div>
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'trades' %}" class="item">
+								<div class="icon-box bg-primary">
+									<i class='bx bx-line-chart'></i>
+								</div>
+								<div class="in">
+									Active Trades
+								</div>
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'copy-trader' %}" class="item">
+								<div class="icon-box bg-primary">
+									<ion-icon name="copy"></ion-icon>
+								</div>
+								<div class="in">
+									Our Experts
+								</div>
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'chart' %}" class="item">
+								<div class="icon-box bg-primary">
+									<ion-icon name="analytics"></ion-icon>
+								</div>
+								<div class="in">
+									Charts
+								</div>
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'invest' %}" class="item">
+								<div class="icon-box bg-primary">
+									<ion-icon name="folder"></ion-icon>
+								</div>
+								<div class="in">
+									Portfolios
+								</div>
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'transactions' %}" class="item">
+								<div class="icon-box bg-primary">
+									<ion-icon name="swap-horizontal"></ion-icon>
+								</div>
+								<div class="in">
+									Transactions
+								</div>
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'fund' %}" class="item">
+								<div class="icon-box bg-primary">
+									<ion-icon name="wallet"></ion-icon>
+								</div>
+								<div class="in">
+									Fund Wallet
+								</div>
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'kyc' %}" class="item">
+								<div class="icon-box bg-primary">
+									<span class='bx bx-user-check'></span>
+								</div>
+								<div class="in">
+									KYC Status
+								</div>
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'withdraw' %}" class="item">
+								<div class="icon-box bg-primary">
+									<span class='bx bx-download'></span>
+								</div>
+								<div class="in">
+									Withdraw
+								</div>
+							</a>
+						</li>
+					</ul>
+					<!-- * menu -->
+
+					<!-- others -->
+					<div class="listview-title mt-1">Others</div>
+					<ul class="listview flush transparent no-line image-listview">
+						<li>
+							<a href="{% url 'profile' %}" class="item">
+								<div class="icon-box bg-primary">
+									<ion-icon name="settings-outline"></ion-icon>
+								</div>
+								<div class="in">
+									Settings
+								</div>
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'logout' %}" class="item">
+								<div class="icon-box bg-primary">
+									<ion-icon name="log-out-outline"></ion-icon>
+								</div>
+								<div class="in">
+									Log out
+								</div>
+							</a>
+						</li>
+					</ul>
+					<!-- * others -->
+					<br/><br/>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Ionicons & other libs -->
+	<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+	<script src="{% static 'assets/js/plugins/splide/splide.min.js' %}"></script>
+	<script src="{% static 'assets/js/base.js' %}"></script>
+
+	<!-- ❗ Load exactly ONE Bootstrap bundle at the very end -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+	<!-- Custom Modal JavaScript -->
+	<script>
+		// Open custom modal
+		function openCustomModal() {
+			document.getElementById('customSuccessModal').style.display = 'block';
+			document.body.style.overflow = 'hidden'; // Prevent body scroll
+		}
+
+		// Close custom modal
+		function closeCustomModal() {
+			document.getElementById('customSuccessModal').style.display = 'none';
+			document.body.style.overflow = ''; // Restore body scroll
+		}
+
+		// Attach to Buy/Sell buttons
+		document.addEventListener('DOMContentLoaded', function () {
+			const buyBtn = document.getElementById('buyBtn');
+			const sellBtn = document.getElementById('sellBtn');
+
+			if (buyBtn) buyBtn.addEventListener('click', openCustomModal);
+			if (sellBtn) sellBtn.addEventListener('click', openCustomModal);
+		});
+	</script>
+
+	<!-- Toast demo (unchanged) -->
+	<script>
+		var amounts=[30000,45000,11500,16000,8000,10000,13000,17000,29000,30000,16000,28000,21000,51000,12000,17000,25000,9000,50000,4000];
+		const countryList=["Afghanistan","Albania","Algeria","American Samoa","Andorra","Angola","Anguilla","Antarctica","Antigua and Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas (the)","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia (Plurinational State of)","Bonaire, Sint Eustatius and Saba","Bosnia and Herzegovina","Botswana","Bouvet Island","Brazil","British Indian Ocean Territory (the)","Brunei Darussalam","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Cayman Islands (the)","Central African Republic (the)","Chad","Chile","China","Christmas Island","Cocos (Keeling) Islands (the)","Colombia","Comoros (the)","Congo (the Democratic Republic of the)","Congo (the)","Cook Islands (the)","Costa Rica","Croatia","Cuba","Curaçao","Cyprus","Czechia","Côte d'Ivoire","Denmark","Djibouti","Dominica","Dominican Republic (the)","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Falkland Islands (the) [Malvinas]","Faroe Islands (the)","Fiji","Finland","France","French Guiana","French Polynesia","French Southern Territories (the)","Gabon","Gambia (the)","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guadeloupe","Guam","Guatemala","Guernsey","Guinea","Guinea-Bissau","Guyana","Haiti","Heard Island and McDonald Islands","Holy See (the)","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran (Islamic Republic of)","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kiribati","Korea (the Democratic People's Republic of)","Korea (the Republic of)","Kuwait","Kyrgyzstan","Lao People's Democratic Republic (the)","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macao","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands (the)","Martinique","Mauritania","Mauritius","Mayotte","Mexico","Micronesia (Federated States of)","Moldova (the Republic of)","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands (the)","New Caledonia","New Zealand","Nicaragua","Niger (the)","Nigeria","Niue","Norfolk Island","Northern Mariana Islands (the)","Norway","Oman","Pakistan","Palau","Palestine, State of","Panama","Papua New Guinea","Paraguay","Peru","Philippines (the)","Pitcairn","Poland","Portugal","Puerto Rico","Qatar","Republic of North Macedonia","Romania","Russian Federation (the)","Rwanda","Réunion","Saint Barthélemy","Saint Helena, Ascension and Tristan da Cunha","Saint Kitts and Nevis","Saint Lucia","Saint Martin (French part)","Saint Pierre and Miquelon","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Sint Maarten (Dutch part)","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Georgia and the South Sandwich Islands","South Sudan","Spain","Sri Lanka","Sudan (the)","Suriname","Svalbard and Jan Mayen","Sweden","Switzerland","Syrian Arab Republic","Taiwan (Province of China)","Tajikistan","Tanzania, United Republic of","Thailand","Timor-Leste","Togo","Tokelau","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Turks and Caicos Islands (the)","Tuvalu","Uganda","Ukraine","United Arab Emirates (the)","United Kingdom of Great Britain and Northern Ireland (the)","United States Minor Outlying Islands (the)","United States of America (the)","Uruguay","Uzbekistan","Vanuatu","Venezuela (Bolivarian Republic of)","Viet Nam","Virgin Islands (British)","Virgin Islands (U.S.)","Wallis and Futuna","Western Sahara","Yemen","Zambia","Zimbabwe","Åland Islands"];
+		function showToast(){
+			var random=Math.floor(Math.random()*countryList.length);
+			var selectedCountry=countryList[random];
+			var randomamt=Math.floor(Math.random()*amounts.length);
+			var selectedAmt=amounts[randomamt];
+			var generatedText="Someone from "+selectedCountry+" just Invested <b class='text-info'>$"+selectedAmt+"</b> in RSFX";
+			$('#toast').html(generatedText);
+			$('#toast').toast({delay:3000}).toast('show');
+		}
+		setInterval(showToast,10000);
+	</script>
+
+	{% block extra_script %}
+	{% endblock %}
+</body>
+</html>

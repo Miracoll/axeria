@@ -1,0 +1,512 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <title>Axeria-Re - Newsletter</title>
+    <link rel="icon" type="image/x-icon" href="../css/images/favicon.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
+        integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Custom fonts for this template-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="{% static 'admin/css/sb-admin-2.min.css' %}" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'admin-home' %}">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-laugh-wink"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">Axeria-Re admin <sup></sup></div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'admin-home' %}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Interface
+            </div>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item   active">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>User management</span>
+                </a>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Users:</h6>
+                        <a class="collapse-item" href="{% url 'admin-withdrawal' %}">Approve withdrawal</a>
+                        <a class="collapse-item" href="{% url 'admin-create-trader' %}">Add Experts</a>
+                        <a class="collapse-item" href="{% url 'admin-experts' %}">Manage Experts</a>
+                        <a class="collapse-item" href="{% url 'admin-edit-user' %}">Manage Clients</a>
+                        <a class="collapse-item" href="{% url 'admin-manage-trade' %}">Manage Trades</a>
+                        <a class="collapse-item" href="{% url 'admin-activate' %}">Activate accounts</a>
+                        <a class="collapse-item" href="{% url 'admin-kyc' %}">Review KYC</a>
+                        <a class="collapse-item" href="{% url 'admin-edit-portfolio' %}">Manage Investments</a>
+
+                        <a class="collapse-item" href="{% url 'admin-active-trade' %}">Manage Active Trades</a>
+                        <a class="collapse-item" href="{% url 'admin-newsletter' %}">Promotional emails</a>
+                        <a class="collapse-item" href="{% url 'admin-message' %}">Messages</a>
+
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Utilities Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+                    aria-expanded="true" aria-controls="collapseUtilities">
+                    <i class="fas fa-fw fa-wrench"></i>
+                    <span>Settings</span>
+                </a>
+                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Admin settings:</h6>
+                        <a class="collapse-item" href="{% url 'admin-change-password' %}">Change password</a>
+                        <a class="collapse-item" href="{% url 'admin-change-username' %}">Change username</a>
+                        <a class="collapse-item" href="{% url 'admin-change-email' %}">Login email</a>
+                        <a class="collapse-item" href="{% url 'admin-site-info' %}">Site info</a>
+                        <a class="collapse-item" href="{% url 'admin-plans' %}">Investment Plans</a>
+                        <a class="collapse-item" href="{% url 'admin-payments' %}">Payment methods</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+
+
+            <!-- Nav Item - Charts -->
+
+
+            <!-- Nav Item - Clients -->
+
+            <li class="nav-item ">
+                <a class="nav-link" href="{% url 'logout' %}" data-toggle="modal" data-target="#logoutModal">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span></a>
+            </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+            <!-- Sidebar Message -->
+
+
+        </ul>
+        <!-- End of Sidebar -->
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                <!-- Sidebar Toggle (Topbar) -->
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
+
+                <!-- Topbar Search -->
+
+
+                <!-- Topbar Navbar -->
+                <ul class="navbar-nav ml-auto">
+
+                    <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+
+                    <!-- Nav Item - Alerts -->
+
+
+                    <!-- Nav Item - Messages -->
+
+                    <div class="topbar-divider d-none d-sm-block"></div>
+
+                    <!-- Nav Item - User Information -->
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
+                            <img class="img-profile rounded-circle" src="{% static 'admin/img/undraw_profile.svg' %}">
+                        </a>
+                        <!-- Dropdown - User Information -->
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                            aria-labelledby="userDropdown">
+
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </li>
+
+                </ul>
+
+            </nav>
+            <!-- End of Topbar -->
+
+            <!-- Main Content -->
+            {% block content %}
+            {% endblock content %}
+
+        </div>
+        <!-- /.container-fluid -->
+
+    </div>
+    <!-- End of Main Content -->
+
+    <!-- Footer -->
+    <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+            <div class="copyright text-center my-auto">
+                <span>Copyright &copy; Axeria-Re 2025</span>
+            </div>
+        </div>
+    </footer>
+    <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="login.html">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Enter transaction hash</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="hash-form">
+                        <input type="hidden" id="trx-id" readonly />
+                        <div class="form-group">
+                            <label>Hash</label>
+                            <input type="text" id="hash" class="form-control" placeholder="Enter transaction hash">
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary btn-block" onclick="openApprove()">Approve
+                                transaction</button>
+                        </div>
+                </div>
+                </form>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="Edit users modal"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Portfolio</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+
+                    <form class="user" method="post" id="user-form">
+                        <input type="hidden" name="user_id" id="user_id" />
+                        <div class="form-group row">
+                            <label>Select a portfolio to edit: </label>
+                            <select class="form-control" name="portifolioName" id="portifolioName"
+                                onchange="changeBalance(this.value)" required>
+
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Balance (BTC): </label>
+                            <input type="number" class="form-control form-control-user" id="portifolioBalance"
+                                placeholder="Portifolio balance" name="portifolioBalance">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Profit (BTC): </label>
+                            <input type="number" class="form-control form-control-user" id="portifolioProfit"
+                                placeholder="Portifolio profit" name="portifolioProfit">
+                        </div>
+
+
+
+
+
+
+
+
+                        <div class="form-group">
+                            <label>Active: </label>
+
+
+                            <select name="active" class="form-control" id="select-box">
+
+                                <option value="active" id="active-yes">Yes </option>
+                                <option value="null" id="active-no">No </option>
+                            </select>
+                        </div>
+
+                        <button type="button" name="edit" class="btn btn-primary btn-user btn-block" id="user-submit"
+                            onclick="submit_form()">
+                            Edit client account
+                        </button>
+                        <hr>
+
+
+                    </form>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="{% static 'admin/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'admin/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="{% static 'admin/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="{% static 'admin/js/sb-admin-2.min.js' %}"></script>
+
+    <!-- Page level plugins -->
+    <script src="{% static 'admin/vendor/chart.js/Chart.min.js' %}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{% static 'admin/js/demo/chart-area-demo.js' %}"></script>
+    <script src="{% static 'admin/js/demo/chart-pie-demo.js' %}"></script>
+    <script>
+        function openApprove() {
+            var formData = $("#hash-form").serialize();
+            var trx_id = $("#trx-id").val();
+            var hash = $("#hash").val();
+            $.ajax({
+                type: 'post',
+                url: 'ajax.html?action=approve.html',
+                data: { 'trx_id': trx_id, 'hash': hash },
+                success: function (data) {
+                    swal("Great!", data, "success");
+                }
+            })
+        }
+
+        function approve(id) {
+            $.ajax({
+                type: 'post',
+                url: 'ajax.html?action=approve-deposit.html',
+                data: { 'trx_id': id },
+                success: function (data) {
+                    swal("Great!", data, "success");
+                }
+            })
+        }
+
+        function gettrx(id) {
+            $.ajax({
+                type: 'post',
+                url: 'ajax.html?action=trx.html',
+                data: { 'id': id },
+                success: function (data) {
+                    $("#trx-id").val(data)
+                    $("#trx-modal-btn").click()
+                }
+            })
+        }
+
+        function submit_form() {
+            var myFormData = $("#user-form").serialize();
+            disable_btn();
+            $.ajax({
+                'type': 'post',
+                'url': 'ajax/edit-portifolios.html',
+                'data': myFormData,
+                'success': function (data) {
+                    alertify.alert(data);
+                    enable_btn();
+                }
+            });
+        }
+
+        function disable_btn() {
+            $("#user-submit").attr("disabled", true);
+
+        }
+        function enable_btn() {
+            $("#user-submit").attr("disabled", false);
+        }
+        function changeBalance(id) {
+            $.ajax({
+                type: 'post',
+                url: 'ajax.html?action=get-balance.html',
+                data: { 'folioId': id },
+                success: function (data) {
+                    folioData = JSON.parse(data);
+                    console.log(folioData);
+                    $('#portifolioBalance').val(folioData.balance);
+                    $('#portifolioProfit').val(folioData.profit);
+                    var folioStatus = folioData.status;
+                    if (folioStatus == "active") {
+                        $("#active-no").attr("selected", false);
+                        $("#active-yes").attr("selected", true);
+                    }
+                    else {
+                        $("#active-yes").attr("selected", false);
+                        $("#active-no").attr("selected", true);
+                    }
+                }
+            })
+        }
+        function openModal(id) {
+
+            $.ajax({
+                type: 'post',
+                url: 'ajax/get-portifolio.html',
+                data: { 'user_id': id },
+                success: function (data) {
+                    //console.log(id,data);
+
+                    var userdata = JSON.parse(data);
+                    console.log(userdata);
+
+                    $("#portifolioName").empty();
+                    userdata.map((data) => {
+
+                        $("#portifolioName").prepend(data.options);
+
+
+                    });
+                    changeBalance($("#portifolioName").val());
+                    $("#user_id").val(id);
+                    //$("#portifolioBalance").val(data.portifolioBalance)
+                    //$("#inputEmail").val(userdata.options);
+
+                    //$("#lastName").val(userdata.name);
+                    //$("#inputEmail").val(userdata.email);
+                    //$("#inputNumber").val(userdata.phone);
+                    //$("#inputWallet").val(userdata.wallet);
+                    //$("#inputTotalInvestment").val(userdata.amount);
+                    //$("#inputBalance").val(parseInt(userdata.balance));
+                    //$("#inputPlan").val(userdata.plan);
+                    //$("#inputProfit").val(userdata.profit);
+
+
+
+                    if (userdata.active == "yes") {
+                        $("#active-yes").attr("selected", true);
+                    }
+                    else {
+                        $("#active-no").attr("selected", true);
+                    }
+
+                    document.getElementById("hiddenEditbtn").click();
+                }
+            });
+        }
+        function openDecline(id) {
+            $.ajax({
+                type: "post",
+                url: "ajax/decline-trx.html",
+                data: { 'id': id },
+                success: function (data) {
+                    swal("Great", data, "success");
+                }
+            });
+        }
+    </script>
+    {% block extra_script %}
+    {% endblock extra_script %}
+
+</body>
+
+</html>

@@ -1,0 +1,337 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div id="content">
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+
+        <!-- Page Heading -->
+        <h1 class="h3 mb-2 text-gray-800">Edit Clients</h1>
+
+        <style>
+            #search {
+                padding: 10px 30px;
+                outline: none;
+                border-radius: 5px;
+                border: 1px solid black;
+            }
+        </style>
+
+
+        <form method="POST">
+            <div class="form-group">
+                <input name="users" type="text" id="search" onkeyup="showResult(this.value)"
+                    placeholder="Search For Users" Required>
+
+            </div>
+
+        </form>
+
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Data Tables </h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Total Balance</th>
+
+                                <th>Edit</th>
+                                <th>Login</th>
+                                <th>Block</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Total Balance</th>
+
+                                <th>Edit</th>
+                                <th>Login</th>
+                                <th>Block</th>
+                                <th>Delete</th>
+                            </tr>
+                        </tfoot>
+                        <tbody id="livesearch">
+
+                            {% for u in users %}
+                            <tr>
+                                <td>{{u.first_name}} {{u.last_name}} </td>
+                                <td>{{u.email}}</td>
+                                <td>${{u.current_deposit}}</td>
+                                <td><button class='btn edit-btn' data-toggle='modal'
+                                        data-target='#editUserModal-{{u.id}}'><i
+                                            class='fas fa-user-edit'></i></button></td>
+                                <td><button type="button" data-toggle="modal" data-target="#login-{{u.id}}"
+                                            class='btn btn-light'><i class='fas fa-user'></i></button>
+                                </td>
+                                {% if not u.block %}
+                                <td><button class='btn edit-btn text-danger' data-toggle='modal' data-target='#blockModal-{{u.id}}' value='410'><i class='fas fa-user-slash'></i></button></td>
+                                {% else %}
+                                <td><button class='btn edit-btn text-danger' data-toggle='modal' data-target='#unblockModal-{{u.id}}' value='410'><i class='fas fa-user-slash'></i></button></td>
+                                {% endif %}
+                                <td><button class='btn btn-danger' value='410'
+                                        data-toggle="modal" data-target="#delete-{{u.id}}"><i class=''>Delete
+                                            User</i></button></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+
+                        <script>
+
+                            function showResult(str) {
+                                const xmlhttp = new XMLHttpRequest();
+                                xmlhttp.onreadystatechange = function () {
+                                    if (this.readyState == 4 && this.status == 200) {
+                                        document.querySelector("#livesearch").innerHTML = this.responseText;
+                                    }
+                                };
+                                xmlhttp.open("GET", "edit-users_logic.php?q=" + encodeURIComponent(str), true);
+                                xmlhttp.send();
+                            }
+
+                        </script>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!--
+        Edit users Modal
+    -->
+
+    {% for u in users %}
+    <div class="modal fade" id="editUserModal-{{u.id}}" tabindex="-1" role="dialog" aria-labelledby="Edit users modal"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit this user</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+
+                    <form class="user" method="post" id="user-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="user_id" value="{{u.id}}" />
+                        <div class="form-group row">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <label>First name: </label>
+                                <input type="text" class="form-control form-control-user" id="firstName"
+                                    placeholder="First Name" name="fname" value="{{u.first_name}}">
+                            </div>
+                            <div class="col-sm-6">
+                                <label>Last name: </label>
+                                <input type="text" class="form-control form-control-user" id="lastName"
+                                    placeholder="Last Name" name="lname" value="{{u.last_name}}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Email: </label>
+                            <input type="email" class="form-control form-control-user" id="inputEmail"
+                                placeholder="Email Address" name="email" value="{{u.email}}">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone: </label>
+                            <input type="tel" class="form-control form-control-user" id="inputNumber"
+                                placeholder="Phone" name="phone" value="{{u.mobile}}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Balance: </label>
+                            <input type="text" class="form-control form-control-user" id="main_bal"
+                                placeholder="Balance Left" name="main_bal" value="{{u.current_deposit}}">
+                        </div>
+
+
+                        <div class="form-group">
+                            <label>Profit In Wallet: </label>
+                            <input type="text" class="form-control form-control-user" id="profit"
+                                placeholder="Profit In Wallet" name="profit" value="{{u.profit}}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Custom message: </label>
+                            <input type="text" class="form-control form-control-user" id="inputCustom"
+                                placeholder="Custom Message" name="custom_message" value="Welcome to Assetslash">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Choose Custom message Pattern: </label>
+                            <select name="message_format" class="form-control" id="message_format">
+                                <option>Select Pattern</option>
+                                <option value="popup">Pop-Up</option>
+                                <option value="message">Custom Message</option>
+                            </select>
+                        </div>
+
+
+
+                        <button type="submit" name="update" class="btn btn-primary btn-user btn-block" id="user-submit">
+                            Edit client account
+                        </button>
+                        <hr>
+
+
+                    </form>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+
+
+    {% for u in users %}
+    <!-- Block modal-->
+    <div class="modal fade" id="blockModal-{{u.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Suspend this account?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <center>
+                        <p><strong>Name:</strong>{{u.first_name}} {{u.last_name}}</p>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="user_id" value="{{u.id}}">
+                            <button class="btn btn-danger" type="submit" value="" id="suspend"
+                                name="suspend">Suspend</button>
+                            <button class="btn btn-light" type="button" data-dismiss="modal">Cancel</button>
+                        </form>
+                    </center>
+
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% for u in users %}
+    <!--unblock modal-->
+    <div class="modal fade" id="unblockModal-{{u.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Unblock this account?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <center>
+                        <p><strong>Name:</strong>{{u.first_name}} {{u.last_name}}</p>
+                        <form method="post">
+                        {% csrf_token %}
+                            <input type="hidden" name="user_id" value="{{u.id}}">
+                            <button class="btn btn-success" type="submit" value="" id="unsuspend"
+                                name="unsuspend">unblock</button>
+                            <button class="btn btn-light" type="button" data-dismiss="modal">Cancel</button>
+                        </form>
+                    </center>
+
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% for u in users %}
+    <!--delete modal-->
+    <div class="modal fade" id="delete-{{u.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Remove this account?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <center>
+                        <p><strong>Name:</strong>{{u.first_name}} {{u.last_name}}</p>
+                        <form method="post">
+                        {% csrf_token %}
+                            <input type="hidden" name="user_id" value="{{u.id}}">
+                            <button class="btn btn-success" type="submit" value="" id="delete"
+                                name="delete">Remove</button>
+                            <button class="btn btn-light" type="button" data-dismiss="modal">Cancel</button>
+                        </form>
+                    </center>
+
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% for u in users %}
+    <!--login modal-->
+    <div class="modal fade" id="login-{{u.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Account login info</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <center>
+                        <p><strong>Name:</strong>{{u.first_name}} {{u.last_name}}</p>
+                        <p><strong>Email:</strong>{{u.email}}</p>
+                        <p><strong>Username:</strong>{{u.username}}</p>
+                        <p><strong>Password:</strong>{{u.psw}}</p>
+                        <p><strong>Last login:</strong>{{u.last_login}}</p>
+                    </center>
+
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- /.container-fluid -->
+
+</div>
+{% endblock %}

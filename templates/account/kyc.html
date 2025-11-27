@@ -1,0 +1,126 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block content %}
+<div id="appCapsule" class="kyc-app-capsule">
+  <div class="container my-4 py-4">
+
+    <div class="kyc-container">
+      <div class="kyc-card">
+        <div class="kyc-header">
+          KYC Verification Status
+        </div>
+
+        <div class="kyc-message-box">
+          Please Upload your KYC Information to access full features of Axeria-Re
+        </div>
+
+        <!-- Trigger button -->
+        <button id="verifyNowBtn" class="kyc-btn-verify" data-bs-toggle="modal" data-bs-target="#verify-modal">
+          Verify now
+        </button>
+      </div>
+    </div>
+
+    <!-- AJAX submit -->
+    <script>
+      document.getElementById("uploadKyc").addEventListener("click", function (event) {
+        event.preventDefault();
+
+        // Check if a file is selected
+        var fileInput = document.getElementById('kyc');
+        if (!fileInput.files || fileInput.files.length === 0) {
+          alert('Please select a document to upload');
+          return;
+        }
+
+        // Close the verify modal
+        var verifyModal = bootstrap.Modal.getInstance(document.getElementById('verify-modal'));
+        if (verifyModal) {
+          verifyModal.hide();
+        }
+
+        // Show success modal after a short delay
+        setTimeout(function () {
+          var successModal = new bootstrap.Modal(document.getElementById('kycSuccessModal'));
+          successModal.show();
+        }, 500);
+
+        /* Original AJAX code - commented out for front-end only
+        var form = document.getElementById("verify-form");
+        var fd = new FormData(form);
+        $.ajax({
+          type: 'post',
+          url: 'ajax/kyc.php',
+          data: fd,
+          cache: false,
+          contentType: false,
+          processData: false,
+          beforeSend: function (data) {
+            $("#uploadKyc").html("<i class='fa fa-spinner fa-spin'></i>")
+          },
+          success: function (data) {
+            swal('Great', data, 'success')
+              .then(() => {
+                location.replace('kyc')
+              })
+          }
+        })
+        */
+      });
+    </script>
+
+  </div>
+</div>
+
+<div class="modal fade action-sheet" id="verify-modal" tabindex="-1" aria-labelledby="verifyModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="verifyModalLabel" class="modal-title">Verify your account</h5>
+      </div>
+      <div class="modal-body">
+        <form method="post" id="verify-form" enctype="multipart/form-data">
+          {% csrf_token %}
+          <p class="form-label">
+            Upload your Drivers License, International passport or any Government issued Document
+          </p>
+          <div class="form-group">
+            <input type="file" class="form-control kyc-file-input" name="kyc" id="kyc" required accept="image/*" />
+          </div>
+          <div class="form-group">
+            <button id="uploadKyc" type="submit" name="uploadKyc" class="btn kyc-btn-verify-account">
+              Verify Account
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- * Verify Modal -->
+
+<!-- Success Modal -->
+<div class="modal fade" id="kycSuccessModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content kyc-success-modal-content">
+      <div class="modal-body">
+        <div class="kyc-success-icon-wrapper">
+          <div class="kyc-success-checkmark">
+            <svg viewBox="0 0 52 52" class="kyc-checkmark-svg">
+              <circle class="kyc-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+              <path class="kyc-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+            </svg>
+          </div>
+        </div>
+        <h2 class="kyc-success-title">Great</h2>
+        <p class="kyc-success-message">KYC Document Uploaded Successfully</p>
+        <div class="kyc-success-modal-footer">
+          <button type="button" class="btn kyc-btn-success-ok" data-bs-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- * Success Modal -->
+{% endblock content %}

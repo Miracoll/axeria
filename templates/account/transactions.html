@@ -1,0 +1,36 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block content %}
+<div class="section my-4 py-4">
+    <div class="section-heading my-4">
+        <h2 class="title">Transactions</h2>
+
+    </div>
+    <div class="transactions">
+        <!-- item -->
+        {% for transaction in transactions %}
+        <a href="#" class="item">
+            <div class="detail">
+                <img src="{{ transaction.image.url }}" alt="img" class="image-block imaged w48">
+                <div>
+                    <strong>{{ transaction.get_type_display }}</strong>
+                    <p>{{ transaction.date|date:"l jS \o\f F Y" }}</p>
+                </div>
+            </div>
+            <div class="right">
+                <div class="price {% if transaction.status == 'win' or transaction.status == 'approved' or transaction.status == 'pending' %}text-success{% else %}text-danger{% endif %}">
+                    $ {{ transaction.amount }}
+                </div>
+                <p>{{ transaction.status|capfirst }}</p>
+            </div>
+        </a>
+        {% empty %}
+        <p>No transactions found.</p>
+        {% endfor %}
+
+    </div>
+</div>
+
+<br>
+<br>
+{% endblock content %}

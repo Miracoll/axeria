@@ -1,0 +1,55 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div id="content">
+
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+        <h1 class="h3 mb-2 text-gray-800">Send Newsletter</h1>
+        <!-- Page Heading -->
+
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Send a promotional email to all your clients
+                </h6>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="header-input">
+                            Write Email Subject
+                        </label>
+                        <input type="text" name="subject" class="form-control" id="header-input"
+                            placeholder="Write subject here">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-input">
+                            Write message
+                        </label>
+                        <textarea name="message" class="form-control" rows="5" id="comment"
+                            placeholder="Message..."></textarea>
+                        <div id="editor-container" style="height:450px">
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+
+                        <center>
+
+                            <button type="submit" name="send-email" class="btn btn-primary">
+                                Send&nbsp;<i class="fas fa-arrow-right"></i>
+                            </button>
+                        </center>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+
+</div>
+{% endblock %}

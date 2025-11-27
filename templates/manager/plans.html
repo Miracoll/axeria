@@ -1,0 +1,313 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div id="content">
+
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+
+        <!-- Page Heading -->
+        <div class="d-flex justify-content-between mb-2">
+
+            <h1 class="h3 mb-2 text-gray-800">Edit Plans</h1>
+            <button class="btn btn-success" data-toggle="modal" data-target="#createModal">Create Plan <i
+                    class="fas fa-plus"></i></button>
+        </div>
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Data Tables </h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Plan Name</th>
+                                <th>Active</th>
+                                <th>ROI</th>
+                                <th>Amount</th>
+                                <th>Term</th>
+                                <th>Duration</th>
+                                <th>Commission</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Plan Name</th>
+                                <th>Active</th>
+                                <th>ROI</th>
+                                <th>Amount</th>
+                                <th>Term </th>
+                                <th>Duration</th>
+                                <th>Commission</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            {% for p in plans %}
+                            <tr>
+
+                                <td>{{p.name|upper}}</td>
+                                <td>{{p.is_active|capfirst}}</td>
+                                <td>{{p.percentage}}%</td>
+                                <td>${{p.minimum_investment}}</td>
+                                <td>{{p.term}}</td>
+                                <td>
+                                    {% if plan.duration_multiplier  == '1' %}
+                                    day(s)
+                                    {% elif plan.duration_multiplier == '7' %}
+                                    week(s)
+                                    {% else %}
+                                    month(s)
+                                    {% endif %}
+                                </td>
+                                <td>${{p.referral_commission}}</td>
+                                <td>
+                                    <button class='btn btn-primary' data-toggle='modal'
+                                        data-target='#editPlanModal-{{p.id}}'>Edit</button>
+                                </td>
+                                <td>
+                                    <button class='btn btn-danger' value='2'
+                                        onclick=confirmDelete(this.value)>&times</button>
+                                </td>
+
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+
+</div>
+
+{% for p in plans %}
+<div class="modal fade" id="editPlanModal-{{p.id}}" tabindex="-1" role="dialog" aria-labelledby="Edit plans modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit this Plan</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="user" method="post" id="plan-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="plan_id" value="{{p.id}}" />
+
+                    <div class="form-group row">
+                        <div class="col-sm-6 mb-3 mb-sm-0">
+                            <label>Plan name:</label>
+                            <input type="text" class="form-control form-control-user" name="pname"
+                                placeholder="Plan Name" value="{{ p.name }}" required>
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Slug:</label>
+                            <input type="text" class="form-control form-control-user" name="slug"
+                                placeholder="Slug" value="{{ p.name|slugify }}">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label>Type</label>
+                            <select name="type" class="form-control">
+                                <option value="short" {% if p.plan_type == "short" %}selected{% endif %}>Short Term</option>
+                                <option value="long" {% if p.plan_type == "long" %}selected{% endif %}>Long Term</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-6">
+                            <label>Recurring days</label>
+                            <input type="number" class="form-control" name="recurring" placeholder="Recurring days"
+                                value="{{ p.recurring_days }}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>ROI (%)</label>
+                        <input type="number" class="form-control" name="roi" placeholder="ROI %" value="{{ p.percentage }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trading Fee (%)</label>
+                        <input type="number" class="form-control" name="trade_fee" placeholder="Trading Fee" value="{{ p.trade_fee }}" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label>Term</label>
+                            <input type="number" class="form-control" name="term" placeholder="Term" value="{{ p.term }}" required>
+                        </div>
+                        <div class="form-group col-6">
+                            <label>Duration</label>
+                            <select name="duration" class="form-control">
+                                <option value="1" {% if p.duration_multiplier == 1 %}selected{% endif %}>Day(s)</option>
+                                <option value="7" {% if p.duration_multiplier == 7 %}selected{% endif %}>Week(s)</option>
+                                <option value="30" {% if p.duration_multiplier == 30 %}selected{% endif %}>Month(s)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label>Minimum Amount</label>
+                            <input type="number" class="form-control" name="amount" placeholder="Amount" value="{{ p.minimum_investment }}" required>
+                        </div>
+                        <div class="form-group col-6">
+                            <label>Maximum Amount</label>
+                            <input type="number" class="form-control" name="maxamount" placeholder="Max Amount" value="{{ p.maximum_investment }}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Active</label>
+                        <select name="active" class="form-control">
+                            <option value="yes" {% if p.is_active %}selected{% endif %}>Active</option>
+                            <option value="no" {% if not p.is_active %}selected{% endif %}>Not Active</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" name="edit" class="btn btn-primary btn-user btn-block">
+                        Edit Plan
+                    </button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- Delete modal -->
+{% for p in plans %}
+<div class="modal fade" id="deletePlanModal-{{p.id}}" tabindex="-1" role="dialog" aria-labelledby="Edit plans modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete this Plan</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="user" method="post" id="plan-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="plan_id" value="{{p.id}}" />
+
+                    <button type="submit" name="delete" class="btn btn-primary btn-user btn-block">
+                        Delete Plan
+                    </button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- Create modal-->
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create a new plan?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="createform">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label>Plan Name</label>
+                        <input type="text" name="newplanname" id="newplanname" Placeholder="Plan Name"
+                            class="form-control" required />
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select name="newtype" class="form-control" id="newtype">
+                            <option value="short">short term</option>
+                            <option value="long">long term</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Recurring days</label>
+                        <input type="text" name="newrecurring" id="newrecurring" Placeholder="Recurring days"
+                            class="form-control" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Minimun Amount</label>
+                        <input type="number" name="newamount" id="newamount" Placeholder="Amount" class="form-control"
+                            required />
+                    </div>
+                    <div class="form-group">
+                        <label>Max amount</label>
+                        <input type="number" name="newmaxamount" id="newmaxamount" Placeholder="Max amount"
+                            class="form-control" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>ROI</label>
+                        <input type="number" name="newroi" id="newroi" Placeholder="ROI %" class="form-control"
+                            required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trading Fee(%)</label>
+                        <input type="number" name="trade_fee" id="trade_fee" Placeholder="Trading Fee"
+                            class="form-control" required />
+                    </div>
+
+
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label>Term</label>
+                            <input type="number" name="newterm" id="newterm" Placeholder="Term" class="form-control"
+                                required />
+                        </div>
+                        <div class="form-group col-6">
+                            <label>Duration</label>
+                            <select name="newduration" id="newduration" class="form-control" required>
+                                <option id="newdays" value="1">day(s)</option>
+                                <option id="newweeks" value="7">week(s)</option>
+                                <option id="newmonths" value="30">Month(s)</option>
+
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-block btn-primary" name="create-plan">Create plan</button>
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

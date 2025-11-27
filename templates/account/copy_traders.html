@@ -1,0 +1,119 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block content %}
+<div id="appCapsule">
+    <div class="container my-4 py-4">
+        <h2>Copy Traders</h2>
+        <p>Select an expert trader to copy their trades</p>
+        <div class="row">
+
+            <!-- Card 1 -->
+            {% for trader in traders %}
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                <div class="card">
+                    <img src="{{ trader.image.url }}" alt="Trader image" width="120" class="d-flex justify-content-center" />
+
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            {{ trader.name }}
+                            {% if trader.verified %}
+                            <i class='bx bxs-badge-check'></i>
+                            {% endif %}
+                        </h5>
+
+                        <div class="mb-2">
+                            <div class="copytraders-badge-row">
+                                <span class="badge bg-secondary">DURATION: {{ trader.duration_weeks }} weeks</span>
+                                <span class="badge bg-secondary">TOTAL INVESTORS: {{ trader.total_investors }}</span>
+                            </div>
+
+                            <div class="copytraders-badge-row">
+                                <span class="badge bg-secondary">ACTIVE INVESTORS: {{ trader.active_investors }}</span>
+                                <span class="badge bg-secondary">MIN DEPOSIT: {{ trader.min_deposit }}</span>
+                            </div>
+
+                            <div class="copytraders-badge-row">
+                                <span class="badge bg-secondary">RISK: {{ trader.risk_level }}</span>
+                                <span class="badge bg-secondary">WIN RATE: {{ trader.win_rate }}%</span>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary w-100" data-bs-toggle="modal"
+                            data-bs-target="#copy-trader-{{ trader.id }}">
+                            Copy this Trader
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+<!-- * App Capsule -->
+
+<!-- Copy Trader Modals -->
+
+
+{% for trader in traders %}
+<div class="modal fade" id="copy-trader-{{ trader.id }}">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h3>Copy {{ trader.name }}</h3>
+                <button class="btn text-white" data-bs-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <center>
+                    WALLET BALANCE: <br />
+                    <b>${{request.user.current_deposit}}</b>
+                </center>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group my-4">
+                        <label>Amount to Invest (Min: ${{ trader.min_deposit }}):</label>
+                        <input type="text" class="form-control" name="amount" />
+                    </div>
+
+                    <button class="btn btn-primary w-100" type="submit" name="copy">Start Copying</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content success-modal-content">
+            <div class="modal-body">
+                <div class="success-icon-wrapper">
+                    <div class="success-checkmark">
+                        <svg viewBox="0 0 52 52" class="checkmark-svg">
+                            <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+                            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                        </svg>
+                    </div>
+                </div>
+                <h2 class="success-title">Great</h2>
+                <p class="success-message">Trade copied</p>
+                <div class="success-modal-footer">
+                    <button type="button" class="btn btn-success-ok" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+<div>
+
+    <br /><br />
+    <!-- * App Capsule -->
+    {% endblock content %}

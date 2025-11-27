@@ -1,0 +1,75 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.egg
+*.log
+*.db
+*.pot
+
+# Django
+*.mo
+*.pot
+*.pyc
+*.pyo
+*.pyd
+staticfiles/
+local_settings.py
+
+# Environments
+.env
+venv/
+env/
+ENV/
+.venv/
+
+# Virtual Environment (pipenv/poetry)
+Pipfile.lock
+poetry.lock
+
+# Cache
+*.cache
+.cache/
+__pycache__/
+*.mypy_cache/
+
+# IDEs & Editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Pytest / Coverage
+.coverage
+coverage.xml
+htmlcov/
+.pytest_cache/
+
+# Build / Distribution
+build/
+dist/
+*.manifest
+*.spec
+
+# Node / Front-end (if using React/Vue in same repo)
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Docker
+*.pid
+*.seed
+*.bak
+*.tar
+

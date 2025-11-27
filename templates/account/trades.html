@@ -1,0 +1,83 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block content %}
+<div id="appCapsule">
+    <div class="container my-4 py-4">
+        <h2>Active Trades Wallet</h2>
+        <p>This shows your active copy trades</p>
+        <div class="row">
+
+            <!-- Card 1 -->
+            {% for trade in copytrades %}
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+                <div class="card">
+                    <img src="{{ trade.trader.image.url }}" alt="Card image cap" width="120" class="img-fluid" />
+
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            {{ trade.trader.name }}
+                            {% if trade.trader.verified %}
+                                <i class='bx bxs-badge-check'></i>
+                            {% endif %}
+                        </h5>
+
+                        <div class="mb-2">
+                            <div>
+                                <span class="badge bg-secondary">DURATION: {{ trade.trader.duration }} days</span>
+                                <span class="badge bg-secondary">AMOUNT COPYING: {{ trade.amount }}</span>
+                                <span class="badge bg-secondary">DAILY ROI: {{ trade.trader.daily_roi }}%</span>
+                            </div>
+                            <div style="text-align: center;">
+                                <span class="badge bg-secondary">TRADE PROGRESS: {{ trade.progress }}%</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span>Trade Duration:</span>
+                                <span>{{ trade.trader.duration }} days</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <span>Current Profit:</span>
+                                <span>${{ trade.current_profit }}</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <span>Opened Date:</span>
+                                <span>{{ trade.opened_date }}</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <span>Trading Fees:</span>
+                                <span>{{ trade.trader.trading_fee_percentage }}% Net Profit</span>
+                            </div>
+                        </div>
+
+                        <div class="load-wrapp">
+                            <div class="trades-load-10">
+                                <p>Copy Trade In Progress</p>
+                                <div class="trades-bar"></div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary w-100 mb-2"
+                            data-bs-toggle="modal"
+                            data-bs-target="#copy-trader-{{ trade.id }}">
+                            Add More Funds
+                        </button>
+
+                        <button class="btn btn-danger w-100"
+                            data-bs-toggle="modal"
+                            data-bs-target="#withdraw-modal-{{ trade.id }}">
+                            Withdraw Funds
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+{% endblock content %}

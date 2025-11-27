@@ -1,0 +1,24 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block content %}
+<div id="appCapsule">
+
+    <div class="choosewithdrawal-withdrawal-container">
+        <div class="choosewithdrawal-withdrawal-card">
+            <h2>Choose Withdrawal Method</h2>
+            <form method="post">
+                {% csrf_token %}
+                <select name="method" class="form-select">
+                    <option value="">Select Method</option>
+                    <option value="profits">Profits In Wallet</option>
+                    <option value="deposit_balance">Deposit Balance</option>
+                </select>
+
+                <button type="submit" class="btn btn-primary">
+                    Proceed
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,324 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block content %}
+<div id="appCapsule">
+	<!-- Wallet Card -->
+	<div class="section wallet-card-section pt-1">
+		<div class="wallet-card">
+			<div class="balance">
+				<div class="left">
+					<span class="title">Total Balance</span>
+					<h1 class="total">$ {{request.user.current_deposit}}</h1>
+				</div>
+				<div class="right"></div>
+			</div>
+			<div class="wallet-footer">
+				<div class="item">
+					<a href="fund">
+						<div class="icon-wrapper"><ion-icon name="arrow-up-outline"></ion-icon></div>
+						<strong>Deposit</strong>
+					</a>
+				</div>
+				<div class="item">
+					<a href="choose-withdrawal">
+						<div class="icon-wrapper bg-danger"><ion-icon name="arrow-down-outline"></ion-icon></div>
+						<strong>Withdraw</strong>
+					</a>
+				</div>
+				<div class="item">
+					<a href="portifolios">
+						<div class="icon-wrapper bg-warning"><ion-icon name="swap-vertical"></ion-icon></div>
+						<strong>Invest</strong>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- * Wallet Card -->
+
+	<!-- (Other modals you had: send / convert) -->
+
+	<!-- Stats -->
+	<div class="section">
+		<div class="row mt-2">
+			<div class="col-6">
+				<div class="stat-box">
+					<div class="title">Profit In Wallet</div>
+					<div class="value text-success" style="font-size:20px;">$ {{request.user.profit}}</div>
+				</div>
+			</div>
+			<div class="col-6">
+				<div class="stat-box">
+					<div class="title">Copy Expenses</div>
+					<div class="value text-danger" style="font-size:20px;">$ {{request.user.copy_expenses}}</div>
+				</div>
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div class="col-6">
+				<div class="stat-box">
+					<div class="title">ROI Investment</div>
+					<div class="value text-success" style="font-size:20px;">$ {{request.user.roi_investment}}</div>
+				</div>
+			</div>
+			<div class="col-6">
+				<div class="stat-box">
+					<div class="title">Deposit Balance</div>
+					<div class="value" style="font-size:20px;">$ {{request.user.current_deposit}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- * Stats -->
+
+	<div class="wallet-card">
+		<!-- TradingView Widget BEGIN -->
+		<div class="tradingview-widget-container">
+			<div id="tradingview_fdfe1"></div>
+			<div class="tradingview-widget-copyright">
+				<a href="https://www.tradingview.com/symbols/NASDAQ-AAPL/" rel="noopener" target="_blank"><span
+						class="blue-text">AAPL stock chart</span></a> by TradingView
+			</div>
+			<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+			<script type="text/javascript">
+				new TradingView.widget({
+					"width": "100%",
+					"height": 400,
+					"symbol": "NASDAQ:AAPL",
+					"interval": "D",
+					"timezone": "Etc/UTC",
+					"theme": "dark",
+					"style": "2",
+					"locale": "en",
+					"toolbar_bg": "#f1f3f6",
+					"enable_publishing": false,
+					"allow_symbol_change": true,
+					"container_id": "tradingview_fdfe1"
+				});
+			</script>
+		</div>
+		<!-- TradingView Widget END -->
+	</div>
+
+	<div class="section mt-4 mb-5 pb-4">
+		<div class="wallet-card">
+			<div style="display:flex; justify-content:flex-end; padding:20px 20px 0 20px;">
+				<a href="copy" class="btn btn-primary"><i class="bx bx-user"></i> Copy an Expert</a>
+			</div>
+
+			<!-- Trading Form -->
+			<div class="wallet-card" style="padding:40px; margin-top:20px;">
+				<form method="post" style="max-width:100%; margin:0 auto;">
+					<div class="mb-4" style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap;">
+						<div style="width:280px;">
+							<label
+								style="color:#fff; font-size:15px; margin-bottom:15px; display:block; text-align:center;">Category</label>
+							<select class="form-select">
+								<option selected>Crypto Currency</option>
+								<option>Currencies</option>
+							</select>
+						</div>
+						<div style="width:280px;">
+							<label
+								style="color:#fff; font-size:15px; margin-bottom:15px; display:block; text-align:center;">Symbol</label>
+							<select name="ticker" class="form-select">
+								<option selected>BCH/BTC</option>
+								<option>BCH/EUR</option>
+								<option>BCH/GBP</option>
+								<option>BTC-EOS</option>
+								<option>BTC/EUR</option>
+								<option>BTC/GBP</option>
+								<option>BTC/USD</option>
+								<option>BTC/USDC</option>
+								<option>BTC/USDT</option>
+								<option>DOGE/USDT</option>
+								<option>EOS/BTC</option>
+								<option>EOS/EUR</option>
+								<option>EOS/USD</option>
+								<option>ETC/BTC</option>
+								<option>ETC/EUR</option>
+								<option>ETC/GBP</option>
+								<option>ETC/USD</option>
+								<option>ETH/BTC</option>
+								<option>ETH/EUR</option>
+								<option>ETH/GBP</option>
+								<option>LTC/USD</option>
+								<option>LTC/USDT</option>
+								<option>MKR/BTC</option>
+								<option>PCP-BTC</option>
+								<option>REP/BTC</option>
+								<option>SHIB/USDT</option>
+								<option>TRX/USDT</option>
+								<option>TRX/GBP</option>
+								<option>XAU/USD</option>
+								<option>XLM/BTC</option>
+								<option>XLM/EUR</option>
+								<option>XLM/USD</option>
+								<option>XRP</option>
+								<option>XRP/BTC</option>
+								<option>XRP/EUR</option>
+								<option>XRP/USD</option>
+								<option>ZEC/BTC</option>
+								<option>ZRX/BTC</option>
+								<option>ZRX/EUR</option>
+								<option>ZRX/USD</option>
+							</select>
+						</div>
+						<div style="width:280px;">
+							<label for="strike"
+								style="color:#fff; font-size:15px; margin-bottom:15px; display:block; text-align:center;">Strike
+								Rate</label>
+							<select name="strike" id="strike" class="form-select">
+								<option selected>60% & 1%</option>
+								<option>29% & 1%</option>
+								<option>5% & 2%</option>
+								<option>5% & 11%</option>
+								<option>1% & 85%</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="mb-4" style="display:flex; justify-content:center;">
+						<div style="width:850px; max-width:90%;">
+							<label
+								style="color:#fff; font-size:15px; margin-bottom:15px; display:block; text-align:center;">Amount</label>
+							<input name="amount" type="number" class="form-control" placeholder="Enter amount">
+						</div>
+					</div>
+
+					<div class="mb-4" style="display:flex; justify-content:center;">
+						<div style="width:580px; max-width:90%;">
+							<label
+								style="color:#fff; font-size:15px; margin-bottom:15px; display:block; text-align:center;">Interval</label>
+							<select name="interval" class="form-select">
+								<option value="1" selected>1 min</option>
+								<option value="5">3 min</option>
+								<option value="15">15 min</option>
+								<option value="30">30 min</option>
+							</select>
+						</div>
+					</div>
+
+					<div style="display:flex; justify-content:center; gap:15px;">
+						<button type="button" class="btn btn-success"
+							style="width:140px; padding:14px; font-size:16px; font-weight:500; border-radius:8px;"
+							id="buyBtn">Buy</button>
+						<button type="button" class="btn btn-danger"
+							style="width:140px; padding:14px; font-size:16px; font-weight:500; border-radius:8px;"
+							id="sellBtn">Sell</button>
+					</div>
+				</form>
+			</div>
+			<!-- * Trading Form -->
+		</div>
+
+		<!-- Custom Success Modal -->
+		<div id="customSuccessModal"
+			style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:99999;">
+			<!-- Backdrop -->
+			<div
+				style="position:absolute; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:1;">
+			</div>
+
+			<!-- Modal Content -->
+			<div
+				style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:2; width:90%; max-width:360px;">
+				<div
+					style="background-color:#fff; border-radius:8px; padding:35px 30px 25px 30px; box-shadow:0 10px 40px rgba(0,0,0,0.2); border:none;">
+					<!-- Success Icon -->
+					<div style="margin-bottom:20px; display:flex; justify-content:center;">
+						<div
+							style="width:70px; height:70px; margin:0 auto; border:3px solid #d4f4dd; border-radius:50%; display:flex; align-items:center; justify-content:center; background-color:#fff;">
+							<svg viewBox="0 0 52 52" style="width:40px; height:40px; display:block; margin:0 auto;">
+								<path
+									style="stroke:#7bc96f; stroke-width:6; stroke-linecap:round; stroke-linejoin:round; fill:none;"
+									d="M14.1 27.2l7.1 7.2 16.7-16.8"></path>
+							</svg>
+						</div>
+					</div>
+
+					<!-- Title & Message -->
+					<h2
+						style="font-size:22px; font-weight:400; color:#000 !important; margin-bottom:6px; text-align:center;">
+						Great</h2>
+					<p style="font-size:14px; color:#666 !important; margin-bottom:25px; text-align:center;">Live Trade
+						Activated</p>
+
+					<!-- OK Button (Right-aligned) -->
+					<div style="display:flex; justify-content:flex-end; margin-top:15px;">
+						<button type="button" onclick="closeCustomModal()"
+							style="background-color:#5ba3c5; border:2px solid #5ba3c5; border-radius:6px; color:#fff; font-size:14px; font-weight:500; padding:8px 30px; cursor:pointer; transition:all 0.2s; display:inline-block; width:auto; max-width:none;">OK</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- * Custom Success Modal -->
+
+		<!-- Active Trades Section -->
+		<article class="my-4">
+			<h2>Active Trades</h2>
+			<div class="card">
+				<div class="card-body">
+					<div class="alert alert-info">
+						Live trades running in the background. Refresh to view updates
+					</div>
+					<div class="table-responsive">
+						<table class="table">
+							<thead>
+								<tr>
+									<th>ID</th>
+									<th>Amount</th>
+									<th>Progress</th>
+									<th>Interval</th>
+									<th>Date</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><b>1144</b></td>
+									<td><b>$ 1000</b></td>
+									<td>
+										<div class="line-loader"></div>
+									</td>
+									<td><b>30 Min</b></td>
+									<td><b>Friday 24th of October 2025</b></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</article>
+		<!-- * Active Trades Section -->
+
+		<!-- Expert Trades Section -->
+		<div class="section mt-4 mb-5 pb-4">
+			<div class="section-heading">
+				<h2 class="title">Expert Trades</h2>
+				<a href="trades" class="link"
+					style="color:#fff; text-decoration:underline; border:none; background:transparent; padding:0;">View
+					All</a>
+			</div>
+			<div class="transactions">
+				<!-- item -->
+				<a href="#" class="item">
+					<div class="detail">
+						<img src="{% static 'images/11.png' %}" alt="img" class="image-block imaged w48">
+						<div>
+							<strong>Saadvloger2</strong>
+							<p>2025-10-23 17:55:03</p>
+						</div>
+					</div>
+					<div class="right">
+						Amount Copying
+						<div class="price text-success">$1,000.00</div>
+						<p>Profit: <strong>$0.00</strong></p>
+					</div>
+				</a>
+			</div>
+		</div>
+		<!-- * Expert Trades Section -->
+
+	</div>
+</div>
+{% endblock content %}

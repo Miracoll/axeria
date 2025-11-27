@@ -1,0 +1,108 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<div id="content">
+
+    
+
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+
+        <!-- Page Heading -->
+        <h1 class="h3 mb-2 text-gray-800">Edit Clients Portfolios</h1>
+
+        <style>
+            #search {
+                padding: 10px 30px;
+                outline: none;
+                border-radius: 5px;
+                border: 1px solid black;
+            }
+        </style>
+
+
+        <form method="POST">
+            <div class="form-group">
+                <input name="users" type="text" id="search" onkeyup="showResult(this.value)"
+                    placeholder="Search For Users" Required>
+
+            </div>
+
+        </form>
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Select a client to edit portfolio </h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Plan</th>
+                                <th>Amount Invested</th>
+                                <th>Date Started</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Name</th>
+                                <th>Plan</th>
+                                <th>Amount Invested</th>
+                                <th>Date Started</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                        <tbody id="livesearch">
+                            {% for p in portfolios %}
+                            <tr>
+
+                                <td>{{p.user.first_name}} {{p.user.last_name}}</td>
+                                <td>{{p.plan.name|upper}} PLAN</td>
+                                <td>${{p.amount_invested|intcomma}}</td>
+                                <td>{{p.setup_date}}</td>
+                                <td>{{p.status|upper}}</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary">
+                                        Manage
+                                    </button>
+                                </td>
+
+
+
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+
+                        <script>
+
+                            function showResult(str) {
+                                const xmlhttp = new XMLHttpRequest();
+                                xmlhttp.onreadystatechange = function () {
+                                    if (this.readyState == 4 && this.status == 200) {
+                                        document.querySelector("#livesearch").innerHTML = this.responseText;
+                                    }
+                                };
+                                xmlhttp.open("GET", "edit-portifolios_logic.php?q=" + encodeURIComponent(str), true);
+                                xmlhttp.send();
+                            }
+
+                        </script>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+
+</div>
+{% endblock %}

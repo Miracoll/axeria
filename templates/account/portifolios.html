@@ -1,0 +1,287 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<div id="appCapsule">
+    <div class="portfolios-container">
+        <!-- Investment Summary Card -->
+        <div class="card investment-summary-card">
+            <div class="card-header">Investment summary</div>
+            <div class="card-body">
+                <div class="balance-row">
+                    <span class="label">Total balance</span>
+                    <span class="value">${{request.user.current_deposit|intcomma}}</span>
+                </div>
+                <div class="investments-row">
+                    <span class="label">All Investments</span>
+                    <span class="badge">{{portfolio_count}}</span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'create-portfolio' %}"><button class="btn btn-create-investment">Create
+                        Investment+</button></a>
+            </div>
+        </div>
+
+        <!-- Investments Chart Card -->
+        <div class="card investments-chart-card" style="display: flex; justify-content: center; align-items: center;">
+            <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+        </div>
+
+        <!-- Heading -->
+        <h1 class="portfolios-heading">My portfolios</h1>
+
+        <!-- Portfolio Cards Container -->
+        <div class="portfolio-cards-grid">
+
+            <!-- Portfolio Card 1 -->
+            {% for p in portfolios %}
+            <div class="portfolio-card card">
+
+                <!-- Header -->
+                <div class="portfolio-header">
+                    <span class="portfolio-title">{{ p.plan.get_name_display }}</span>
+                    <span class="portfolio-tag">Investment</span>
+                </div>
+
+                <!-- Amounts -->
+                <div class="portfolio-info">
+                    <div class="portfolio-info-item">
+                        <div class="portfolio-info-label">Available</div>
+                        <div class="portfolio-info-value">$ {{ p.amount_available }}</div>
+                    </div>
+
+                    <div class="portfolio-info-item">
+                        <div class="portfolio-info-label">Profit</div>
+                        <div class="portfolio-info-value">$ {{ p.profit }}</div>
+                    </div>
+
+                    <div class="portfolio-info-item">
+                        <div class="portfolio-info-label">Trade Fee(%)</div>
+                        <div class="portfolio-info-value">{{ p.plan.trade_fee }}%</div>
+                    </div>
+                </div>
+
+                <!-- Badges -->
+                <div class="portfolio-badges">
+                    <div class="portfolio-badge">
+                        <span class="portfolio-badge-label">Setup Date</span>
+                        <span class="portfolio-badge-value">{{ p.setup_date|date:"l jS F Y" }} of</span>
+                    </div>
+
+                    <div class="portfolio-badge">
+                        <span class="portfolio-badge-label">Rate</span>
+                        <span class="portfolio-badge-value">{{ p.plan.percentage }}%</span>
+                    </div>
+
+                    <div class="portfolio-badge">
+                        <span class="portfolio-badge-label">Tenure</span>
+                        <span class="portfolio-badge-value">{{ p.plan.term }} 
+                            {% if plan.duration_multiplier  == '1' %}
+                                day(s)
+                                {% elif plan.duration_multiplier == '7' %}
+                                week(s)
+                                {% else %}
+                                month(s)
+                                {% endif %}
+                        </span>
+                    </div>
+
+                    <div class="portfolio-badge">
+                        <span class="portfolio-badge-label">Status</span>
+                        <span class="portfolio-badge-value">{{ p.status }}</span>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="portfolio-buttons">
+                    <button class="btn-add-funds"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addFundsModal"
+                            data-id="{{ p.id }}">
+                        Add More Funds
+                    </button>
+
+                    <button class="btn-withdraw"
+                            data-bs-toggle="modal"
+                            data-bs-target="#withdrawFundsModal"
+                            data-id="{{ p.id }}">
+                        Withdraw Funds
+                    </button>
+                </div>
+
+                <!-- Bot Section -->
+                <div class="portfolio-bot-section">
+                    {% if p.bot_active %}
+                        <div class="portfolio-bot-message">{{ p.bot_name }} bot is active for this portfolio</div>
+                    {% else %}
+                        <div class="portfolio-bot-message">No bot active for this portfolio</div>
+                        <button class="btn-purchase-bot"
+                                data-bs-toggle="modal"
+                                data-bs-target="#selectBotModal"
+                                data-id="{{ p.id }}">
+                            Purchase bot
+                        </button>
+                    {% endif %}
+                </div>
+
+            </div>
+            {% empty %}
+            <p>No portfolios available.</p>
+            {% endfor %}
+
+        </div><!-- Close grid container -->
+    </div>
+</div>
+
+<!-- Select Bot Modal -->
+<div class="modal fade" id="selectBotModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Select bot</h3>
+                <button class="btn text-white" type="button" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="col-6">
+                            <label>Portfolio</label>
+                            <select>
+                                <option selected>New Investment I</option>
+                                <option>New Investment II</option>
+                                <option>New Investment III</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label>Bot name</label>
+                            <select>
+                                <option selected>Apexbot</option>
+                                <option>Probot</option>
+                                <option>Smartbot</option>
+                            </select>
+                            <a href="#" class="bot-link">Read more about our bots Here</a>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>Currency</label>
+                        <select>
+                            <option selected>Bitcoin</option>
+                            <option>Ethereum</option>
+                            <option>USD</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px;">
+                        <button type="button" data-bs-dismiss="modal"
+                            style="background: transparent; border: 2px solid #666; border-radius: 8px; color: #fff; padding: 8px 20px; font-size: 13px; font-weight: 500; cursor: pointer;">Close</button>
+                        <button type="submit"
+                            style="background: #4a9bb8; border: none; border-radius: 8px; color: #fff; padding: 8px 20px; font-size: 13px; font-weight: 600; cursor: pointer;">Continue</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- * Select Bot Modal -->
+
+<!-- Add More Funds Modal -->
+<div class="modal fade" id="addFundsModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Top Trade Amount</h3>
+                <button class="btn text-white" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <center>WALLET BALANCE: <br /><b>$10,000.00</b></center>
+                </div>
+                <form method="post">
+                    <div class="form-group my-4">
+                        <label for="amount">Amount to Add:</label>
+                        <input type="text" class="form-control" id="amount" name="amount" />
+                    </div>
+                    <button class="btn btn-primary w-100" type="submit" name="top">Add to Trade</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- * Add More Funds Modal -->
+
+<!-- Withdraw Funds Modal -->
+<div class="modal fade" id="withdrawFundsModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Withdraw Funds from Portfolio</h3>
+                <button class="btn text-white" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <center>AVAILABLE BALANCE: <br /><b>$10,000.00</b></center>
+                </div>
+                <form method="post">
+                    <div class="form-group my-4">
+                        <label for="withdraw_amount">Amount Available For Withdraw:</label>
+                        <input type="number" class="form-control" id="withdraw_amount" value="10000"
+                            name="withdraw_amount" style="background-color:black;color:white;" readonly="" />
+                    </div>
+                    <button class="btn btn-danger w-100" name="withdraw">Withdraw Funds</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- * Withdraw Funds Modal -->
+
+<!-- Warning Modal -->
+<div class="modal fade" id="warningModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content warning-modal-content">
+            <div class="modal-body">
+                <div class="warning-icon-wrapper">
+                    <div class="warning-circle">
+                        <svg viewBox="0 0 52 52" class="warning-svg">
+                            <circle class="warning-outer-circle" cx="26" cy="26" r="25" fill="none" />
+                            <text x="26" y="34" class="warning-exclamation">!</text>
+                        </svg>
+                    </div>
+                </div>
+                <h2 class="warning-title">Oops</h2>
+                <p class="warning-message">ROI Investment Not Completed</p>
+                <div class="warning-modal-footer">
+                    <button type="button" class="btn btn-warning-ok" id="warningOkBtn">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- * Warning Modal -->
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content success-modal-content">
+            <div class="modal-body">
+                <div class="success-icon-wrapper">
+                    <div class="success-checkmark">
+                        <svg viewBox="0 0 52 52" class="checkmark-svg">
+                            <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+                            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                        </svg>
+                    </div>
+                </div>
+                <h2 class="success-title">Great</h2>
+                <p class="success-message">Amount topped</p>
+                <div class="success-modal-footer">
+                    <button type="button" class="btn btn-success-ok" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- * Success Modal -->
+{% endblock %}

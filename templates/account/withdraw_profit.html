@@ -1,0 +1,76 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<div id="appCapsule">
+    <!-- Warning Modal -->
+    <div id="warningModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:99999;">
+        <!-- Backdrop -->
+        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:1;"></div>
+
+        <!-- Modal Content -->
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:2; width:90%; max-width:360px;">
+            <div style="background-color:#fff; border-radius:8px; padding:35px 30px 25px 30px; box-shadow:0 10px 40px rgba(0,0,0,0.2); border:none;">
+                <!-- Warning Icon -->
+                <div style="margin-bottom:20px; display:flex; justify-content:center;">
+                    <div style="width:70px; height:70px; margin:0 auto; border:3px solid #ffd4a3; border-radius:50%; display:flex; align-items:center; justify-content:center; background-color:#fff;">
+                        <svg viewBox="0 0 52 52" style="width:40px; height:40px; display:block; margin:0 auto;">
+                            <path style="stroke:#f5a623; stroke-width:6; stroke-linecap:round; stroke-linejoin:round; fill:none;" d="M26 16 L26 28 M26 34 L26 36"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Title & Message -->
+                <h2 style="font-size:22px; font-weight:400; color:#000 !important; margin-bottom:6px; text-align:center;">Withdrawal pending</h2>
+                <p style="font-size:14px; color:#666 !important; margin-bottom:25px; text-align:center;">You will receive an email once approved</p>
+
+                <!-- OK Button (Right-aligned) -->
+                <div style="display:flex; justify-content:flex-end; margin-top:15px;">
+                    <button type="button" onclick="closeWarningModal()" style="background-color:#5ba3c5; border:2px solid #5ba3c5; border-radius:6px; color:#fff; font-size:14px; font-weight:500; padding:8px 30px; cursor:pointer; transition:all 0.2s; display:inline-block; width:auto; max-width:none;">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- * Warning Modal -->
+
+    <div class="withdrawprofit-container">
+        <!-- Withdrawal Card -->
+        <div class="withdrawprofit-card">
+            <!-- Header -->
+            <div class="withdrawprofit-header">
+                <div class="withdrawprofit-title">Place Withdrawal</div>
+                <div class="withdrawprofit-available">Available: ${{request.user.profit|intcomma}}</div>
+            </div>
+
+            <!-- Form -->
+            <form method="post">
+                {% csrf_token %}
+                <div class="withdrawprofit-form-group">
+                    <label class="withdrawprofit-label">Amount</label>
+                    <input type="text" class="withdrawprofit-input" name="amount" id="amount" placeholder="" required>
+                </div>
+
+                <div class="withdrawprofit-form-group">
+                    <label class="withdrawprofit-label">Currency</label>
+                    <select class="withdrawprofit-select" name="currency" id="currency" required>
+                        <option value="Bitcoin (BTC)">Bitcoin (BTC)</option>
+                        <option value="Ethereum">Ethereum</option>
+                        <option value="Binance Coin (BNB)">Binance coin (BNB)</option>
+                        <option value="USDT (ERC 20)">USDT (ERC 20)</option>
+                        <option value="USDT (TRC 20)">USDT (TRC 20)</option>
+                        <option value="Solana">Solana</option>
+                        <option value="Ripple">Ripple</option>
+                    </select>
+                </div>
+
+                <div class="withdrawprofit-form-group">
+                    <label class="withdrawprofit-label">Address</label>
+                    <input type="text" class="withdrawprofit-input" name="address" id="address" placeholder="" required>
+                </div>
+
+                <button type="submit" class="withdrawprofit-btn">Place Withdrawal</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

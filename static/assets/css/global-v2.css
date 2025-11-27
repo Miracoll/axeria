@@ -1,0 +1,3000 @@
+/* ========================================
+   MARIVAC CAPITAL - COMMON STYLES
+   Use this for all dashboard pages
+   ======================================== */
+
+/* Import Poppins Font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Global Font Family */
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ========================================
+   1. PAGE HEADERS (Section Titles)
+   ======================================== */
+
+.page-header,
+/* ========================================
+   COMMON/GLOBAL STYLES FOR ALL PAGES
+   These styles are intentionally shared across multiple pages
+
+   INTENTIONALLY GLOBAL CLASSES:
+   - .item - Used for list items across all pages
+   - .in - Used for inner content wrappers
+   - .amount - Used for displaying monetary amounts
+   - .active - Used for active navigation states
+   - .transactions, .wallet-card, .stat-box, .user-card - Shared components
+   - .appHeader, .appBottomMenu, .appFooter - Global UI layout
+   - .profileBox, .sidebar-balance - Shared sidebar components
+   ======================================== */
+
+body {
+    margin-top: 56px !important;
+    background-color: #15181a;
+}
+
+#appCapsule, .container, .container-xxl {
+    padding-top: 20px !important;
+}
+
+.transactions .item, .wallet-card{
+    background-color: #000 !important;
+    color : #fff !important;
+}
+
+.transactions .item .detail strong {
+    color: #fff !important
+}
+
+.wallet-card .balance .title, .table thead th{
+    color: #fff !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #fff !important;
+}
+
+.wallet-card .wallet-footer .item strong {
+    color: #fff !important;
+}
+
+.stat-box {
+    background: #000 !important;
+}
+
+.stat-box .value{
+    color: #fff
+}
+
+.section-heading .link, .form-group.basic .form-control, .form-group.basic .custom-select, .form-control, .form-select{
+    color: #4686ac;
+    background: transparent;
+}
+
+.user-card{
+    background:#000 !important;
+}
+
+.user-card strong{
+    color:#fff !important;
+}
+
+.appFooter .footer-title, .form-check .form-check-label{
+    color: #fff !important
+}
+
+.profileBox .in strong {
+    color: #fff !important
+}
+
+.image-listview > li a.item{
+    color:#fff !important;
+}
+
+.form-group .label  {
+    color: #fff !important
+}
+
+.input-group .input-group-text{
+    color: #fff !important
+}
+
+.card .card-header{
+    color:#fff !important;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active {
+    background: #fff !important;
+    border-color: #fff !important;
+    color: #000 !important;
+}
+
+/* Sidebar blur effect */
+body.modal-open:has(.modal.panelbox.show) #appCapsule {
+    filter: blur(2px) !important;
+    -webkit-filter: blur(2px) !important;
+}
+
+.modal.panelbox .modal-dialog {
+    margin: 0 !important;
+    margin-top: 56px !important;
+    height: calc(100vh - 56px) !important;
+}
+
+.modal.panelbox .profileBox {
+    position: sticky !important;
+    top: 0 !important;
+    background-color: #1c1c1e !important;
+    z-index: 10 !important;
+}
+
+img, svg {
+    vertical-align: middle !important;
+}
+
+.toast {
+    position: fixed;
+    bottom: 20vh;
+    right: 0;
+    z-index: 6000;
+    color: #000;
+}
+.section-header,
+.fund-header,
+.withdrawal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+}
+
+.page-title,
+.section-title,
+.fund-title,
+.withdrawal-title,
+.withdrawal-available {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Single header (no flex needed) */
+.page-header-single {
+    border-bottom: 1px solid #333;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+}
+
+.page-header-single h2,
+.page-header-single .title {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* ========================================
+   2. FORM ELEMENTS - STANDARDIZED
+   ======================================== */
+
+/* All input fields and selects */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+select,
+.form-control,
+.form-select {
+    background-color: transparent;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+input:focus,
+select:focus,
+.form-control:focus,
+.form-select:focus {
+    outline: none;
+    border-color: #fff;
+    box-shadow: none;
+}
+
+/* Select dropdown options */
+select option,
+.form-select option {
+    background-color: #000;
+    color: #fff;
+}
+
+/* Form labels */
+label,
+.form-label {
+    color: #fff;
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: block;
+    font-weight: 400;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+/* ========================================
+   3. BUTTONS - STANDARDIZED
+   ======================================== */
+
+.btn-primary {
+    background-color: #5ba3c5;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #6bb0ce;
+}
+
+/* Full width buttons */
+.btn.w-100 {
+    width: 100%;
+}
+
+/* ========================================
+   4. CARDS - STANDARDIZED
+   ======================================== */
+
+.card {
+    background-color: #000;
+    color: #fff;
+    border-radius: 8px;
+    border: none;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* ========================================
+   5. COMMON LAYOUT
+   ======================================== */
+
+body {
+    margin-top: 56px;
+    background-color: #15181a;
+}
+
+#appCapsule,
+.container,
+.container-xxl {
+    padding-top: 20px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #fff;
+}
+
+/* ========================================
+   6. MODALS - STANDARDIZED
+   ======================================== */
+
+.modal-content {
+    background-color: #000;
+    border-radius: 8px;
+    border: none;
+}
+
+/* Exception: Success modal should have white background */
+#successModal .modal-content,
+#successModal .success-modal-content {
+    background-color: #fff !important;
+    border-radius: 8px !important;
+    padding: 35px 30px 25px 30px !important;
+    border: none !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,.2) !important;
+}
+
+/* Success modal dialog size */
+#successModal .modal-dialog {
+    max-width: 360px !important;
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 20px 30px;
+    background-color: #000;
+}
+
+.modal-header h3 {
+    color: #fff;
+    font-size: 18px;
+    margin: 0;
+    font-weight: 600;
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+/* ========================================
+   7. NAVIGATION
+   ======================================== */
+
+.appBottomMenu {
+    background-color: #000;
+}
+
+.appBottomMenu .item .icon,
+.appBottomMenu .item ion-icon,
+.appBottomMenu .item strong {
+    color: #fff;
+}
+
+.appFooter {
+    background-color: #000;
+}
+
+.bg-primary {
+    background: #4686ac;
+}
+
+body { margin-top: 56px !important; }
+.section.my-4.py-4 {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+.section-heading.my-4 {
+    padding-top: 10px;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+/* Sidebar specific styling - ensure it touches the menu bar */
+.modal.panelbox .modal-dialog {
+    margin: 0 !important;
+    margin-top: 56px !important;
+    height: calc(100vh - 56px) !important;
+}
+/* Blur background when sidebar is open (except header and footer) */
+body.modal-open:has(.modal.panelbox.show) #appCapsule {
+    filter: blur(2px) !important;
+    -webkit-filter: blur(2px) !important;
+}
+/* Fix sidebar close button to stay in place when scrolling */
+.modal.panelbox .profileBox {
+    position: sticky !important;
+    top: 0 !important;
+    background-color: #1c1c1e !important;
+    z-index: 10 !important;
+}
+
+        .toast {
+            position: fixed;
+            bottom: 20vh;
+            right: 0;
+            z-index: 6000;
+            color: #000;
+        }
+    
+
+        img, svg {
+            vertical-align: middle !important;
+        }
+    
+
+/* ========================================
+   STOCKS PAGE SPECIFIC STYLES (SCOPED)
+   ======================================== */
+
+.stocks-page .transactions .item, .wallet-card {
+            background-color: #000 !important;
+            color : #fff !important;
+        }
+.stocks-page .transactions .item .detail strong {
+            color: #fff !important
+        }
+.stocks-page .wallet-card .balance .title, .table thead th {
+            color: #fff !important;
+        }
+.stocks-page h1, h2, h3, h4, h5, h6 {
+            color: #fff !important;
+        }
+.stocks-page .wallet-card .wallet-footer .item strong {
+            color: #fff !important;
+        }
+.stocks-page .stat-box {
+            background: #000 !important;
+        }
+.stocks-page .stat-box .value {
+            color: #fff
+        }
+.stocks-page .section-heading .link, .form-group.basic .form-control, .form-group.basic .custom-select, .form-control, .form-select {
+            color: #4686ac;
+            background: transparent;
+        }
+.stocks-page .user-card {
+            background:#000 !important;
+        }
+.stocks-page .user-card strong {
+            color:#fff !important;
+        }
+.stocks-page .appFooter {
+            background-color: #000 !important
+        }
+.stocks-page .appFooter .footer-title, .form-check .form-check-label {
+            color: #fff !important
+        }
+.stocks-page .appBottomMenu {
+            background-color: #000 !important;
+        }
+.stocks-page .appBottomMenu .item .icon, .appBottomMenu .item ion-icon {
+            color: #fff !important;
+        }
+.stocks-page .appBottomMenu .item:hover .icon, .appBottomMenu .item:hover ion-icon, .appBottomMenu .item:hover strong {
+            color: #fff !important;
+        }
+.stocks-page .appBottomMenu .item strong {
+            color: #fff !important;
+        }
+.stocks-page .modal-content {
+            background-color: #000 !important;
+        }
+.stocks-page .profileBox .in strong {
+            color: #fff !important
+        }
+.stocks-page .image-listview > li a.item {
+            color:#fff !important;
+        }
+.stocks-page .form-group .label {
+            color: #fff !important
+        }
+.stocks-page .input-group .input-group-text {
+            color: #fff !important
+        }
+.stocks-page .card {
+            background-color: #000 !important;
+            color: #fff !important;
+        }
+.stocks-page .card .card-header {
+            color:#fff !important;
+        }
+.stocks-page .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active {
+    background: #fff !important;
+    border-color: #fff !important;
+    color: #000 !important;
+}
+.stocks-page .bg-primary {
+    background:#4686ac !important;
+}
+body.stocks-page  {
+    margin-top: 56px !important;
+    background-color: #000 !important;
+}
+
+/* Stocks Page Styles */
+.stocks-page {
+    background-color: #000;
+    min-height: 100vh;
+    padding: 20px 0;
+}
+.stocks-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 80px;
+}
+/* Search Bar - Centered and smaller */
+.stocks-page .search-wrapper {
+    position: relative;
+    margin: 0 auto 40px auto;
+    max-width: 400px;
+}
+.stocks-page .stock-search-input {
+    width: 100%;
+    padding: 12px 45px 12px 18px;
+    background-color: #2a2a2a;
+    border: none;
+    border-radius: 25px;
+    color: #fff;
+    font-size: 14px;
+}
+.stocks-page .stock-search-input::placeholder {
+    color: #888;
+}
+.stocks-page .stock-search-input:focus {
+    outline: none;
+    background-color: #333;
+}
+.stocks-page .search-icon {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 12px;
+}
+/* Stock List */
+.stocks-list {
+    margin-top: 20px;
+}
+.stocks-page .stock-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #222;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+.stocks-page .stock-item:hover {
+    background-color: #111;
+}
+.stocks-page .stock-left {
+    flex: 0 0 auto;
+    min-width: 120px;
+}
+.stocks-page .stock-ticker {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 2px;
+    line-height: 1.2;
+}
+.stocks-page .stock-company {
+    font-size: 12px;
+    color: #888;
+    line-height: 1.2;
+}
+.stocks-page .stock-chart {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 20px;
+}
+.stocks-page .mini-chart {
+    width: 80px;
+    height: 40px;
+}
+.stocks-page .stock-right {
+    flex: 0 0 auto;
+    text-align: right;
+    min-width: 110px;
+}
+.stocks-page .stock-price {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 4px;
+    line-height: 1.2;
+}
+.stocks-page .stock-change {
+    
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+.stocks-page .stock-change.negative {
+    background-color: #e91e63;
+    color: #fff;
+}
+.stocks-page .stock-change.positive {
+    background-color: #0ec879;
+    color: #fff;
+}
+/* Sidebar blur effect */
+.stocks-page body.modal-open:has(.modal.panelbox.show) #appCapsule {
+    filter: blur(2px) !important;
+    -webkit-filter: blur(2px) !important;
+}
+/* Sidebar specific styling - starts below menu bar (56px) */
+.stocks-page .modal.panelbox .modal-dialog {
+    margin: 0 !important;
+    margin-top: 56px !important;
+    height: calc(100vh - 56px) !important;
+}
+/* Fix sidebar close button to stay in place when scrolling */
+.stocks-page .modal.panelbox .profileBox {
+    position: sticky !important;
+    top: 0 !important;
+    background-color: #1c1c1e !important;
+    z-index: 10 !important;
+}
+.stocks-page .toast {
+            position: fixed;
+            bottom: 20vh;
+            right: 0;
+            z-index: 6000;
+            color: #000;
+        }
+.stocks-page img, svg {
+            vertical-align: middle !important;
+        }
+
+/* Mobile Responsive Styles for Stocks Page */
+@media (max-width: 768px) {
+    /* Container with proper padding */
+    .stocks-page .stocks-container {
+        padding: 0 16px !important;
+        margin: 0;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .stocks-page #appCapsule {
+        padding: 20px 0 !important;
+    }
+
+    .stocks-page .container,
+    .stocks-page .container-xxl {
+        padding: 20px 0 !important;
+        max-width: 100%;
+    }
+
+    /* CENTERED: Search wrapper centered with margins */
+    .stocks-page .search-wrapper {
+        max-width: 90%;
+        width: 90%;
+        margin: 0 auto 20px auto !important;  /* Center with auto margins */
+        position: relative;
+        display: block;
+    }
+
+    .stocks-page .stock-search-input {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px 35px 10px 14px;
+        box-sizing: border-box;
+    }
+
+    /* Search icon positioned at right edge */
+    .stocks-page .search-icon {
+        position: absolute;
+        right: 12px !important;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #888;
+        font-size: 10px !important;
+        pointer-events: none;
+    }
+
+    .stocks-page .stock-item {
+        padding: 12px;
+        margin: 0 0 10px 0;
+    }
+
+    .stocks-page .stock-logo {
+        width: 40px;
+        height: 40px;
+    }
+
+    .stocks-page .stock-name,
+    .stocks-page .stock-ticker {
+        font-size: 14px;
+    }
+
+    .stocks-page .stock-symbol,
+    .stocks-page .stock-company {
+        font-size: 11px;
+    }
+
+    .stocks-page .stock-price {
+        font-size: 14px;
+    }
+
+    .stocks-page .stock-change {
+        font-size: 11px;
+    }
+
+    .stocks-page .stocks-list {
+        margin: 20px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Extra small devices */
+    .stocks-page .stocks-container {
+        padding: 0 12px !important;
+    }
+
+    /* Search wrapper still centered but can be slightly wider */
+    .stocks-page .search-wrapper {
+        max-width: 92%;
+        width: 92%;
+        margin: 0 auto 20px auto !important;
+    }
+
+    .stocks-page .stock-item {
+        padding: 10px;
+    }
+
+    .stocks-page .stock-logo {
+        width: 35px;
+        height: 35px;
+    }
+
+    .stocks-page .stock-name,
+    .stocks-page .stock-ticker {
+        font-size: 13px;
+    }
+
+    .stocks-page .stock-price {
+        font-size: 13px;
+    }
+
+    /* Search icon even smaller on tiny screens */
+    .stocks-page .search-icon {
+        right: 10px !important;
+        font-size: 9px !important;
+    }
+}
+
+/* Desktop search styles */
+@media (min-width: 769px) {
+    .stocks-page .search-wrapper {
+        position: relative;
+        max-width: 400px;
+        margin: 0 auto 40px auto;
+    }
+
+    .stocks-page .search-icon {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #888;
+        font-size: 11px;
+        pointer-events: none;
+    }
+}
+
+/* ========================================
+   PROFILE PAGE SPECIFIC STYLES (SCOPED)
+   ======================================== */
+
+body.profile-page  {
+            margin-top: 56px !important;
+            background-color: #15181a;
+        }
+
+.profile-page #appCapsule {
+            padding-top: 20px !important;
+        }
+
+        /* Profile Page Styles */
+.profile-page .profile-container {
+            padding: 0 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+.profile-page .page-breadcrumb {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+.profile-page .page-breadcrumb span {
+            color: #fff;
+        }
+
+.profile-page .profile-section {
+            background-color: #000;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+.profile-page .profile-section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+
+.profile-page .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+.profile-page .form-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+.profile-page .form-field label {
+            font-size: 13px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .form-field input,
+.profile-page .form-field select {
+            background-color: transparent;
+            border: 1px solid #555;
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 14px;
+            color: #4686ac;
+            transition: border-color 0.3s;
+        }
+
+        .form-field input:focus,
+.profile-page .form-field select:focus {
+            outline: none;
+            border-color: #4686ac;
+        }
+
+.profile-page .form-field input[readonly] {
+            color: #4686ac;
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+.profile-page .form-field select {
+            cursor: pointer;
+        }
+
+.profile-page .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+.profile-page .btn-save {
+            background-color: #4686ac;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 24px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+}
+
+.profile-page .btn-save:hover {
+            background-color: #3a7193;
+            width: 100%;
+    padding: 12px 24px;
+}
+
+.profile-page .btn-cancel {
+            background-color: transparent;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 6px;
+            padding: 10px 24px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+}
+
+.profile-page .btn-cancel:hover {
+            border-color: #888;
+            background-color: rgba(255, 255, 255, 0.05);
+            width: 100%;
+    padding: 12px 24px;
+}
+
+        /* Delete Account Section */
+.profile-page .delete-section {
+            background-color: #000;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+.profile-page .delete-warning {
+            background-color: #2a2a2a;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+.profile-page .delete-warning h6 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+.profile-page .delete-warning p {
+            font-size: 13px;
+            color: #aaa;
+            margin: 0;
+        }
+
+.profile-page .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+.profile-page .checkbox-container input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            appearance: none;
+            -webkit-appearance: none;
+            border: 2px solid #555;
+            background-color: transparent;
+            position: relative;
+        }
+
+.profile-page .checkbox-container input[type="checkbox"]:checked {
+            background-color: #4686ac;
+            border-color: #4686ac;
+        }
+
+.profile-page .checkbox-container input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 12px;
+        }
+
+.profile-page .checkbox-container label {
+            font-size: 13px;
+            color: #fff;
+            margin: 0;
+            cursor: pointer;
+        }
+
+.profile-page .btn-deactivate {
+            background-color: #e91e63;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 24px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+}
+
+.profile-page .btn-deactivate:hover {
+            background-color: #c2185b;
+            width: 100%;
+    padding: 12px 24px;
+}
+
+.profile-page .appFooter {
+            background-color: #000 !important;
+            text-align: center;
+            padding: 20px;
+            margin-top: 0px;
+        }
+
+.profile-page .footer-title {
+            color: #888 !important;
+            font-size: 12px;
+        }
+
+.profile-page .appBottomMenu {
+            background-color: #000 !important;
+        }
+
+        .appBottomMenu .item .icon,
+.profile-page .appBottomMenu .item ion-icon {
+            color: #fff !important;
+        }
+
+.profile-page .appBottomMenu .item strong {
+            color: #fff !important;
+        }
+
+        .appBottomMenu .item:hover .icon,
+        .appBottomMenu .item:hover ion-icon,
+.profile-page .appBottomMenu .item:hover strong {
+            color: #4686ac !important;
+        }
+
+        .appBottomMenu .item.active .icon,
+        .appBottomMenu .item.active ion-icon,
+.profile-page .appBottomMenu .item.active strong {
+            color: #4686ac !important;
+        }
+
+        /* Header Styles */
+.profile-page .appHeader {
+            background-color: #4686ac !important;
+        }
+
+.profile-page .appHeader .pageTitle img {
+            height: 32px;
+        }
+
+        /* Sidebar blur effect */
+.profile-page body.modal-open:has(.modal.panelbox.show) #appCapsule {
+            filter: blur(2px) !important;
+            -webkit-filter: blur(2px) !important;
+        }
+
+        /* Sidebar specific styling */
+.profile-page .modal.panelbox .modal-dialog {
+            margin: 0 !important;
+            margin-top: 56px !important;
+            height: calc(100vh - 56px) !important;
+        }
+
+.profile-page .modal.panelbox .profileBox {
+            position: sticky !important;
+            top: 0 !important;
+            background-color: #1c1c1e !important;
+            z-index: 10 !important;
+        }
+
+.profile-page .modal-content {
+            background-color: #000 !important;
+        }
+
+.profile-page .profileBox .in strong {
+            color: #fff !important;
+        }
+
+.profile-page .image-listview > li a.item {
+            color: #fff !important;
+        }
+
+.profile-page .sidebar-balance {
+            background-color: #000;
+            color: #fff;
+        }
+
+.profile-page .sidebar-balance .amount {
+            color: #fff !important;
+        }
+
+        /* Success Modal Styling - Override all modal styles */
+.profile-page #successModal .modal-content {
+            background-color: #fff !important;
+            border-radius: 8px !important;
+            padding: 50px 40px 30px 40px !important;
+            border: none !important;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2) !important;
+        }
+.profile-page #successModal .modal-body {
+            padding: 0 !important;
+            text-align: center !important;
+        }
+.profile-page #successModal .modal-header {
+            display: none !important;
+        }
+.profile-page .success-icon-wrapper {
+            margin-bottom: 25px !important;
+            display: flex !important;
+            justify-content: center !important;
+        }
+.profile-page .success-checkmark {
+            width: 100px !important;
+            height: 100px !important;
+            margin: 0 auto !important;
+            border: 3px solid #d4f4dd !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background-color: #fff !important;
+        }
+.profile-page .checkmark-svg {
+            width: 55px !important;
+            height: 55px !important;
+            display: block !important;
+            margin: 0 auto !important;
+        }
+.profile-page .checkmark-circle {
+            display: none !important;
+        }
+.profile-page .checkmark-check {
+            stroke: #7bc96f !important;
+            stroke-width: 6 !important;
+            stroke-linecap: round !important;
+            stroke-linejoin: round !important;
+            fill: none !important;
+        }
+        @keyframes stroke {
+            100% {
+                stroke-dashoffset: 0 !important;
+            }
+        }
+.profile-page .success-title {
+            font-size: 28px !important;
+            font-weight: 400 !important;
+            color: #6b6b6b !important;
+            margin-bottom: 8px !important;
+            text-align: center !important;
+        }
+.profile-page .success-message {
+            font-size: 15px !important;
+            color: #a8a8a8 !important;
+            margin-bottom: 35px !important;
+            text-align: center !important;
+        }
+.profile-page .success-modal-footer {
+            display: flex !important;
+            justify-content: flex-end !important;
+            margin-top: 20px !important;
+        }
+.profile-page #successModal .btn {
+            width: auto !important;
+            max-width: none !important;
+        }
+.profile-page #successModal .btn-success-ok {
+            background-color: #5ba3c5 !important;
+            border: 2px solid #5ba3c5 !important;
+            border-radius: 8px !important;
+            color: #fff !important;
+            font-size: 15px !important;
+            font-weight: 500 !important;
+            padding: 10px 35px !important;
+            cursor: pointer !important;
+            transition: all 0.2s !important;
+            width: auto !important;
+            max-width: none !important;
+            
+            flex: 0 0 auto !important;
+        }
+.profile-page #successModal .btn-success-ok:hover {
+            background-color: #6bb0ce !important;
+            border-color: #6bb0ce !important;
+        }
+    
+
+/* Mobile Responsive Styles for Profile Page */
+@media (max-width: 768px) {
+body.profile-page  {
+        margin-top: 56px !important;
+    }
+
+.profile-page #appCapsule {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+        padding-top: 20px !important;
+    }
+
+    .container,
+.profile-page .container-xxl {
+    max-width: 100%;
+    }
+
+.profile-page .card {
+        margin-bottom: 16px;
+    }
+
+.profile-page .form-group {
+        margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+.profile-page .form-control {
+        width: 100%;
+        font-size: 14px;
+        padding: 10px 14px;
+    }
+
+.profile-page .btn {
+        width: 100%;
+        padding: 12px 24px;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+.profile-page h1, h2, h3 {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+
+    .list-group-item,
+.profile-page .listview .item {
+        padding: 14px 16px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+.profile-page #appCapsule {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+.profile-page .card {
+        margin-bottom: 12px;
+    }
+
+.profile-page h1, h2, h3 {
+        font-size: 18px;
+    }
+
+.profile-page .btn {
+        padding: 10px 20px;
+        font-size: 13px;
+        width: 100%;
+}
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+.profile-page .form-control {
+        font-size: 13px;
+        padding: 9px 12px;
+    }
+}
+
+
+
+/* ========================================
+   PORTFOLIOS-WITH-DATA PAGE SPECIFIC STYLES (SCOPED)
+   ======================================== */
+
+.portfolios-with-data-page .transactions .item,
+.portfolios-with-data-page .wallet-card {
+    background-color:#000 !important;
+    color:#fff !important;
+}
+
+.portfolios-with-data-page .transactions .item .detail strong { color:#fff !important; }
+.portfolios-with-data-page .wallet-card .balance .title,
+.portfolios-with-data-page .table thead th { color:#fff !important; }
+.portfolios-with-data-page h1,
+.portfolios-with-data-page h2,
+.portfolios-with-data-page h3,
+.portfolios-with-data-page h4,
+.portfolios-with-data-page h5,
+.portfolios-with-data-page h6 { color:#fff !important; }
+.portfolios-with-data-page .wallet-card .wallet-footer .item strong { color:#fff !important; }
+.portfolios-with-data-page .stat-box { background:#000 !important; }
+.portfolios-with-data-page .stat-box .value { color:#fff; }
+.portfolios-with-data-page .section-heading .link,
+.portfolios-with-data-page .form-group.basic .form-control,
+.portfolios-with-data-page .form-group.basic .custom-select,
+.portfolios-with-data-page .form-control,
+.portfolios-with-data-page .form-select { color:#4686ac; background:transparent; }
+.portfolios-with-data-page .user-card { background:#000 !important; }
+.portfolios-with-data-page .user-card strong { color:#fff !important; }
+.portfolios-with-data-page .appFooter { background-color:#000 !important; }
+.portfolios-with-data-page .appFooter .footer-title,
+.portfolios-with-data-page .form-check .form-check-label { color:#fff !important; }
+.portfolios-with-data-page .appBottomMenu { background-color:#000 !important; }
+.portfolios-with-data-page .appBottomMenu .item .icon,
+.portfolios-with-data-page .appBottomMenu .item ion-icon { color:#fff !important; }
+.portfolios-with-data-page .appBottomMenu .item:hover .icon,
+.portfolios-with-data-page .appBottomMenu .item:hover ion-icon,
+.portfolios-with-data-page .appBottomMenu .item:hover strong { color:#fff !important; }
+.portfolios-with-data-page .appBottomMenu .item strong { color:#fff !important; }
+.portfolios-with-data-page .modal-content { background-color:#000 !important; }
+.portfolios-with-data-page .profileBox .in strong { color:#fff !important; }
+.portfolios-with-data-page .image-listview > li a.item { color:#fff !important; }
+.portfolios-with-data-page .form-group .label { color:#fff !important; }
+.portfolios-with-data-page .input-group .input-group-text { color:#fff !important; }
+.portfolios-with-data-page .card { background-color:#000 !important; color:#fff !important; }
+.portfolios-with-data-page .card .card-header { color:#fff !important; }
+.portfolios-with-data-page .btn-primary:hover,
+.portfolios-with-data-page .btn-primary:focus,
+.portfolios-with-data-page .btn-primary:active,
+.portfolios-with-data-page .btn-primary.active { background:#fff !important; border-color:#fff !important; color:#000 !important; }
+.portfolios-with-data-page .bg-primary { background:#4686ac !important; }
+
+body.portfolios-with-data-page { margin-top:56px !important; }
+.portfolios-with-data-page #appCapsule,
+.portfolios-with-data-page .container,
+.portfolios-with-data-page .container-xxl { padding-top:80px !important; }
+.portfolios-with-data-page .small-txt { font-size:14px; }
+
+/* Portfolios Page Styles */
+.portfolios-with-data-page .portfolios-container { padding:20px 16px; max-width:1200px; margin:0 auto; }
+.portfolios-with-data-page .investment-summary-card { background-color:#000; border-radius:12px; padding:0; margin-bottom:20px; }
+.portfolios-with-data-page .investment-summary-card .card-header { background-color:transparent; border-bottom:1px solid #333; padding:20px; font-size:20px; font-weight:600; text-align:left; color:#fff; }
+.portfolios-with-data-page .investment-summary-card .card-body { padding:20px; }
+.portfolios-with-data-page .balance-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+.portfolios-with-data-page .balance-row .label { font-size:16px; color:#fff; font-weight:400; }
+.portfolios-with-data-page .balance-row .value { font-size:32px; color:#fff; font-weight:600; }
+.portfolios-with-data-page .investments-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:0; }
+.portfolios-with-data-page .investments-row .label { font-size:16px; color:#fff; font-weight:400; }
+.portfolios-with-data-page .investments-row .badge { background-color:#5ba3c5 !important; border-radius:50% !important; width:28px !important; height:28px !important; min-width:28px !important; min-height:28px !important; display:flex !important; align-items:center !important; justify-content:center !important; font-size:14px !important; font-weight:600 !important; padding:0 !important; line-height:1 !important; }
+.portfolios-with-data-page .investment-summary-card .card-footer { background-color:transparent; border-top:1px solid #333; padding:20px; text-align:center; }
+.portfolios-with-data-page .btn-create-investment { background-color:#5ba3c5; color:#fff; border:none; border-radius:8px; padding:12px 24px; font-size:15px; font-weight:500; cursor:pointer; }
+.portfolios-with-data-page .investments-chart-card { background-color:#000; border-radius:12px; padding:20px; margin-bottom:20px; }
+.portfolios-with-data-page .portfolios-heading { text-align:center; color:#fff; font-size:28px; font-weight:600; margin:30px 0 20px 0; }
+
+/* Portfolio Cards Grid - Responsive */
+.portfolios-with-data-page .portfolio-cards-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+
+/* Portfolio card styles */
+.portfolios-with-data-page .portfolio-card { background-color:#000; border-radius:12px; padding:20px 30px; margin-bottom:20px; }
+.portfolios-with-data-page .portfolio-header { display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; border-bottom:1px solid #333; margin-bottom:16px; }
+.portfolios-with-data-page .portfolio-title { font-weight:700; font-size:18px; color:#fff; }
+.portfolios-with-data-page .portfolio-tag { background:#4a4a4a; color:#fff; font-size:12px; padding:4px 10px; border-radius:4px; }
+.portfolios-with-data-page .portfolio-info { text-align:center; margin-bottom:16px; }
+.portfolios-with-data-page .portfolio-info-item { margin:12px 0; }
+.portfolios-with-data-page .portfolio-info-label { color:#b8c0c7; font-size:13px; margin-bottom:4px; }
+.portfolios-with-data-page .portfolio-info-value { font-size:22px; font-weight:700; color:#fff; }
+.portfolios-with-data-page .portfolio-badges { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0; }
+.portfolios-with-data-page .portfolio-badge { text-align:left; }
+.portfolios-with-data-page .portfolio-badge-label { display:inline-block; background:#17a2b8; color:#fff; font-size:11px; padding:4px 10px; border-radius:16px; margin-bottom:6px; font-weight:500; }
+.portfolios-with-data-page .portfolio-badge-value { display:block; font-weight:400; color:#fff; font-size:13px; margin-top:4px; }
+
+/* Portfolio Card Buttons */
+.portfolios-with-data-page .portfolio-buttons { display:flex; flex-direction:column; margin:16px 0; }
+.portfolios-with-data-page .btn-add-funds,
+.portfolios-with-data-page .btn-withdraw { width:100%; border:none; border-radius:8px; padding:8px; font-weight:600; cursor:pointer; font-size:13px; }
+.portfolios-with-data-page .btn-add-funds { background:#4686ac; color:#fff; margin-bottom:15px; }
+.portfolios-with-data-page .btn-withdraw { background:#e91e63; color:#fff; }
+
+/* Bot section */
+.portfolios-with-data-page .portfolio-bot-section { display:flex; align-items:center; justify-content:center; margin-top:16px; gap:10px; }
+.portfolios-with-data-page .portfolio-bot-message { color:#e91e63; font-size:13px; margin:0; }
+.portfolios-with-data-page .btn-purchase-bot { background:transparent; color:#fff; border:2px solid #fff; padding:6px 16px; font-size:12px; font-weight:500; border-radius:6px; cursor:pointer; white-space:nowrap; }
+
+/* Sidebar blur effect */
+body.modal-open:has(.modal.panelbox.show) .portfolios-with-data-page #appCapsule { filter:blur(2px) !important; -webkit-filter:blur(2px) !important; }
+.portfolios-with-data-page .modal.panelbox .modal-dialog { margin:0 !important; margin-top:56px !important; height:calc(100vh - 56px) !important; }
+.portfolios-with-data-page .modal.panelbox .profileBox { position:sticky !important; top:0 !important; background-color:#1c1c1e !important; z-index:10 !important; }
+.portfolios-with-data-page img,
+.portfolios-with-data-page svg { vertical-align:middle !important; }
+
+/* Warning Modal Styling */
+.portfolios-with-data-page #warningModal .modal-content { background-color:#fff !important; border-radius:16px !important; padding:50px 40px 30px 40px !important; border:none !important; box-shadow:0 10px 40px rgba(0,0,0,0.2) !important; }
+.portfolios-with-data-page #warningModal .modal-body { padding:0 !important; text-align:center !important; }
+.portfolios-with-data-page #warningModal .modal-header { display:none !important; }
+.portfolios-with-data-page .warning-icon-wrapper { margin-bottom:25px !important; display:flex !important; justify-content:center !important; }
+.portfolios-with-data-page .warning-circle { width:100px !important; height:100px !important; margin:0 auto !important; border:3px solid #f5a962 !important; border-radius:50% !important; display:flex !important; align-items:center !important; justify-content:center !important; background-color:#fff !important; }
+.portfolios-with-data-page .warning-svg { width:100px !important; height:100px !important; display:block !important; margin:0 auto !important; }
+.portfolios-with-data-page .warning-outer-circle { display:none !important; }
+.portfolios-with-data-page .warning-exclamation { fill:#f5a962 !important; font-size:48px !important; font-weight:bold !important; text-anchor:middle !important; font-family:Arial, sans-serif !important; }
+.portfolios-with-data-page .warning-title { font-size:28px !important; font-weight:400 !important; color:#6b6b6b !important; margin-bottom:8px !important; text-align:center !important; }
+.portfolios-with-data-page .warning-message { font-size:15px !important; color:#a8a8a8 !important; margin-bottom:35px !important; text-align:center !important; }
+.portfolios-with-data-page .warning-modal-footer { display:flex !important; justify-content:flex-end !important; margin-top:20px !important; }
+.portfolios-with-data-page #warningModal .btn { width:auto !important; max-width:none !important; }
+.portfolios-with-data-page #warningModal .btn-warning-ok { background-color:#5ba3c5 !important; border:2px solid #5ba3c5 !important; border-radius:8px !important; color:#fff !important; font-size:15px !important; font-weight:500 !important; padding:10px 35px !important; cursor:pointer !important; transition:all 0.2s !important; width:auto !important; max-width:none !important; flex:0 0 auto !important; }
+.portfolios-with-data-page #warningModal .btn-warning-ok:hover { background-color:#6bb0ce !important; border-color:#6bb0ce !important; }
+
+/* Success Modal Styling */
+.portfolios-with-data-page #successModal .modal-content { background-color:#fff !important; border-radius:16px !important; padding:50px 40px 30px 40px !important; border:none !important; box-shadow:0 10px 40px rgba(0,0,0,0.2) !important; }
+.portfolios-with-data-page #successModal .modal-body { padding:0 !important; text-align:center !important; }
+.portfolios-with-data-page #successModal .modal-header { display:none !important; }
+.portfolios-with-data-page .success-icon-wrapper { margin-bottom:25px !important; display:flex !important; justify-content:center !important; }
+.portfolios-with-data-page .success-checkmark { width:100px !important; height:100px !important; margin:0 auto !important; border:3px solid #d4f4dd !important; border-radius:50% !important; display:flex !important; align-items:center !important; justify-content:center !important; background-color:#fff !important; }
+.portfolios-with-data-page .checkmark-svg { width:55px !important; height:55px !important; display:block !important; margin:0 auto !important; }
+.portfolios-with-data-page .checkmark-circle { display:none !important; }
+.portfolios-with-data-page .checkmark-check { stroke:#7bc96f !important; stroke-width:6 !important; stroke-linecap:round !important; stroke-linejoin:round !important; fill:none !important; }
+.portfolios-with-data-page .success-title { font-size:28px !important; font-weight:400 !important; color:#6b6b6b !important; margin-bottom:8px !important; text-align:center !important; }
+.portfolios-with-data-page .success-message { font-size:15px !important; color:#a8a8a8 !important; margin-bottom:35px !important; text-align:center !important; }
+.portfolios-with-data-page .success-modal-footer { display:flex !important; justify-content:flex-end !important; margin-top:20px !important; }
+.portfolios-with-data-page #successModal .btn { width:auto !important; max-width:none !important; }
+.portfolios-with-data-page #successModal .btn-success-ok { background-color:#5ba3c5 !important; border:2px solid #5ba3c5 !important; border-radius:8px !important; color:#fff !important; font-size:15px !important; font-weight:500 !important; padding:10px 35px !important; cursor:pointer !important; transition:all 0.2s !important; width:auto !important; max-width:none !important; flex:0 0 auto !important; }
+.portfolios-with-data-page #successModal .btn-success-ok:hover { background-color:#6bb0ce !important; border-color:#6bb0ce !important; }
+
+/* Standard modal styles (non-sidebar) */
+.portfolios-with-data-page .modal:not(.panelbox) .modal-dialog { max-width:90% !important; width:500px !important; margin:auto !important; position:relative !important; z-index:10000 !important; }
+.portfolios-with-data-page .modal:not(.panelbox) .modal-content { background-color:#000 !important; border-radius:8px !important; padding:0 !important; border:none !important; position:relative !important; box-shadow:0 4px 20px rgba(0,0,0,.5) !important; }
+.portfolios-with-data-page .modal:not(.panelbox) .modal-header { border-bottom:1px solid rgba(255,255,255,.2) !important; padding:20px 30px !important; display:flex !important; align-items:center !important; justify-content:space-between !important; background-color:#000 !important; border-radius:8px 8px 0 0 !important; }
+.portfolios-with-data-page .modal:not(.panelbox) .modal-header h3 { color:#fff !important; font-size:18px !important; font-weight:600 !important; margin:0 !important; flex:1 !important; text-align:left !important; }
+.portfolios-with-data-page .modal:not(.panelbox) .modal-header .btn-close,
+.portfolios-with-data-page .modal:not(.panelbox) .modal-header button[data-bs-dismiss="modal"] { background:transparent !important; color:#fff !important; font-size:24px !important; opacity:.7 !important; border:none !important; padding:0 !important; margin:0 !important; line-height:1 !important; width:30px !important; height:30px !important; cursor:pointer !important; }
+.portfolios-with-data-page .modal:not(.panelbox) .modal-header button[data-bs-dismiss="modal"]:hover { opacity:1 !important; }
+.portfolios-with-data-page .modal-dialog-centered { display:flex !important; align-items:center !important; min-height:calc(100% - 1rem) !important; }
+.portfolios-with-data-page .modal:not(.panelbox) .modal-body { padding:30px !important; }
+.portfolios-with-data-page .modal:not(.panelbox) .modal-body center { color:#888 !important; margin-bottom:30px !important; font-size:13px !important; text-align:center !important; letter-spacing:0.5px !important; }
+.portfolios-with-data-page .modal:not(.panelbox) .modal-body center b { color:#fff !important; font-size:20px !important; display:block !important; margin-top:6px !important; font-weight:400 !important; }
+.portfolios-with-data-page .modal:not(.panelbox) .modal-body label { color:#aaa !important; font-size:13px !important; margin-bottom:12px !important; display:block !important; font-weight:400 !important; }
+.portfolios-with-data-page .modal:not(.panelbox) .modal-body select,
+.portfolios-with-data-page .modal:not(.panelbox) .modal-body input[type="text"],
+.portfolios-with-data-page .modal:not(.panelbox) .modal-body input[type="number"] { width:100% !important; padding:10px 16px !important; background-color:#111 !important; border:1px solid #333 !important; border-radius:6px !important; color:#fff !important; font-size:15px !important; margin-bottom:20px !important; transition:all .2s ease !important; box-sizing:border-box !important; }
+.portfolios-with-data-page .modal:not(.panelbox) .modal-body select:focus,
+.portfolios-with-data-page .modal:not(.panelbox) .modal-body input:focus { outline:none !important; border-color:#555 !important; background-color:#1a1a1a !important; }
+.portfolios-with-data-page .modal:not(.panelbox) .modal-body .btn { width:100% !important; background-color:#5ba3c5 !important; border:none !important; border-radius:6px !important; color:#fff !important; font-size:15px !important; font-weight:500 !important; padding:14px !important; margin-top:10px !important; cursor:pointer !important; transition:background-color .2s ease !important; text-transform:none !important; letter-spacing:0 !important;}
+.portfolios-with-data-page .modal:not(.panelbox) .modal-body .btn:hover { background-color:#6bb0ce !important; }
+.portfolios-with-data-page .modal:not(.panelbox) .modal-body .btn.btn-danger { background-color:#e91e63 !important; }
+.portfolios-with-data-page .modal:not(.panelbox) .modal-body .btn.btn-danger:hover { background-color:#f02f75 !important; }
+
+/* Backdrop */
+body.modal-open .portfolios-with-data-page .modal-backdrop.show { background-color:rgba(0,0,0,.85) !important; }
+body.modal-open:has(.modal.panelbox.show) .portfolios-with-data-page .modal-backdrop { background-color:rgba(0,0,0,.5) !important; }
+
+/* Blur page when modal open */
+body.modal-open .portfolios-with-data-page #appCapsule,
+body.modal-open .portfolios-with-data-page .appBottomMenu { filter:blur(3px) !important; -webkit-filter:blur(3px) !important; }
+body.modal-open:has(.modal:not(.panelbox).show) .portfolios-with-data-page .appHeader { filter:blur(3px) !important; -webkit-filter:blur(3px) !important; }
+
+@media (max-width: 767px) {
+    .portfolios-with-data-page .portfolio-cards-grid { grid-template-columns:1fr; }
+    .portfolios-with-data-page .modal:not(.panelbox) .modal-dialog { margin-left:15px !important; margin-right:15px !important; width:calc(100% - 30px) !important; }
+}
+
+/* Mobile Responsive Styles for Portfolios-With-Data Page */
+@media (max-width: 768px) {
+    .portfolios-with-data-page .portfolios-container {
+        padding: 20px 16px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .portfolios-with-data-page .portfolios-container {
+        padding: 20px 12px !important;
+    }
+}
+
+/* ========================================
+   TRADES PAGE SPECIFIC STYLES (SCOPED)
+   ======================================== */
+
+
+.trades-page .transactions .item, .wallet-card {
+            background-color: #000 !important;
+            color : #fff !important;
+        }
+.trades-page .transactions .item .detail strong {
+            color: #fff !important
+        }
+.trades-page .wallet-card .balance .title, .table thead th {
+            color: #fff !important;
+        }
+.trades-page h1, h2, h3, h4, h5, h6 {
+            color: #fff !important;
+        }
+.trades-page .wallet-card .wallet-footer .item strong {
+            color: #fff !important;
+        }
+.trades-page .stat-box {
+            background: #000 !important;
+        }
+.trades-page .stat-box .value {
+            color: #fff
+        }
+.trades-page .section-heading .link, .form-group.basic .form-control, .form-group.basic .custom-select, .form-control, .form-select {
+            color: #4686ac;
+            background: transparent;
+        }
+.trades-page .user-card {
+            background:#000 !important;
+        }
+.trades-page .user-card strong {
+            color:#fff !important;
+        }
+.trades-page .appFooter {
+            background-color: #000 !important
+        }
+.trades-page .appFooter .footer-title, .form-check .form-check-label {
+            color: #fff !important
+        }
+.trades-page .appBottomMenu {
+            background-color: #000 !important;
+        }
+.trades-page .appBottomMenu .item .icon, .appBottomMenu .item ion-icon {
+            color: #fff !important;
+        }
+.trades-page .appBottomMenu .item:hover .icon, .appBottomMenu .item:hover ion-icon, .appBottomMenu .item:hover strong {
+            color: #fff !important;
+        }
+.trades-page .appBottomMenu .item strong {
+            color: #fff !important;
+        }
+.trades-page .modal-content {
+            background-color: #000 !important;
+        }
+.trades-page .profileBox .in strong {
+            color: #fff !important
+        }
+.trades-page .image-listview > li a.item {
+            color:#fff !important;
+        }
+.trades-page .form-group .label {
+            color: #fff !important
+        }
+.trades-page .input-group .input-group-text {
+            color: #fff !important
+        }
+.trades-page .card {
+            background-color: #000 !important;
+            color: #fff !important;
+        }
+.trades-page .card .card-header {
+            color:#fff !important;
+        }
+.trades-page .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active {
+    background: #fff !important;
+    border-color: #fff !important;
+    color: #000 !important;
+}
+.trades-page .bg-primary {
+    background:#4686ac !important;
+}
+
+    
+
+
+body { margin-top: 56px !important; }
+.trades-page .container.my-4.py-4 {
+    padding-left: 16px !important;
+    padding-right: 24px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 100% !important;
+}
+.trades-page .row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    margin-left: -8px !important;
+    margin-right: -8px !important;
+    justify-content: flex-start !important;
+}
+.trades-page .col-12.col-md-6.col-lg-4 {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    box-sizing: border-box !important;
+}
+/* Mobile: full width */
+@media (max-width: 767px) {
+.trades-page .col-12.col-md-6.col-lg-4 {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+}
+/* Tablet: 2 columns */
+@media (min-width: 768px) and (max-width: 991px) {
+.trades-page .col-12.col-md-6.col-lg-4 {
+        width: 50% !important;
+        max-width: 50% !important;
+        flex: 0 0 50% !important;
+    }
+}
+/* Desktop: 3 columns */
+@media (min-width: 992px) {
+.trades-page .col-12.col-md-6.col-lg-4 {
+        width: 33.333333% !important;
+        max-width: 33.333333% !important;
+        flex: 0 0 33.333333% !important;
+    }
+}
+.trades-page .card {
+    border: none !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    margin-bottom: 20px !important;
+    background-color: #000 !important;
+}
+.trades-page .card img {
+    width: 100%;
+    height: 120px !important;
+    object-fit: cover !important;
+    display: block !important;
+}
+.trades-page .card-body {
+    padding: 10px !important;
+}
+.trades-page .card-title {
+    font-size: 18px !important;
+    margin-bottom: 8px !important;
+    font-weight: 600 !important;
+    color: #fff !important;
+}
+.trades-page .card-title i {
+    color: #4686ac !important;
+    font-size: 14px !important;
+    margin-left: 5px !important;
+}
+.trades-page .badge.bg-secondary {
+    font-size: 10px !important;
+    padding: 5px 10px !important;
+    margin: 3px 0px !important;
+    border-radius: 16px !important;
+    background-color: #4a5568 !important;
+    font-weight: 500 !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+}
+.trades-page .mb-2 > div:first-child {
+    display: flex !important;
+    justify-content: space-between !important;
+    gap: 3px !important;
+}
+.trades-page .mb-2 > div:first-child .badge {
+    flex: 1 !important;
+}
+.trades-page .d-flex.justify-content-between {
+    font-size: 13px !important;
+    margin-bottom: 4px !important;
+    color: #ccc !important;
+    display: flex !important;
+    justify-content: space-between !important;
+}
+.trades-page .d-flex.justify-content-between span:first-child {
+    text-align: left !important;
+}
+.trades-page .d-flex.justify-content-between span:last-child {
+    text-align: right !important;
+}
+.trades-page .load-wrapp {
+    margin: 8px 0 !important;
+    margin-bottom: 16px !important;
+}
+.trades-page .load-wrapp p {
+    font-size: 12px !important;
+    margin-bottom: 4px !important;
+    color: #ccc !important;
+}
+.trades-page .btn.w-100 {
+    font-size: 13px !important;
+    padding: 10px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    margin-bottom: 15px !important;
+    width: 100% !important;
+}
+.trades-page .btn.w-100:last-child {
+    margin-bottom: 0 !important;
+}
+.trades-page .btn-primary {
+    background-color: #4686ac !important;
+    border: none !important;
+}
+.trades-page .btn-danger {
+    background-color: #e91e63 !important;
+    border: none !important;
+}
+/* Trade Modals - Only apply to modals that are not sidebars */
+.trades-page .modal:not(.panelbox) {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 9999 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+.trades-page .modal:not(.panelbox):not(.show) {
+    display: none !important;
+}
+.trades-page .modal:not(.panelbox) .modal-dialog {
+    max-width: 90% !important;
+    width: 500px !important;
+    margin: 0 !important;
+    position: relative !important;
+    z-index: 10000 !important;
+}
+/* Mobile view - add left and right margins */
+@media (max-width: 767px) {
+.trades-page .modal:not(.panelbox) .modal-dialog {
+        margin-left: 15px !important;
+        margin-right: 15px !important;
+        max-width: calc(100% - 30px) !important;
+    }
+}
+.trades-page .modal:not(.panelbox) .modal-content {
+    background-color: #000 !important;
+    border-radius: 8px !important;
+    padding: 0 !important;
+    border: none !important;
+    position: relative !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+}
+.trades-page .modal:not(.panelbox) .modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+    padding: 20px 30px !important;
+    margin-bottom: 0 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    background-color: #000 !important;
+    border-radius: 8px 8px 0 0 !important;
+}
+.trades-page .modal:not(.panelbox) .modal-header h3 {
+    color: #fff !important;
+    font-size: 18px !important;
+    margin: 0 !important;
+    font-weight: 600 !important;
+    flex: 1 !important;
+    text-align: left !important;
+}
+.modal:not(.panelbox) .modal-header .btn-close,
+.trades-page .modal:not(.panelbox) .modal-header button[data-bs-dismiss="modal"] {
+    background: transparent !important;
+    color: #fff !important;
+    font-size: 24px !important;
+    padding: 0 !important;
+    width: 30px !important;
+    height: 30px !important;
+    margin: 0 !important;
+    border: none !important;
+    opacity: 0.8 !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+}
+.trades-page .modal:not(.panelbox) .modal-header button[data-bs-dismiss="modal"]:hover {
+    opacity: 1 !important;
+}
+.trades-page .modal:not(.panelbox) .modal-body {
+    padding: 30px !important;
+}
+.trades-page .modal:not(.panelbox) .modal-body center {
+    color: #888 !important;
+    margin-bottom: 30px !important;
+    font-size: 13px !important;
+    text-align: center !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+}
+.trades-page .modal:not(.panelbox) .modal-body center b {
+    color: #fff !important;
+    font-size: 20px !important;
+    display: block !important;
+    margin-top: 6px !important;
+    font-weight: 400 !important;
+}
+.trades-page .modal:not(.panelbox) .modal-body label {
+    color: #aaa !important;
+    font-size: 13px !important;
+    margin-bottom: 12px !important;
+    display: block !important;
+    font-weight: 400 !important;
+}
+.modal:not(.panelbox) .modal-body input[type="text"],
+.trades-page .modal:not(.panelbox) .modal-body input[type="number"] {
+    width: 100% !important;
+    padding: 10px 16px !important;
+    background-color: #111 !important;
+    border: 1px solid #333 !important;
+    border-radius: 6px !important;
+    color: #fff !important;
+    font-size: 15px !important;
+    margin-bottom: 30px !important;
+    transition: border-color 0.2s !important;
+    box-sizing: border-box !important;
+}
+.trades-page .modal:not(.panelbox) .modal-body input:focus {
+    outline: none !important;
+    border-color: #555 !important;
+    background-color: #1a1a1a !important;
+}
+.trades-page .modal:not(.panelbox) .modal-body .btn {
+    width: 100% !important;
+    background-color: #5ba3c5 !important;
+    border: none !important;
+    border-radius: 6px !important;
+    color: #fff !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    padding: 12px 24px !important;
+    margin-top: 0 !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    line-height: 1.5 !important;
+}
+.trades-page .modal:not(.panelbox) .modal-body .btn:hover {
+    background-color: #6bb0ce !important;
+}
+.trades-page .modal:not(.panelbox) .modal-body .btn.btn-danger {
+    background-color: #e91e63 !important;
+}
+.trades-page .modal:not(.panelbox) .modal-body .btn.btn-danger:hover {
+    background-color: #f02f75 !important;
+}
+/* Modal backdrop - darker (blur applied via JS to #appCapsule) */
+.trades-page body.modal-open .modal-backdrop.show {
+    background-color: rgba(0, 0, 0, 0.85) !important;
+}
+/* Exception: Don't apply dark backdrop when sidebar is open */
+.trades-page body.modal-open:has(.modal.panelbox.show) .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+/* Blur effect for background when modal is open */
+body.modal-open #appCapsule,
+.trades-page body.modal-open .appBottomMenu {
+    filter: blur(3px) !important;
+    -webkit-filter: blur(3px) !important;
+}
+/* Only blur header when trade modals are open (not sidebar) */
+.trades-page body.modal-open:has(.modal:not(.panelbox).show) .appHeader {
+    filter: blur(3px) !important;
+    -webkit-filter: blur(3px) !important;
+}
+/* Blur background when sidebar is open (except header and footer) */
+.trades-page body.modal-open:has(.modal.panelbox.show) #appCapsule {
+    filter: blur(2px) !important;
+    -webkit-filter: blur(2px) !important;
+}
+/* Sidebar specific styling - starts below menu bar (56px) */
+.trades-page .modal.panelbox .modal-dialog {
+    margin: 0 !important;
+    margin-top: 56px !important;
+    height: calc(100vh - 56px) !important;
+}
+/* Fix sidebar close button to stay in place when scrolling */
+.trades-page .modal.panelbox .profileBox {
+    position: sticky !important;
+    top: 0 !important;
+    background-color: #1c1c1e !important;
+    z-index: 10 !important;
+}
+/* Success Modal Styling - Override all modal styles */
+.trades-page #successModal .modal-content {
+    background-color: #fff !important;
+    border-radius: 16px !important;
+    padding: 50px 40px 30px 40px !important;
+    border: none !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2) !important;
+}
+.trades-page #successModal .modal-body {
+    padding: 0 !important;
+    text-align: center !important;
+}
+.trades-page #successModal .modal-header {
+    display: none !important;
+}
+.trades-page .success-icon-wrapper {
+    margin-bottom: 20px !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+.trades-page .success-checkmark {
+    width: 70px !important;
+    height: 70px !important;
+    margin: 0 auto !important;
+    border: 3px solid #d4f4dd !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: #fff !important;
+}
+.trades-page .checkmark-svg {
+    width: 40px !important;
+    height: 40px !important;
+    display: block !important;
+    margin: 0 auto !important;
+}
+.trades-page .checkmark-circle {
+    display: none !important;
+}
+.trades-page .checkmark-check {
+    stroke: #7bc96f !important;
+    stroke-width: 6 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+    fill: none !important;
+}
+@keyframes stroke {
+    100% {
+        stroke-dashoffset: 0 !important;
+    }
+}
+.trades-page .success-title {
+    font-size: 22px !important;
+    font-weight: 400 !important;
+    color: #6b6b6b !important;
+    margin-bottom: 6px !important;
+    text-align: center !important;
+}
+.trades-page .success-message {
+    font-size: 14px !important;
+    color: #a8a8a8 !important;
+    margin-bottom: 25px !important;
+    text-align: center !important;
+}
+.trades-page .success-modal-footer {
+    display: flex !important;
+    justify-content: flex-end !important;
+    margin-top: 15px !important;
+}
+.trades-page #successModal .btn {
+    width: auto !important;
+    max-width: 33.333333% !important;
+}
+.trades-page #successModal .btn-success-ok {
+    background-color: #5ba3c5 !important;
+    border: 2px solid #5ba3c5 !important;
+    border-radius: 6px !important;
+    color: #fff !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    padding: 8px 30px !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    width: auto !important;
+    max-width: 33.333333% !important;
+    flex: 0 0 33.333333% !important;
+}
+.trades-page #successModal .btn-success-ok:hover {
+    background-color: #6bb0ce !important;
+    border-color: #6bb0ce !important;
+}
+
+
+
+.trades-page .bar {
+        float: left;
+        width: 100%;
+        height: 6px;
+        border-radius: 2px;
+        background-color: #4b9cdb;
+    }
+
+.trades-page .l-10 {
+        animation-delay: 1.56s;
+    }
+
+.trades-page .load-10 .bar {
+        animation: loadingJ 2s cubic-bezier(0.17, 0.37, 0.43, 0.67) infinite;
+    }
+
+@keyframes loadingJ {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(80px, 0);
+        background-color: #f5634a;
+        width: 25px;
+    }
+}
+
+
+
+.trades-page .toast {
+            position: fixed;
+            bottom: 20vh;
+            right: 0;
+            z-index: 6000;
+            color: #000;
+        }
+    
+
+
+.trades-page img, svg {
+            vertical-align: middle !important;
+        }
+    
+
+/* Mobile Responsive Styles for Trades Page */
+@media (max-width: 768px) {
+    .trades-page .container.my-4.py-4 {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .trades-page .container.my-4.py-4 {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+}
+
+/* ========================================
+   PAGE-SPECIFIC STYLES - CONSOLIDATED
+   Added by CSS consolidation process
+   ======================================== */
+
+/* INDEX PAGE - Styles extracted from inline <style> block */
+
+/* Sidebar blur effect when modal panel is open */
+body.modal-open:has(.modal.panelbox.show) #appCapsule {
+    filter: blur(2px) !important;
+    -webkit-filter: blur(2px) !important;
+}
+.modal.panelbox .modal-dialog {
+    margin: 0 !important;
+    margin-top: 56px !important;
+    height: calc(100vh - 56px) !important;
+}
+.modal.panelbox .profileBox {
+    position: sticky !important;
+    top: 0 !important;
+    background-color: #1c1c1e !important;
+    z-index: 10 !important;
+}
+
+/* General page dark theme styles */
+.transactions .item, .wallet-card{ background-color:#000!important;color:#fff!important;}
+.transactions .item .detail strong{ color:#fff!important }
+.wallet-card .balance .title, .table thead th{ color:#fff!important; }
+h1,h2,h3,h4,h5,h6{ color:#fff!important; }
+.card{ background-color:#000!important; color:#fff!important; border:none!important; border-radius:10px!important; }
+.card-body{ background-color:#000!important; border-radius:10px!important; }
+.table{ color:#fff!important; background-color:transparent!important; }
+.table thead, .table tbody, .table tr, .table td, .table th{ background-color:transparent!important; border-color:#333!important; color:#fff!important; }
+.table td b, .table th{ color:#fff!important; }
+.alert-info{ background-color:#10ac84!important; color:#fff!important; border:none!important; border-radius:8px!important; }
+.wallet-card .wallet-footer .item strong{ color:#fff!important; }
+.stat-box{ background:#000!important; margin-bottom:16px!important; width:100%!important;}
+.stat-box .value{ color:#fff }
+.section .row{ display:flex!important; flex-wrap:wrap!important; margin-left:-8px!important; margin-right:-8px!important; }
+.section .row>.col-6{ flex:0 0 50%!important; max-width:50%!important; padding-left:8px!important; padding-right:8px!important; }
+.form-group.basic .form-control, .form-group.basic .custom-select, .form-control, .form-select{
+    color:#fff!important; background-color:#111!important; border:1px solid #333!important; border-radius:6px!important; padding:16px 18px!important; font-size:15px!important;
+}
+.section-heading .link{ color:#fff!important; text-decoration:underline!important; border:none!important; background:transparent!important; padding:0!important; }
+.form-control:focus, .form-select:focus{ outline:none!important; border-color:#555!important; background-color:#1a1a1a!important; }
+.form-group.basic .label{ color:#aaa!important; font-size:13px!important; margin-bottom:10px!important; }
+.user-card{ background:#000!important; } .user-card strong{ color:#fff!important; }
+.appFooter{ background-color:#000!important } .appFooter .footer-title, .form-check .form-check-label{ color:#fff!important }
+.appBottomMenu{ background-color:#000!important; } .appBottomMenu .item .icon, .appBottomMenu .item ion-icon{ color:#fff!important; }
+.appBottomMenu .item:hover .icon, .appBottomMenu .item:hover ion-icon, .appBottomMenu .item:hover strong{ color:#fff!important; }
+.appBottomMenu .item strong{ color:#fff!important; }
+.modal-content{ background-color:#000!important; }
+.profileBox .in strong{ color:#fff!important }
+.image-listview>li a.item{ color:#fff!important; }
+.form-group .label{ color:#fff!important }
+.input-group .input-group-text{ color:#fff!important }
+.card .card-header{ color:#fff!important; }
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active{ background:#fff!important; border-color:#fff!important; color:#000!important; }
+.bg-primary{ background:#4686ac!important; }
+img, svg { vertical-align: middle !important; }
+
+/* Z-Index layering for modals */
+.appHeader, .appBottomMenu { z-index: 1040; }
+.modal-backdrop { z-index: 1050; }
+.modal { z-index: 1060; }
+
+/* Success Modal theming overrides */
+#successModal {
+    pointer-events: auto !important;
+}
+#successModal .modal-dialog {
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+#successModal .modal-content{
+    background-color:#fff!important;
+    border-radius:8px!important;
+    padding:50px 40px 30px 40px!important;
+    border:none!important;
+    box-shadow:0 10px 40px rgba(0,0,0,.2)!important;
+    pointer-events: auto !important;
+    position: relative !important;
+}
+#successModal .modal-body{
+    padding:0!important;
+    text-align:center!important;
+}
+#successModal .modal-header{
+    display:none!important;
+}
+.success-icon-wrapper{
+    margin-bottom:25px!important;
+    display:flex!important;
+    justify-content:center!important;
+}
+.success-checkmark{
+    width:100px!important;
+    height:100px!important;
+    margin:0 auto!important;
+    border:3px solid #d4f4dd!important;
+    border-radius:50%!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    background-color:#fff!important;
+}
+.checkmark-svg{
+    width:55px!important;
+    height:55px!important;
+    display:block!important;
+    margin:0 auto!important;
+}
+.checkmark-circle{
+    display:none!important;
+}
+.checkmark-check{
+    stroke:#7bc96f!important;
+    stroke-width:6!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+    fill:none!important;
+}
+.success-title{
+    font-size:28px!important;
+    font-weight:400!important;
+    color:#6b6b6b!important;
+    margin-bottom:8px!important;
+    text-align:center!important;
+}
+.success-message{
+    font-size:15px!important;
+    color:#a8a8a8!important;
+    margin-bottom:35px!important;
+    text-align:center!important;
+}
+.success-modal-footer{
+    display:flex!important;
+    justify-content:flex-end!important;
+    margin-top:20px!important;
+}
+#successModal .btn{
+    width:auto!important;
+    max-width:none!important;
+}
+#successModal .btn-success-ok{
+    background-color:#5ba3c5!important;
+    border:2px solid #5ba3c5!important;
+    border-radius:8px!important;
+    color:#fff!important;
+    font-size:15px!important;
+    font-weight:500!important;
+    padding:10px 35px!important;
+    cursor:pointer!important;
+    transition:all .2s!important;
+}
+#successModal .btn-success-ok:hover{
+    background-color:#6bb0ce!important;
+    border-color:#6bb0ce!important;
+}
+
+/* Active Trades table line loader animation */
+.line-loader {
+    width: 100%;
+    height: 6px;
+    background-color: #333;
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+}
+.line-loader::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #10ac84 0%, #2ecc71 50%, #10ac84 100%);
+    background-size: 200% 100%;
+    animation: lineLoaderAnimation 2s linear infinite;
+}
+
+@keyframes lineLoaderAnimation {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* ASSETS PAGE - Extracted and prefixed styles */
+
+/* Main theme and dark mode styles */
+.assetspg-transactions .item,
+.assetspg-wallet-card {
+    background-color: #000 !important;
+    color: #fff !important;
+}
+
+.assetspg-transactions .item .detail strong {
+    color: #fff !important;
+}
+
+.assetspg-wallet-card .balance .title {
+    color: #fff !important;
+}
+
+.assetspg-wallet-card .wallet-footer .item strong {
+    color: #fff !important;
+}
+
+.assetspg-stat-box {
+    background: #000 !important;
+}
+
+.assetspg-stat-box .value {
+    color: #fff;
+}
+
+.assetspg-user-card {
+    background: #000 !important;
+}
+
+.assetspg-user-card strong {
+    color: #fff !important;
+}
+
+/* Custom card grid and styling */
+@media screen and (min-width: 205px) {
+    .assetspg-card {
+        width: 46%;
+        margin: 5px;
+    }
+}
+
+@media screen and (min-width: 765px) {
+    .assetspg-card {
+        width: 23%;
+        margin: 5px;
+        margin-left: 20px;
+        padding: 90px;
+    }
+}
+
+.assetspg-card img {
+    width: 100%;
+    height: 150px;
+}
+
+.assetspg-card {
+    padding: 4px;
+    display: flex;
+}
+
+.assetspg-card-text {
+    text-align: center;
+    color: black;
+}
+
+.assetspg-card-price {
+    color: darkgrey;
+    display: inline;
+    font-weight: 300;
+}
+
+.assetspg-redtxt,
+.assetspg-greentxt {
+    display: inline;
+    float: right;
+    text-align: right;
+}
+
+.assetspg-smalltxt {
+    font-weight: 300;
+    text-align: center;
+    font-size: 14px;
+    color: darkgrey;
+}
+
+.assetspg-redtxt {
+    color: red;
+}
+
+.assetspg-greentxt {
+    color: green;
+}
+
+/* COPY TRADERS PAGE - Custom Classes */
+.copytraders-badge-row { text-align: center; }
+
+/* Container and spacing - match trades.html */
+.copy-traders-page .container.my-4.py-4 {
+    padding-left: 16px !important;
+    padding-right: 24px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 100% !important;
+}
+
+.copy-traders-page .row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    margin-left: -8px !important;
+    margin-right: -8px !important;
+    justify-content: flex-start !important;
+}
+
+/* Success Modal Styling for copy_traders */
+.copy-traders-page #successModal .modal-body {
+    padding: 0 !important;
+    text-align: center !important;
+}
+.copy-traders-page #successModal .modal-header {
+    display: none !important;
+}
+.copy-traders-page .success-icon-wrapper {
+    margin-bottom: 20px !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+.copy-traders-page .success-checkmark {
+    width: 70px !important;
+    height: 70px !important;
+    margin: 0 auto !important;
+    border: 3px solid #d4f4dd !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: #fff !important;
+}
+.copy-traders-page .checkmark-svg {
+    width: 40px !important;
+    height: 40px !important;
+    display: block !important;
+    margin: 0 auto !important;
+}
+.copy-traders-page .checkmark-circle {
+    display: none !important;
+}
+.copy-traders-page .checkmark-check {
+    stroke: #7bc96f !important;
+    stroke-width: 6 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+    fill: none !important;
+}
+.copy-traders-page .success-title {
+    font-size: 22px !important;
+    font-weight: 400 !important;
+    color: #6b6b6b !important;
+    margin-bottom: 6px !important;
+    text-align: center !important;
+}
+.copy-traders-page .success-message {
+    font-size: 14px !important;
+    color: #a8a8a8 !important;
+    margin-bottom: 25px !important;
+    text-align: center !important;
+}
+.copy-traders-page .success-modal-footer {
+    display: flex !important;
+    justify-content: flex-end !important;
+    margin-top: 15px !important;
+}
+.copy-traders-page #successModal .btn {
+    width: auto !important;
+    max-width: none !important;
+}
+.copy-traders-page #successModal .btn-success-ok {
+    background-color: #5ba3c5 !important;
+    border: 2px solid #5ba3c5 !important;
+    border-radius: 6px !important;
+    color: #fff !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    padding: 8px 30px !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    width: auto !important;
+    max-width: none !important;
+    flex: 0 0 auto !important;
+}
+.copy-traders-page #successModal .btn-success-ok:hover {
+    background-color: #6bb0ce !important;
+    border-color: #6bb0ce !important;
+}
+
+.copy-traders-page .col-12,
+.copy-traders-page .col-md-6,
+.copy-traders-page .col-lg-4 {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    box-sizing: border-box !important;
+}
+
+/* Modal styles - Same as trades.html */
+.copy-traders-page .modal:not(.panelbox) {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 9999 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+.copy-traders-page .modal:not(.panelbox):not(.show) {
+    display: none !important;
+}
+.copy-traders-page .modal:not(.panelbox) .modal-dialog {
+    max-width: 90% !important;
+    width: 500px !important;
+    margin: 0 !important;
+    position: relative !important;
+    z-index: 10000 !important;
+}
+@media (max-width: 767px) {
+    .copy-traders-page .modal:not(.panelbox) .modal-dialog {
+        margin-left: 15px !important;
+        margin-right: 15px !important;
+        max-width: calc(100% - 30px) !important;
+    }
+}
+.copy-traders-page .modal:not(.panelbox) .modal-content {
+    background-color: #000 !important;
+    border-radius: 8px !important;
+    padding: 0 !important;
+    border: none !important;
+    position: relative !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+}
+.copy-traders-page .modal:not(.panelbox) .modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+    padding: 20px 30px !important;
+    margin-bottom: 0 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    background-color: #000 !important;
+    border-radius: 8px 8px 0 0 !important;
+}
+.copy-traders-page .modal:not(.panelbox) .modal-header h3 {
+    color: #fff !important;
+    font-size: 18px !important;
+    margin: 0 !important;
+    font-weight: 600 !important;
+    flex: 1 !important;
+    text-align: left !important;
+}
+.copy-traders-page .modal:not(.panelbox) .modal-header button[data-bs-dismiss="modal"] {
+    background: transparent !important;
+    color: #fff !important;
+    font-size: 24px !important;
+    padding: 0 !important;
+    width: 30px !important;
+    height: 30px !important;
+    margin: 0 !important;
+    border: none !important;
+    opacity: 0.8 !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+}
+.copy-traders-page .modal:not(.panelbox) .modal-header button[data-bs-dismiss="modal"]:hover {
+    opacity: 1 !important;
+}
+.copy-traders-page .modal:not(.panelbox) .modal-body {
+    padding: 30px !important;
+}
+.copy-traders-page .modal:not(.panelbox) .modal-body center {
+    color: #888 !important;
+    margin-bottom: 30px !important;
+    font-size: 13px !important;
+    text-align: center !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+}
+.copy-traders-page .modal:not(.panelbox) .modal-body center b {
+    color: #fff !important;
+    font-size: 20px !important;
+    display: block !important;
+    margin-top: 6px !important;
+    font-weight: 400 !important;
+}
+.copy-traders-page .modal:not(.panelbox) .modal-body label {
+    color: #aaa !important;
+    font-size: 13px !important;
+    margin-bottom: 12px !important;
+    display: block !important;
+    font-weight: 400 !important;
+}
+.copy-traders-page .modal:not(.panelbox) .modal-body input[type="text"],
+.copy-traders-page .modal:not(.panelbox) .modal-body input[type="number"] {
+    width: 100% !important;
+    padding: 10px 16px !important;
+    background-color: #111 !important;
+    border: 1px solid #333 !important;
+    border-radius: 6px !important;
+    color: #fff !important;
+    font-size: 15px !important;
+    margin-bottom: 30px !important;
+    transition: border-color 0.2s !important;
+    box-sizing: border-box !important;
+}
+.copy-traders-page .modal:not(.panelbox) .modal-body input:focus {
+    outline: none !important;
+    border-color: #555 !important;
+    background-color: #1a1a1a !important;
+}
+.copy-traders-page .modal:not(.panelbox) .modal-body .btn {
+    width: 100% !important;
+    background-color: #5ba3c5 !important;
+    border: none !important;
+    border-radius: 6px !important;
+    color: #fff !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    padding: 12px 24px !important;
+    margin-top: 0 !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    line-height: 1.5 !important;
+}
+.copy-traders-page .modal:not(.panelbox) .modal-body .btn:hover {
+    background-color: #6bb0ce !important;
+}
+.copy-traders-page .modal:not(.panelbox) .modal-body .btn.btn-danger {
+    background-color: #e91e63 !important;
+}
+.copy-traders-page .modal:not(.panelbox) .modal-body .btn.btn-danger:hover {
+    background-color: #f02f75 !important;
+}
+/* Modal backdrop */
+.copy-traders-page body.modal-open .modal-backdrop.show {
+    background-color: rgba(0, 0, 0, 0.85) !important;
+}
+.copy-traders-page body.modal-open:has(.modal.panelbox.show) .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+/* Blur effect for background when modal is open */
+.copy-traders-page body.modal-open #appCapsule,
+.copy-traders-page body.modal-open .appBottomMenu {
+    filter: blur(3px) !important;
+    -webkit-filter: blur(3px) !important;
+}
+.copy-traders-page body.modal-open:has(.modal:not(.panelbox).show) .appHeader {
+    filter: blur(3px) !important;
+    -webkit-filter: blur(3px) !important;
+}
+.copy-traders-page body.modal-open:has(.modal.panelbox.show) #appCapsule {
+    filter: blur(2px) !important;
+    -webkit-filter: blur(2px) !important;
+}
+/* Sidebar specific styling */
+.copy-traders-page .modal.panelbox .modal-dialog {
+    margin: 0 !important;
+    margin-top: 56px !important;
+    height: calc(100vh - 56px) !important;
+}
+.copy-traders-page .modal.panelbox .profileBox {
+    position: sticky !important;
+    top: 0 !important;
+    background-color: #1c1c1e !important;
+    z-index: 10 !important;
+}
+
+/* CREATE PORTFOLIO PAGE - Custom Classes */
+.createportfolio-create-investment-container { padding: 0 16px; max-width: 600px; margin: 0 auto; font-family: 'Poppins', sans-serif; }
+.createportfolio-create-investment-card { background-color: #000; border-radius: 8px; padding: 25px; margin-bottom: 20px; }
+.createportfolio-investment-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 12px; margin-bottom: 25px; }
+.createportfolio-investment-title { color: #fff; font-size: 16px; font-weight: 500; font-family: 'Poppins', sans-serif; }
+.createportfolio-investment-label { color: #888; font-size: 13px; font-weight: 500; font-family: 'Poppins', sans-serif; }
+.createportfolio-form-section-title { color: #fff; font-size: 16px; font-weight: 500; margin-bottom: 18px; font-family: 'Poppins', sans-serif; }
+.createportfolio-amount-input-wrapper { position: relative; margin-bottom: 10px; }
+.createportfolio-amount-input { width: 100%; background-color: transparent; border: 1px solid #555; border-radius: 6px; padding: 10px 60px 10px 16px; font-size: 15px; color: #4686ac; transition: border-color 0.3s; font-family: 'Poppins', sans-serif; }
+.createportfolio-amount-input:focus { outline: none; border-color: #4686ac; }
+.createportfolio-amount-input::placeholder { color: #555; font-family: 'Poppins', sans-serif; }
+.createportfolio-currency-label { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: #fff; font-size: 13px; font-weight: 500; font-family: 'Poppins', sans-serif; }
+.createportfolio-input-helper-text { color: #555; font-size: 11px; margin-top: 8px; margin-bottom: 20px; font-family: 'Poppins', sans-serif; }
+.createportfolio-select-plan-btn { background-color: #5ba3c5; color: #fff; border: none; border-radius: 6px; padding: 8px 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s; font-family: 'Poppins', sans-serif; }
+.createportfolio-select-plan-btn:hover { background-color: #6bb0ce; }
+
+
+/* INVOICE PAGE - Custom Classes */
+.invoice-invoice-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 0 16px; max-width: 1400px; margin: 0 auto; }
+@media (max-width: 991px) { .invoice-invoice-layout { grid-template-columns: 1fr; } }
+.invoice-invoice-card { background-color: #000; border-radius: 8px; padding: 30px; }
+.invoice-invoice-section { margin-bottom: 15px; }
+.invoice-invoice-label { color: #fff; font-size: 13px; font-weight: 600; margin-bottom: 5px; text-transform: uppercase; }
+.invoice-invoice-value { color: #fff; font-size: 13px; line-height: 1.4; }
+.invoice-pay-to-input { width: 100%; background-color: #fff; border: none; border-radius: 25px; padding: 12px 20px; font-size: 13px; color: #000; margin-bottom: 20px; }
+.invoice-pay-to-address { background-color: #fff; border-radius: 8px; padding: 4px 10px; margin-bottom: 10px; }
+.invoice-pay-to-address input { width: 100%; border: none; background: transparent; color: #000; font-size: 12px; outline: none; }
+.invoice-copy-btn { background-color: #6c757d; color: #fff; border: none; border-radius: 6px; padding: 4px 16px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.invoice-copy-btn:hover { background-color: #5a6268; }
+.invoice-invoice-divider { border-top: 1px solid #333; margin: 10px 0; }
+.invoice-history-card { background-color: #000; border-radius: 8px; padding: 30px; }
+.invoice-history-title { color: #fff; font-size: 14px; font-weight: 500; margin-bottom: 20px; }
+.invoice-history-table-wrapper { overflow-x: auto; }
+.invoice-history-table { width: 100%; border-collapse: collapse; }
+.invoice-history-table thead th { color: #fff; font-size: 13px; font-weight: 600; text-align: left; padding-bottom: 15px; border-bottom: 1px solid #333; }
+.invoice-history-table tbody td { color: #fff; font-size: 13px; padding: 15px 0; border-bottom: 1px solid #222; }
+.invoice-status-badge { font-size: 12px; font-weight: 500; }
+.invoice-status-pending { color: #ffc107; }
+.invoice-status-win { color: #28a745; }
+.invoice-status-completed { color: #17a2b8; }
+
+/* KYC PAGE - Custom Classes */
+#verify-modal .modal-header .modal-title { font-size: 18px; font-weight: 500; }
+#verify-modal .modal-body { padding-left: 30px; padding-right: 30px; }
+.modal.action-sheet .kyc-file-input { background-color: #fff; border: 1px solid #ccc; border-radius: 4px; padding: 4px 14px; font-size: 14px; color: #000; width: 100%; margin: 0 auto; text-align: left; }
+.modal.action-sheet .kyc-file-input::file-selector-button { background-color: #4686ac; color: #fff; border: none; border-radius: 4px; padding: 6px 16px; font-size: 13px; font-weight: 500; cursor: pointer; margin-right: 10px; }
+.modal.action-sheet .kyc-btn-verify-account { background-color: #8a9ba8; color: #000; border: none; border-radius: 8px; padding: 10px 30px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: block; margin: 0 auto; width: auto; }
+.modal.action-sheet .kyc-btn-verify-account:hover { background-color: #5ba3c5; }
+.kyc-success-modal-content { background-color: #fff !important; border-radius: 16px !important; padding: 20px; text-align: center; }
+.kyc-success-icon-wrapper { margin: 20px 0; display: flex; justify-content: center; }
+.kyc-success-checkmark { width: 80px; height: 80px; }
+.kyc-checkmark-svg { width: 100%; height: 100%; }
+.kyc-checkmark-circle { stroke: #7bc96f; stroke-width: 2; stroke-dasharray: 166; stroke-dashoffset: 166; animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards; }
+.kyc-checkmark-check { stroke: #7bc96f; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 48; stroke-dashoffset: 48; animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards; }
+.kyc-success-title { font-size: 28px; font-weight: 600; color: #000; margin: 20px 0 10px 0; }
+.kyc-success-message { font-size: 15px; color: #666; margin-bottom: 30px; }
+.kyc-success-modal-footer { display: flex; justify-content: flex-end; }
+.kyc-btn-success-ok { background-color: #5ba3c5; color: #fff; border: none; border-radius: 8px; padding: 10px 40px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.kyc-btn-success-ok:hover { background-color: #4686ac; }
+.kyc-container { padding: 0 16px; max-width: 600px; margin: 0 auto; font-family: 'Poppins', sans-serif; }
+.kyc-card { background-color: #000; border-radius: 8px; padding: 25px; margin-bottom: 20px; }
+.kyc-header { font-size: 16px; font-weight: 500; color: #fff; margin-bottom: 25px; padding-bottom: 12px; border-bottom: 1px solid #333; }
+.kyc-message-box { background-color: #8a9ba8; color: #fff; padding: 20px; border-radius: 6px; margin-bottom: 20px; font-size: 14px; line-height: 1.6; text-align: center; }
+.kyc-btn-verify { background-color: #e91e63; color: #fff; border: none; border-radius: 6px; padding: 8px 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s; display: block; margin: 0 auto; }
+.kyc-btn-verify:hover { background-color: #c2185b; }
+.kyc-toast { position: fixed; bottom: 20vh; right: 0; z-index: 6000; color: #000; }
+
+
+/* PLANS PAGE - Custom Classes */
+.plans-plans-container { padding: 0 16px; max-width: 1400px; margin: 0 auto; }
+.plans-plans-title { text-align: center; color: #fff; font-size: 24px; font-weight: 600; margin-bottom: 30px; }
+.plans-plans-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; margin-bottom: 30px; }
+.plans-plans-grid-bottom { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 1000px; margin: 0 auto; }
+.plans-plan-card { background-color: #000; border: 1px solid #333; border-radius: 0; padding: 25px 20px; text-align: center; transition: all 0.3s; }
+.plans-plan-card:hover { border-color: #4686ac; transform: translateY(-5px); }
+.plans-plan-name { color: #888; font-size: 16px; font-weight: 500; margin-bottom: 10px; }
+.plans-plan-percentage { color: #fff; font-size: 32px; font-weight: 700; margin-bottom: 15px; }
+.plans-plan-referral { color: #888; font-size: 12px; margin-bottom: 5px; }
+.plans-plan-referral-value { color: #5ba3c5; font-weight: 600; }
+.plans-plan-divider { width: 100%; height: 1px; background: linear-gradient(to right, transparent, #4686ac, transparent); margin: 15px 0; }
+.plans-plan-details { text-align: left; }
+.plans-plan-details ul { list-style-type: disc; padding-left: 20px; margin: 0; }
+.plans-plan-detail-item { margin-bottom: 12px; font-size: 13px; color: #888; }
+.plans-plan-detail-label { color: #fff; margin-right: 5px; }
+.plans-plan-detail-value { color: #888; }
+.plans-plan-choose-btn { width: 100%; background-color: #5ba3c5; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s; margin-top: 15px; }
+.plans-plan-choose-btn:hover { background-color: #6bb0ce; }
+.plans-success-icon-wrapper { margin-bottom: 25px !important; display: flex !important; justify-content: center !important; }
+.plans-success-checkmark { width: 100px !important; height: 100px !important; margin: 0 auto !important; border: 3px solid #d4f4dd !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; background-color: #fff !important; }
+.plans-checkmark-svg { width: 55px !important; height: 55px !important; display: block !important; margin: 0 auto !important; }
+.plans-checkmark-circle { display: none !important; }
+.plans-checkmark-check { stroke: #7bc96f !important; stroke-width: 6 !important; stroke-linecap: round !important; stroke-linejoin: round !important; fill: none !important; }
+.plans-success-title { font-size: 28px !important; font-weight: 400 !important; color: #6b6b6b !important; margin-bottom: 8px !important; text-align: center !important; }
+.plans-success-message { font-size: 15px !important; color: #a8a8a8 !important; margin-bottom: 35px !important; text-align: center !important; }
+.plans-success-modal-footer { display: flex !important; justify-content: flex-end !important; margin-top: 20px !important; }
+#successModal .plans-btn-success-ok { background-color: #5ba3c5 !important; border: 2px solid #5ba3c5 !important; border-radius: 8px !important; color: #fff !important; font-size: 15px !important; font-weight: 500 !important; padding: 10px 35px !important; cursor: pointer !important; transition: all 0.2s !important; width: auto !important; max-width: none !important; flex: 0 0 auto !important; }
+#successModal .plans-btn-success-ok:hover { background-color: #6bb0ce !important; border-color: #6bb0ce !important; }
+@media (max-width: 1200px) { .plans-plans-grid { grid-template-columns: repeat(3, 1fr); } .plans-plans-grid-bottom { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 767px) { .plans-plans-grid, .plans-plans-grid-bottom { grid-template-columns: 1fr; } }
+
+/* PORTFOLIOS PAGE - Custom Classes */
+.portfolios-small-txt{ font-size:14px; }
+.portfolios-portfolios-container { padding: 20px 16px; max-width: 600px; margin: 0 auto; }
+.portfolios-investment-summary-card { background-color: #000; border-radius: 12px; padding: 0; margin-bottom: 20px; }
+.portfolios-investment-summary-card .card-header { background-color: transparent; border-bottom: 1px solid #333; padding: 20px; font-size: 20px; font-weight: 600; text-align: left; color: #fff; }
+.portfolios-investment-summary-card .card-body { padding: 20px; }
+.portfolios-balance-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.portfolios-balance-row .label { font-size: 16px; color: #fff; font-weight: 400; }
+.portfolios-balance-row .value { font-size: 32px; color: #fff; font-weight: 600; }
+.portfolios-investments-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0; }
+.portfolios-investments-row .label { font-size: 16px; color: #fff; font-weight: 400; }
+.portfolios-investments-row .badge { background-color: #5ba3c5 !important; border-radius: 50% !important; width: 28px !important; height: 28px !important; min-width: 28px !important; min-height: 28px !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 14px !important; font-weight: 600 !important; padding: 0 !important; line-height: 1 !important; }
+.portfolios-investment-summary-card .card-footer { background-color: transparent; border-top: 1px solid #333; padding: 20px; text-align: center; }
+.portfolios-btn-create-investment { background-color: #5ba3c5; color: #fff; border: none; border-radius: 8px; padding: 12px 24px; font-size: 15px; font-weight: 500; cursor: pointer; }
+.portfolios-investments-chart-card { background-color: #000; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+.portfolios-portfolios-heading { text-align: center; color: #fff; font-size: 28px; font-weight: 600; margin: 30px 0 20px 0; }
+.portfolios-no-portfolios-alert { background-color: #17a2b8 !important; color: #fff !important; border-radius: 8px; padding: 16px; text-align: center; font-size: 15px; }
+
+/* CHOOSE WITHDRAWAL PAGE - Custom Classes */
+.choosewithdrawal-withdrawal-container { padding: 0 16px; max-width: 600px; margin: 0 auto; font-family: 'Poppins', sans-serif; }
+.choosewithdrawal-withdrawal-card { background-color: #000 !important; border-radius: 8px !important; padding: 25px !important; width: 100%; margin-top: 80px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
+.choosewithdrawal-withdrawal-card h2 { color: #fff !important; font-size: 16px !important; font-weight: 500 !important; border-bottom: 1px solid #333 !important; padding-bottom: 12px !important; margin-bottom: 25px !important; }
+.choosewithdrawal-withdrawal-card .form-select { background-color: transparent !important; color: #fff !important; border: 1px solid #555 !important; padding: 10px 14px !important; font-size: 15px !important; border-radius: 6px !important; margin-bottom: 20px !important; width: 100% !important; }
+.choosewithdrawal-withdrawal-card .form-select:focus { border-color: #4686ac !important; box-shadow: none !important; outline: none !important; }
+.choosewithdrawal-withdrawal-card .form-select option { background-color: #000 !important; color: #fff !important; }
+.choosewithdrawal-withdrawal-card .btn { padding: 8px 20px !important; font-size: 14px !important; border-radius: 6px !important; background-color: #5ba3c5 !important; border: none !important; font-weight: 500 !important; cursor: pointer !important; }
+.choosewithdrawal-withdrawal-card .btn:hover { background-color: #6bb0ce !important; }
+.choosewithdrawal-toast { position: fixed; bottom: 20vh; right: 0; z-index: 6000; color: #000; }
+
+/* WITHDRAWAL BALANCE PAGE - Custom Classes */
+.withdrawalbalance-withdrawal-container { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 200px); padding: 20px; }
+.withdrawalbalance-withdrawal-card { background-color: #000 !important; border-radius: 8px !important; padding: 40px 50px !important; max-width: 600px; width: 100%; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
+.withdrawalbalance-withdrawal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333 !important; padding-bottom: 15px !important; margin-bottom: 30px !important; }
+.withdrawalbalance-withdrawal-title { color: #fff !important; font-size: 16px !important; font-weight: 500 !important; margin: 0 !important; }
+.withdrawalbalance-withdrawal-available { color: #fff !important; font-size: 16px !important; font-weight: 500 !important; margin: 0 !important; }
+.withdrawalbalance-withdrawal-card input, .withdrawalbalance-withdrawal-card select { background-color: transparent !important; color: #fff !important; border: 1px solid #555 !important; border-radius: 6px !important; padding: 10px 14px !important; font-size: 14px !important; width: 100% !important; transition: border-color 0.3s; }
+.withdrawalbalance-withdrawal-card input:focus, .withdrawalbalance-withdrawal-card select:focus { outline: none !important; border-color: #fff !important; box-shadow: none !important; }
+.withdrawalbalance-withdrawal-card select option { background-color: #000 !important; color: #fff !important; }
+.withdrawalbalance-withdrawal-card .btn { padding: 10px 24px !important; font-size: 14px !important; border-radius: 8px !important; background-color: #5ba3c5 !important; border: none !important; font-weight: 600 !important; cursor: pointer !important; color: #fff !important; }
+.withdrawalbalance-withdrawal-card .btn:hover { background-color: #6bb0ce !important; }
+
+/* TRADES PAGE - Progress Bar Animation */
+.trades-bar {
+    float: left;
+    width: 100%;
+    height: 6px;
+    border-radius: 2px;
+    background-color: #4b9cdb;
+}
+
+.trades-l-10 {
+    animation-delay: 1.56s;
+}
+
+.trades-load-10 .trades-bar {
+    animation: trades-loadingJ 2s cubic-bezier(0.17, 0.37, 0.43, 0.67) infinite;
+}
+
+@keyframes trades-loadingJ {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(80px, 0);
+        background-color: #f5634a;
+        width: 25px;
+    }
+}
+
+/* FUND PAGE - Custom Classes */
+.fund-container {
+    padding: 0 16px;
+    max-width: 600px;
+    margin: 0 auto;
+    font-family: 'Poppins', sans-serif;
+}
+
+.fund-card {
+    background-color: #000;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.fund-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    padding-bottom: 12px;
+    margin-bottom: 25px;
+}
+
+.fund-title {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.fund-label {
+    color: #888;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.currency-select-wrapper {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.currency-select-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #555;
+    z-index: 1;
+}
+
+.currency-select {
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid #555;
+    border-radius: 6px;
+    padding: 10px 14px 10px 60px;
+    font-size: 14px;
+    color: #fff;
+    transition: border-color 0.3s;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.currency-select:focus {
+    outline: none;
+    border-color: #4686ac;
+}
+
+.currency-select option {
+    background-color: #000;
+    color: #fff;
+}
+
+.form-section-title {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 18px;
+}
+
+.amount-input-wrapper {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.amount-input {
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid #555;
+    border-radius: 6px;
+    padding: 10px 60px 10px 16px;
+    font-size: 15px;
+    color: #4686ac;
+    transition: border-color 0.3s;
+}
+
+.amount-input:focus {
+    outline: none;
+    border-color: #4686ac;
+}
+
+.amount-input::placeholder {
+    color: #555;
+}
+
+.currency-label {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.input-helper-text {
+    color: #555;
+    font-size: 11px;
+    margin-top: 8px;
+    margin-bottom: 20px;
+}
+
+.deposit-btn {
+    background-color: #5ba3c5;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.deposit-btn:hover {
+    background-color: #6bb0ce;
+}
+
+.deposit-btn:active {
+    transform: translateY(0);
+}
+
+/* WITHDRAW PROFIT WALLET PAGE - Custom Classes */
+.withdrawprofit-container {
+    padding: 0 16px;
+    max-width: 600px;
+    margin: 0 auto;
+    font-family: 'Poppins', sans-serif;
+}
+
+.withdrawprofit-card {
+    background-color: #000;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.withdrawprofit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    padding-bottom: 12px;
+    margin-bottom: 25px;
+}
+
+.withdrawprofit-title {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.withdrawprofit-available {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.withdrawprofit-form-group {
+    margin-bottom: 18px;
+}
+
+.withdrawprofit-label {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.withdrawprofit-input {
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid #555;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #4686ac;
+    transition: border-color 0.3s;
+}
+
+.withdrawprofit-input:focus {
+    outline: none;
+    border-color: #4686ac;
+}
+
+.withdrawprofit-input::placeholder {
+    color: #555;
+}
+
+.withdrawprofit-select {
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid #555;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #fff;
+    transition: border-color 0.3s;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23fff' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+}
+
+.withdrawprofit-select:focus {
+    outline: none;
+    border-color: #4686ac;
+}
+
+.withdrawprofit-select option {
+    background-color: #000;
+    color: #fff;
+}
+
+.withdrawprofit-btn {
+    background-color: #5ba3c5;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+
+.withdrawprofit-btn:hover {
+    background-color: #6bb0ce;
+}

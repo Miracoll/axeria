@@ -1,0 +1,131 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div id="content">
+
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+        <h1 class="h3 mb-2 text-gray-800">Send Mail to Client</h1>
+        <!-- Page Heading -->
+
+        <style>
+            #search {
+                padding: 10px 30px;
+                outline: none;
+                border-radius: 5px;
+                border: 1px solid black;
+            }
+        </style>
+
+
+        <form method="POST">
+            <div class="form-group">
+                <input name="users" type="text" id="search" onkeyup="showResult(this.value)"
+                    placeholder="Search For Users" Required>
+
+            </div>
+
+        </form>
+
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Data Tables </h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Message</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Message</th>
+                            </tr>
+                        </tfoot>
+                        <tbody id="livesearch">
+                            {% for t in traders %}
+                            <tr>
+                                <td>{{t.first_name}} {{t.last_name}}</td>
+                                <td>{{t.email}}</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm"
+                                            onclick="openMessageModal('{{ t.email }}')">
+                                        Send Message
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <script>
+                        function openMessageModal(email) {
+                            document.getElementById("emailField").value = email;
+                            $('#messageModal').modal('show');
+                        }
+                    </script>                        
+
+                    <!-- Message Modal -->
+                    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Send Message</h5>
+                                    <button type="button" class="close" data-dismiss="modal">
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+
+                                <form method="POST" action="{% url 'admin-message' %}">
+                                    {% csrf_token %}
+                                    <div class="modal-body">
+
+                                        <div class="form-group">
+                                            <label><b>Email</b></label>
+                                            <input type="email" id="emailField" name="email" class="form-control" readonly required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label><b>Title</b></label>
+                                            <input type="text" name="title" class="form-control" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label><b>Message</b></label>
+                                            <textarea name="message" class="form-control" rows="5" required></textarea>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                            Close
+                                        </button>
+                                        <button type="submit" class="btn btn-primary">
+                                            Send
+                                        </button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+
+</div>
+{% endblock %}
