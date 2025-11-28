@@ -1,5 +1,6 @@
 {% extends 'manager/base.html' %}
 {% load static %}
+{% load humanize %}
 {% block content %}
 <div id="content">
 
@@ -13,9 +14,15 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Data Tables</h6>
-                <button class="btn btn-primary float-right" data-toggle="modal" data-target="#create-trade">
-                    Create Trade
-                </button>
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'refresh-user-trade' trade_id %}" class="btn btn-secondary float-right mr-2">
+                        Refresh
+                    </a>
+                    <button class="btn btn-primary float-right" data-toggle="modal" data-target="#create-trade">
+                        Create Trade
+                    </button>
+                </div>
+
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -28,6 +35,7 @@
                                 <th>Amount</th>
                                 <th>Status</th>
                                 <th>Date</th>
+                                <th>Profit</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>
@@ -39,6 +47,7 @@
                                 <th>Amount</th>
                                 <th>Status</th>
                                 <th>Date</th>
+                                <th>Profit</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>
@@ -47,16 +56,23 @@
                             {% for ut in user_trades %}
                             <tr>
                                 <td>{{ut.id}}</td>
-                                <td>AAPL</td>
-                                <td>100</td>
-                                <td>open</td>
-                                <td>Friday 28th of November 2025</td>
+                                <td>{{ut.ticker}}</td>
+                                <td>{{ut.amount|intcomma}}</td>
                                 <td>
-                                    <button class="btn btn-primary" data-toggle="modal" data-target="#edit-trade-{{ut.id}}"><i
-                                            class="fas fa-user-edit"></i></button>
+                                    {% if ut.is_open %}
+                                    <span class="badge badge-success">Open</span>
+                                    {% else %}
+                                    <span class="badge badge-danger">Closed</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ ut.opened_at|date:"l jS \o\f F Y" }}</td>
+                                <td>${{ut.profit|intcomma}}</td>
+                                <td>
+                                    <button class="btn btn-primary" data-toggle="modal"
+                                        data-target="#edit-trade-{{ut.id}}"><i class="fas fa-user-edit"></i></button>
                                 </td>
                                 <td>
-                                    <button class="btn btn-danger" onclick="deleteTrade(62)"><i
+                                    <button class="btn btn-danger" onclick="deleteTrade({{ut.id}})"><i
                                             class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
@@ -73,117 +89,120 @@
 </div>
 
 {% for ut in user_trades %}
-<!-- Edit Trade Modal - Trade 62 -->
-<div class="modal fade" id="edit-trade-{{ut.id}}" tabindex="-1" role="dialog" aria-labelledby="Edit users modal"
-    aria-hidden="true">
+<!-- Edit Trade Modal -->
+<div class="modal fade" id="edit-trade-{{ ut.id }}" tabindex="-1" role="dialog"
+    aria-labelledby="editTradeLabel-{{ ut.id }}" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
+
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Edit this user's trades</h5>
+                <h5 class="modal-title" id="editTradeLabel-{{ ut.id }}">Edit Trade #{{ ut.id }}</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+
             <div class="modal-body">
+                <form class="user" method="post" id="user-form-{{ ut.id }}">
+                    {% csrf_token %}
 
-                <form class="user" method="post" id="user-form-62">
+                    <input type="hidden" name="trade_id" value="{{ ut.id }}">
 
-                    <input type="hidden" name="trade_id" value='62' />
-
+                    <!-- Ticker -->
                     <div class="form-group my-2">
                         <label class="form-label">Ticker</label>
                         <select name="ticker" class="form-select form-control">
-                            <option value="AAPL" selected>AAPL - Apple Inc.</option>
-                            <option value="MSFT">MSFT - Microsoft Corporation</option>
-                            <option value="GOOGL">GOOGL - Alphabet Inc. (Google)</option>
-                            <option value="AMZN">AMZN - Amazon.com Inc.</option>
-                            <option value="TSLA">TSLA - Tesla Inc.</option>
-                            <option value="BRK.A">BRK.A - Berkshire Hathaway Inc.</option>
-                            <option value="NVDA">NVDA - NVIDIA Corporation</option>
-                            <option value="META">META - Meta Platforms Inc. (Facebook)</option>
-                            <option value="V">V - Visa Inc.</option>
-                            <option value="JNJ">JNJ - Johnson & Johnson</option>
-                            <option value="JPM">JPM - JPMorgan Chase & Co.</option>
-                            <option value="XOM">XOM - Exxon Mobil Corporation</option>
-                            <option value="NFLX">NFLX - Netflix Inc.</option>
-                            <option value="DIS">DIS - The Walt Disney Company</option>
-                            <option value="NKE">NKE - Nike Inc.</option>
-                            <option value="WMT">WMT - Walmart Inc.</option>
-                            <option value="PFE">PFE - Pfizer Inc.</option>
-                            <option value="KO">KO - The Coca-Cola Company</option>
-                            <option value="PEP">PEP - PepsiCo Inc.</option>
-                            <option value="T">T - AT&T Inc.</option>
-                            <option value="BABA">BABA - Alibaba Group Holding Ltd.</option>
-                            <option value="CSCO">CSCO - Cisco Systems Inc.</option>
-                            <option value="INTC">INTC - Intel Corporation</option>
-                            <option value="CRM">CRM - Salesforce.com Inc.</option>
-                            <option value="AMD">AMD - Advanced Micro Devices Inc.</option>
-                            <option value="SPY">SPY - SPDR S&P 500 ETF</option>
-                            <option value="VOO">VOO - Vanguard S&P 500 ETF</option>
-                            <option value="QQQ">QQQ - Invesco QQQ Trust</option>
-                            <option value="ARKK">ARKK - ARK Innovation ETF</option>
-                            <option value="BND">BND - Vanguard Total Bond Market ETF</option>
-                            <option value="SPX">SPX - S&P 500 Index</option>
-                            <option value="EURUSD">EURUSD - Euro/US Dollar</option>
-                            <option value="GBPUSD">GBPUSD - British Pound/US Dollar</option>
-                            <option value="USDJPY">USDJPY - US Dollar/Japanese Yen</option>
-                            <option value="AUDUSD">AUDUSD - Australian Dollar/US Dollar</option>
-                            <option value="USDCAD">USDCAD - US Dollar/Canadian Dollar</option>
-                            <option value="USDCHF">USDCHF - US Dollar/Swiss Franc</option>
-                            <option value="NZDUSD">NZDUSD - New Zealand Dollar/US Dollar</option>
-                            <option value="EURGBP">EURGBP - Euro/British Pound</option>
-                            <option value="EURJPY">EURJPY - Euro/Japanese Yen</option>
-                            <option value="GBPJPY">GBPJPY - British Pound/Japanese Yen</option>
-                            <option value="BTC-USD">BTC-USD - Bitcoin</option>
-                            <option value="ETH-USD">ETH-USD - Ethereum</option>
-                            <option value="LTC-USD">LTC-USD - Litecoin</option>
-                            <option value="XRP-USD">XRP-USD - Ripple (XRP)</option>
-                            <option value="ADA-USD">ADA-USD - Cardano</option>
-                            <option value="DOT-USD">DOT-USD - Polkadot</option>
-                            <option value="SOL-USD">SOL-USD - Solana</option>
-                            <option value="DOGE-USD">DOGE-USD - Dogecoin</option>
-                            <option value="BNB-USD">BNB-USD - Binance Coin</option>
-                            <option value="AVAX-USD">AVAX-USD - Avalanche</option>
-                            <option value="MATIC-USD">MATIC-USD - Polygon</option>
-                            <option value="SHIB-USD">SHIB-USD - Shiba Inu</option>
+
+                            <option value="BCH/BTC" {% if ut.ticker == "BCH/BTC" %}selected{% endif %}>BCH/BTC</option>
+                            <option value="BCH/EUR" {% if ut.ticker == "BCH/EUR" %}selected{% endif %}>BCH/EUR</option>
+                            <option value="BCH/GBP" {% if ut.ticker == "BCH/GBP" %}selected{% endif %}>BCH/GBP</option>
+                        
+                            <option value="BTC-EOS" {% if ut.ticker == "BTC-EOS" %}selected{% endif %}>BTC-EOS</option>
+                            <option value="BTC/EUR" {% if ut.ticker == "BTC/EUR" %}selected{% endif %}>BTC/EUR</option>
+                            <option value="BTC/GBP" {% if ut.ticker == "BTC/GBP" %}selected{% endif %}>BTC/GBP</option>
+                            <option value="BTC/USD" {% if ut.ticker == "BTC/USD" %}selected{% endif %}>BTC/USD</option>
+                            <option value="BTC/USDC" {% if ut.ticker == "BTC/USDC" %}selected{% endif %}>BTC/USDC</option>
+                            <option value="BTC/USDT" {% if ut.ticker == "BTC/USDT" %}selected{% endif %}>BTC/USDT</option>
+                        
+                            <option value="DOGE/USDT" {% if ut.ticker == "DOGE/USDT" %}selected{% endif %}>DOGE/USDT</option>
+                        
+                            <option value="EOS/BTC" {% if ut.ticker == "EOS/BTC" %}selected{% endif %}>EOS/BTC</option>
+                            <option value="EOS/EUR" {% if ut.ticker == "EOS/EUR" %}selected{% endif %}>EOS/EUR</option>
+                            <option value="EOS/USD" {% if ut.ticker == "EOS/USD" %}selected{% endif %}>EOS/USD</option>
+                        
+                            <option value="ETC/BTC" {% if ut.ticker == "ETC/BTC" %}selected{% endif %}>ETC/BTC</option>
+                            <option value="ETC/EUR" {% if ut.ticker == "ETC/EUR" %}selected{% endif %}>ETC/EUR</option>
+                            <option value="ETC/GBP" {% if ut.ticker == "ETC/GBP" %}selected{% endif %}>ETC/GBP</option>
+                            <option value="ETC/USD" {% if ut.ticker == "ETC/USD" %}selected{% endif %}>ETC/USD</option>
+                        
+                            <option value="ETH/BTC" {% if ut.ticker == "ETH/BTC" %}selected{% endif %}>ETH/BTC</option>
+                            <option value="ETH/EUR" {% if ut.ticker == "ETH/EUR" %}selected{% endif %}>ETH/EUR</option>
+                            <option value="ETH/GBP" {% if ut.ticker == "ETH/GBP" %}selected{% endif %}>ETH/GBP</option>
+                        
+                            <option value="LTC/USD" {% if ut.ticker == "LTC/USD" %}selected{% endif %}>LTC/USD</option>
+                            <option value="LTC/USDT" {% if ut.ticker == "LTC/USDT" %}selected{% endif %}>LTC/USDT</option>
+                        
+                            <option value="MKR/BTC" {% if ut.ticker == "MKR/BTC" %}selected{% endif %}>MKR/BTC</option>
+                            <option value="PCP-BTC" {% if ut.ticker == "PCP-BTC" %}selected{% endif %}>PCP-BTC</option>
+                            <option value="REP/BTC" {% if ut.ticker == "REP/BTC" %}selected{% endif %}>REP/BTC</option>
+                        
+                            <option value="SHIB/USDT" {% if ut.ticker == "SHIB/USDT" %}selected{% endif %}>SHIB/USDT</option>
+                        
+                            <option value="TRX/USDT" {% if ut.ticker == "TRX/USDT" %}selected{% endif %}>TRX/USDT</option>
+                            <option value="TRX/GBP" {% if ut.ticker == "TRX/GBP" %}selected{% endif %}>TRX/GBP</option>
+                        
+                            <option value="XAU/USD" {% if ut.ticker == "XAU/USD" %}selected{% endif %}>XAU/USD</option>
+                        
+                            <option value="XLM/BTC" {% if ut.ticker == "XLM/BTC" %}selected{% endif %}>XLM/BTC</option>
+                            <option value="XLM/EUR" {% if ut.ticker == "XLM/EUR" %}selected{% endif %}>XLM/EUR</option>
+                            <option value="XLM/USD" {% if ut.ticker == "XLM/USD" %}selected{% endif %}>XLM/USD</option>
+                        
+                            <option value="XRP/USDT" {% if ut.ticker == "XRP/USDT" %}selected{% endif %}>XRP/USDT</option>
+                            <option value="XRP/BTC" {% if ut.ticker == "XRP/BTC" %}selected{% endif %}>XRP/BTC</option>
+                            <option value="XRP/EUR" {% if ut.ticker == "XRP/EUR" %}selected{% endif %}>XRP/EUR</option>
+                            <option value="XRP/USD" {% if ut.ticker == "XRP/USD" %}selected{% endif %}>XRP/USD</option>
+                        
+                            <option value="ZEC/BTC" {% if ut.ticker == "ZEC/BTC" %}selected{% endif %}>ZEC/BTC</option>
+                            <option value="ZRX/BTC" {% if ut.ticker == "ZRX/BTC" %}selected{% endif %}>ZRX/BTC</option>
+                            <option value="ZRX/EUR" {% if ut.ticker == "ZRX/EUR" %}selected{% endif %}>ZRX/EUR</option>
+                            <option value="ZRX/USD" {% if ut.ticker == "ZRX/USD" %}selected{% endif %}>ZRX/USD</option>
+                        
                         </select>
+                        
                     </div>
 
+                    <!-- Amount -->
                     <div class="form-group my-2">
                         <label class="form-label">Amount</label>
-                        <input type="number" class="form-control" name="amount" value="100" required />
+                        <input type="number" class="form-control" name="amount" value="{{ ut.amount }}" required>
                     </div>
 
+                    <!-- Profit -->
                     <div class="form-group my-2">
                         <label class="form-label">Profit</label>
-                        <input type="number" class="form-control" name="profit" value="0" required />
+                        <input type="number" step="0.01" class="form-control" name="profit" value="{{ ut.profit }}" required>
                     </div>
 
+                    <!-- Status -->
                     <div class="form-group my-2">
                         <label class="form-label">Status</label>
                         <select name="status" class="form-select form-control" required>
-                            <option value="open" selected>Open</option>
-                            <option value="closed">Closed</option>
+                            <option value="open" {% if ut.is_open %}selected{% endif %}>Open</option>
+                            <option value="closed" {% if not ut.is_open %}selected{% endif %}>Closed</option>
                         </select>
                     </div>
 
-                    <div class="form-group my-2">
-                        <label class="form-label">Date</label>
-                        <input type="text" class="form-control" name="date" value="Friday 28th of November 2025"
-                            required />
-                    </div>
-
-                    <button type="submit" name="edit" class="btn btn-primary btn-user btn-block" id="user-submit">
+                    <button type="submit" name="edit" class="btn btn-primary btn-user btn-block">
                         Edit Trade
                     </button>
                     <hr>
-
                 </form>
-
             </div>
+
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
             </div>
+
         </div>
     </div>
 </div>
@@ -202,8 +221,15 @@
             </div>
             <div class="modal-body">
                 <form class="user" method="post" id="live-trade-form">
-                    <!-- Hidden input for user_id -->
-                    <input type="hidden" name="user_id" value="419" />
+                    {% csrf_token %}
+
+                    <div class="form-group my-2">
+                        <input type="radio" name="category" id="crypto" value="crypto" checked>
+                        <label for="crypto">Crypto</label>
+
+                        <input type="radio" name="category" id="stock" value="stock">
+                        <label for="crypto">Stock</label>
+                    </div>
 
                     <!-- Ticker/Symbol Selection -->
                     <div class="form-group my-2">
@@ -250,18 +276,18 @@
                             <option value="EURGBP">EURGBP - Euro/British Pound</option>
                             <option value="EURJPY">EURJPY - Euro/Japanese Yen</option>
                             <option value="GBPJPY">GBPJPY - British Pound/Japanese Yen</option>
-                            <option value="BTC-USD">BTC-USD - Bitcoin</option>
-                            <option value="ETH-USD">ETH-USD - Ethereum</option>
-                            <option value="LTC-USD">LTC-USD - Litecoin</option>
-                            <option value="XRP-USD">XRP-USD - Ripple (XRP)</option>
-                            <option value="ADA-USD">ADA-USD - Cardano</option>
-                            <option value="DOT-USD">DOT-USD - Polkadot</option>
-                            <option value="SOL-USD">SOL-USD - Solana</option>
-                            <option value="DOGE-USD">DOGE-USD - Dogecoin</option>
-                            <option value="BNB-USD">BNB-USD - Binance Coin</option>
-                            <option value="AVAX-USD">AVAX-USD - Avalanche</option>
-                            <option value="MATIC-USD">MATIC-USD - Polygon</option>
-                            <option value="SHIB-USD">SHIB-USD - Shiba Inu</option>
+                            <option value="BTC/USD">BTC/USD - Bitcoin</option>
+                            <option value="ETH/USD">ETH/USD - Ethereum</option>
+                            <option value="LTC/USD">LTC/USD - Litecoin</option>
+                            <option value="XRP/USD">XRP/USD - Ripple (XRP)</option>
+                            <option value="ADA/USD">ADA/USD - Cardano</option>
+                            <option value="DOT/USD">DOT/USD - Polkadot</option>
+                            <option value="SOL/USD">SOL/USD - Solana</option>
+                            <option value="DOGE/USD">DOGE/USD - Dogecoin</option>
+                            <option value="BNB/USD">BNB/USD - Binance Coin</option>
+                            <option value="AVAX/USD">AVAX/USD - Avalanche</option>
+                            <option value="MATIC/USD">MATIC/USD - Polygon</option>
+                            <option value="SHIB/USD">SHIB/USD - Shiba Inu</option>
                         </select>
                     </div>
 
@@ -270,23 +296,17 @@
                         <label class="form-label">Expert (Optional)</label>
                         <select name="expert" class="form-select form-control">
                             <option value="">None (Direct Trade)</option>
-                            <option value="33">Tener Genek</option>
-                            <option value="41">Danicrypto7 | crypto investor</option>
-                            <option value="42">Shariq Amin</option>
-                            <option value="43">Carsandinvesting</option>
-                            <option value="44">Tiger Crypto God</option>
-                            <option value="45">Crypto King</option>
-                            <option value="46">3Commas GPT 4</option>
-                            <option value="47">M8 Trader</option>
-                            <option value="48">Saadvloger2</option>
-                            <option value="49">Gey</option>
+                            {% for t in traders %}
+                            <option value="{{t.id}}">{{t.name}}</option>
+                            {% endfor %}
                         </select>
                     </div>
 
                     <!-- Amount -->
                     <div class="form-group my-2">
                         <label class="form-label">Amount</label>
-                        <input type="number" class="form-control" name="amount" value="" step="0.01" required />
+                        <input type="number" placeholder="Amount" class="form-control" name="amount" value=""
+                            step="0.01" required />
                     </div>
 
                     <!-- Interval (minutes) -->
@@ -304,7 +324,7 @@
                     <!-- Strike Rate -->
                     <div class="form-group my-2">
                         <label class="form-label">Strike Rate</label>
-                        <select name="strike" class="form-select form-control">
+                        <select name="striker" class="form-select form-control">
                             <option value="60% & 1%">60% & 1%</option>
                             <option value="29% & 1%">29% & 1%</option>
                             <option value="5% & 2%">5% & 2%</option>
@@ -326,7 +346,6 @@
                     <div class="form-group my-2">
                         <label class="form-label">Trade Outcome</label>
                         <select name="outcome" class="form-select form-control" required>
-                            <option value="random">Random</option>
                             <option value="win">Win</option>
                             <option value="loss">Loss</option>
                         </select>
@@ -347,22 +366,34 @@
 
 <script>
     function deleteTrade(id) {
-        swal('Delete trade', 'Are you sure you want to delete this trade', 'warning')
+        swal('Delete trade', 'Are you sure you want to delete this trade?', 'warning')
             .then((res) => {
                 if (res) {
+
                     $.ajax({
-                        type: 'post',
-                        url: 'ajax/delete-user-trade.php',
-                        data: { id },
+                        type: 'POST',
+                        url: "{% url 'delete-trade' %}",
+                        data: {
+                            id: id,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
                         success: function (data) {
-                            swal('Success', 'You have deleted this trade', 'success')
-                                .then(() => {
-                                    location.reload();
-                                })
+                            if (data.status === "success") {
+
+                                swal('Success', 'Trade deleted successfully', 'success')
+                                    .then(() => {
+                                        location.reload();
+                                    });
+
+                            } else {
+                                swal('Error', data.message, 'error');
+                            }
                         }
-                    })
+                    });
+
                 }
-            })
+            });
     }
 </script>
+
 {% endblock %}

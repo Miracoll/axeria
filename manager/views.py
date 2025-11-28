@@ -1,6 +1,7 @@
 from decimal import Decimal, InvalidOperation
 from io import BytesIO
 from django.conf import settings
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -9,9 +10,13 @@ from django.contrib.auth import update_session_auth_hash
 from django.core.files.base import ContentFile
 from django.db.models import Sum
 from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
 import qrcode
+import requests
+import yfinance as yf
 
-from account.models import Config, CopyTrade, IPAddress, InvestmentPlan, KycVerification, Payment, PaymentMethod, Portfolio, Trader, Transaction, User, Withdrawal
+from account.models import Config, CopyTrade, IPAddress, InvestmentPlan, KycVerification, LiveTrade, Payment, PaymentMethod, Portfolio, Trader, Transaction, User, Withdrawal
+from account.utils import add_transaction
 from utils.decorators import allowed_users
 
 # Create your views here.
@@ -41,46 +46,57 @@ def home(request):
 @allowed_users(allowed_roles=['admin'])
 def approve_payment(request):
     if request.method == "POST":
-        payment_id = request.POST.get("payment_id")
-        p = Payment.objects.get(id=payment_id)
-        p.status = "completed"
-        p.save()
+        payment_id = request.POST.get("id")
 
-        u = User.objects.get(id=p.user.id)
-        u.current_deposit += p.amount
-        u.save()
+        try:
+            p = Payment.objects.get(id=payment_id)
+            p.status = "completed"
+            p.save()
 
-        # ✅ Update corresponding Transaction if it exists
-        transaction = Transaction.objects.filter(
-            content_type=ContentType.objects.get_for_model(Payment),
-            object_id=p.id
-        ).first()
+            u = User.objects.get(id=p.user.id)
+            u.current_deposit += p.amount
+            u.save()
 
-        transaction.status = "completed"  # update status
-        transaction.save()
+            # ✅ Update corresponding Transaction if it exists
+            transaction = Transaction.objects.filter(
+                content_type=ContentType.objects.get_for_model(Payment),
+                object_id=p.id
+            ).first()
 
-        messages.success(request, "Payment approved successfully.")
-    return redirect("admin-home")
+            transaction.status = "completed"  # update status
+            transaction.save()
+            
+            return JsonResponse({"status": "success"})
+        except LiveTrade.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Payment not found"})
+
+    return JsonResponse({"status": "error", "message": "Invalid request"})
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def decline_payment(request):
     if request.method == "POST":
-        payment_id = request.POST.get("payment_id")
-        p = Payment.objects.get(id=payment_id)
-        p.status = "failed"
-        p.save()
+        payment_id = request.POST.get("id")
 
-        # ✅ Update corresponding Transaction if it exists
-        transaction = Transaction.objects.filter(
-            content_type=ContentType.objects.get_for_model(Payment),
-            object_id=p.id
-        ).first()
+        try:
+            p = Payment.objects.get(id=payment_id)
+            p.status = "failed"
+            p.save()
 
-        transaction.status = "completed"  # update status
-        transaction.save()
-        messages.error(request, "Payment declined.")
-    return redirect("admin-home")
+            # ✅ Update corresponding Transaction if it exists
+            transaction = Transaction.objects.filter(
+                content_type=ContentType.objects.get_for_model(Payment),
+                object_id=p.id
+            ).first()
+
+            transaction.status = "completed"  # update status
+            transaction.save()
+            
+            return JsonResponse({"status": "success"})
+        except LiveTrade.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Payment not found"})
+
+    return JsonResponse({"status": "error", "message": "Invalid request"})
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -94,44 +110,59 @@ def withdrawal(request):
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
-def approve_withdrawal(request, id):
-    w = Withdrawal.objects.get(id=id)
-    w.status = "approved"
-    w.save()
+def approve_withdrawal(request):
+    if request.method == "POST":
+        payment_id = request.POST.get("id")
 
-    u = User.objects.get(id=w.user.id)
-    u.current_deposit -= w.amount
-    u.save()
+        try:
+            w = Withdrawal.objects.get(id=payment_id)
+            w.status = "approved"
+            w.save()
 
-    # ✅ Update corresponding Transaction if it exists
-    transaction = Transaction.objects.filter(
-        content_type=ContentType.objects.get_for_model(Withdrawal),
-        object_id=w.id
-    ).first()
+            u = User.objects.get(id=w.user.id)
+            u.current_deposit -= w.amount
+            u.save()
 
-    transaction.status = "completed"  # update status
-    transaction.save()
-    messages.success(request, "Withdrawal approved")
-    return redirect('admin-withdrawal')
+            # ✅ Update corresponding Transaction if it exists
+            transaction = Transaction.objects.filter(
+                content_type=ContentType.objects.get_for_model(Withdrawal),
+                object_id=w.id
+            ).first()
+
+            transaction.status = "completed"  # update status
+            transaction.save()
+            
+            return JsonResponse({"status": "success"})
+        except LiveTrade.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Withdrawal not found"})
+
+    return JsonResponse({"status": "error", "message": "Invalid request"})
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
-def decline_withdrawal(request, id):
-    w = Withdrawal.objects.get(id=id)
-    w.status = "rejected"
-    w.save()
+def decline_withdrawal(request):
+    if request.method == "POST":
+        payment_id = request.POST.get("id")
 
-    # ✅ Update corresponding Transaction if it exists
-    transaction = Transaction.objects.filter(
-        content_type=ContentType.objects.get_for_model(Payment),
-        object_id=w.id
-    ).first()
+        try:
+            w = Withdrawal.objects.get(id=payment_id)
+            w.status = "rejected"
+            w.save()
 
-    transaction.status = "completed"  # update status
-    transaction.save()
+            # ✅ Update corresponding Transaction if it exists
+            transaction = Transaction.objects.filter(
+                content_type=ContentType.objects.get_for_model(Withdrawal),
+                object_id=w.id
+            ).first()
 
-    messages.error(request, "Withdrawal declined")
-    return redirect('admin-withdrawal')
+            transaction.status = "completed"  # update status
+            transaction.save()
+            
+            return JsonResponse({"status": "success"})
+        except LiveTrade.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Withdrawal not found"})
+
+    return JsonResponse({"status": "error", "message": "Invalid request"})
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -356,11 +387,161 @@ def manage_trade(request):
 @allowed_users(allowed_roles=['admin'])
 def user_trade(request, trade_id):
     trade = CopyTrade.objects.get(id=trade_id)
-    user_trades = CopyTrade.objects.filter(user=trade.user)
+    traders = Trader.objects.all()
+    user_trades = LiveTrade.objects.filter(user=trade.user).order_by('-opened_at')
+
+    if request.method == "POST" and "create_live_trade" in request.POST:
+        ticker = request.POST.get("ticker")
+        striker = request.POST.get("striker")
+        interval = request.POST.get("interval")
+        trade_type = request.POST.get("trade_type")
+        amount = request.POST.get("amount")
+        expert_id = request.POST.get("expert")
+        outcome = request.POST.get("outcome")
+        category = request.POST.get("category")
+
+        expert = Trader.objects.get(id=expert_id) if expert_id else None
+
+        print("Creating live trade with:", ticker, striker, interval, trade_type, amount, expert, outcome, category)
+
+        if category == "crypto":
+            api_symbol = ticker.replace("/", "")
+            api_url = f"https://api.binance.com/api/v3/ticker/price?symbol={api_symbol}"
+
+            try:
+                response = requests.get(api_url, timeout=5)
+                data = response.json()
+                entry_price = data["price"]
+            except:
+                messages.error(request, "Failed to fetch price.")
+                return redirect("admin-user-trade", trade_id=trade_id)
+        else:
+            try:
+                stock = yf.Ticker(ticker)
+                data = stock.history(period="1d")
+                price = data['Close'].iloc[-1]
+                entry_price =  price
+            except Exception as e:
+                messages.error(request, f"Failed to fetch stock price: {str(e)}")
+                return redirect("admin-user-trade", trade_id=trade_id)
+
+        trade = LiveTrade.objects.create(
+            user = trade.user,
+            ticker = ticker,
+            striker = striker,
+            interval = interval,
+            trade_type = trade_type,
+            amount = Decimal(amount),
+            trader = expert,
+            outcome = outcome,
+            entry_price=entry_price,
+        )
+
+        add_transaction(
+            type='live_trade',
+            amount=amount,
+            status='active',
+            user=trade.user,
+            related_obj=trade,
+        )
+
+        messages.success(request, "Trade created successfully.")
+        return redirect('admin-user-trade', trade_id=trade_id)
+    
+    elif request.method == "POST" and "edit" in request.POST:
+        ticker = request.POST.get("ticker")
+        amount = request.POST.get("amount")
+        profit = request.POST.get("profit")
+        trade_type = request.POST.get("status")
+        trader_id = request.POST.get("trade_id")
+
+        print("Editing live trade ID:", trader_id, "with:", ticker, amount, profit, trade_type)
+
+        try:
+            live_trade = LiveTrade.objects.get(id=trader_id)
+        except LiveTrade.DoesNotExist:
+            messages.error(request, "Live trade not found.")
+            return redirect('admin-user-trade', trade_id=trade_id)
+        
+        live_trade.ticker = ticker
+        live_trade.amount = Decimal(amount)
+        live_trade.profit = Decimal(profit)
+        live_trade.trade_type = True if trade_type == "open" else False
+        live_trade.save()
+
+        if live_trade.is_open:
+            # ✅ Update corresponding Transaction if it exists
+            transaction = Transaction.objects.filter(
+                content_type=ContentType.objects.get_for_model(LiveTrade),
+                object_id=live_trade.id
+            ).first()
+
+            transaction.status = "completed"  # update status
+            transaction.save()
+
+        messages.success(request, "Trade updated successfully.")
+        return redirect('admin-user-trade', trade_id=trade_id)
+
     context = {
         'user_trades': user_trades,
+        'traders': traders,
+        'trade_id': trade_id,
     }
     return render(request, 'manager/user_trade.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def refresh_user_trade(request, trade_id):
+    try:
+        user = CopyTrade.objects.get(id=trade_id).user
+        trades = LiveTrade.objects.filter(user=user)
+
+        for trade in trades:
+            if trade.closed_at <= timezone.now():  # trade is expired
+                if trade.category == "crypto":
+                    api_symbol = trade.ticker.replace("/", "")
+                    api_url = f"https://api.binance.com/api/v3/ticker/price?symbol={api_symbol}"
+
+                    try:
+                        response = requests.get(api_url, timeout=5)
+                        data = response.json()
+                        current_price = Decimal(data["price"])
+                    except:
+                        continue  # Skip if price fetch fails
+                else:
+                    try:
+                        stock = yf.Ticker(trade.ticker)
+                        data = stock.history(period="1d")
+                        price = data['Close'].iloc[-1]
+                        current_price = Decimal(price)
+                    except:
+                        continue  # Skip if price fetch fails
+                
+                # Close the trade
+                trade.exit_price = current_price
+                trade.is_open = False
+                trade.save()
+
+        messages.success(request, "Trades refreshed successfully.")
+        return redirect('admin-user-trade', trade_id=trade_id)
+    except User.DoesNotExist:
+        messages.error(request, "User not found.")
+        return redirect('admin-user-trade', trade_id=trade_id)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def delete_trade(request):
+    if request.method == "POST":
+        trade_id = request.POST.get("id")
+
+        try:
+            trade = LiveTrade.objects.get(id=trade_id)
+            trade.delete()
+            return JsonResponse({"status": "success"})
+        except LiveTrade.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Trade not found"})
+
+    return JsonResponse({"status": "error", "message": "Invalid request"})
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])

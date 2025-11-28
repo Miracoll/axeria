@@ -18,7 +18,7 @@
                             <th>Amount</th>
                             <th>Currency</th>
                             <th>Wallet Address</th>
-                            <th>Fee</th>
+                            <th>Total Amount</th>
                             <th>Fee Amount</th>
                             <th>Status</th>
                             <th>Approve</th>
@@ -32,7 +32,7 @@
                             <th>Amount</th>
                             <th>Currency</th>
                             <th>Wallet Address</th>
-                            <th>Fee</th>
+                            <th>Total Amount</th>
                             <th>Fee Amount</th>
                             <th>Status</th>
                             <th>Approve</th>
@@ -45,21 +45,17 @@
                             <td>{{w.user.first_name}} {{w.user.last_name}}</td>
                             <td>{{w.user.email}}</td>
 
-                            <td>${{w.available_for_withdraw}} out of {{w.amount}} </td>
+                            <td>${{w.amount}} </td>
                             <td>{{w.name}}</td>
                             <td>{{w.wallet_address}}</td>
-                            <td>${{w.amount}}</td>
+                            <td>${{w.available_for_withdraw}}</td>
                             <td>${{w.charges}}</td>
                             <td>{{w.status}}</td>
                             <td>
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#approveModal{{ w.id }}">
-                                    Approve
-                                </button>
+                              <button class="btn btn-primary" onclick="approveWithdrawal({{w.id}})"><i>&check;</i></button>
                             </td>
                             <td>
-                                <button type="button" class="btn border btn-light" data-toggle="modal" data-target="#declineModal{{ w.id }}">
-                                    <i>&times;</i>
-                                </button>
+                              <button class="btn btn-danger" onclick="disapproveWithdrawal({{w.id}})"><i>&times;</i></button>
                             </td>
 
                         </tr>
@@ -73,65 +69,65 @@
 
 </div>
 
-{% for w in withdraws %}
+<script>
+  function approveWithdrawal(id) {
+      swal('Approve withdrawal', 'Are you sure you want to approve this withdraw?', 'warning')
+          .then((res) => {
+              if (res) {
 
-<!-- ===================== APPROVE MODAL ===================== -->
-<div class="modal fade" id="approveModal{{ w.id }}" tabindex="-1" aria-labelledby="approveLabel{{ w.id }}" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      
-      <div class="modal-header">
-        <h5 class="modal-title" id="approveLabel{{ w.id }}">Approve Withdrawal</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
+                  $.ajax({
+                      type: 'POST',
+                      url: "{% url 'approve_withdrawal' %}",
+                      data: {
+                          id: id,
+                          csrfmiddlewaretoken: '{{ csrf_token }}'
+                      },
+                      success: function (data) {
+                          if (data.status === "success") {
 
-      <form method="POST" action="{% url 'approve_withdrawal' w.id %}">
-        {% csrf_token %}
-        <div class="modal-body">
-          <p>Are you sure you want to approve this withdrawal?</p>
-          <p><strong>Amount:</strong> ${{ w.available_for_withdraw }}</p>
-          <p><strong>User:</strong> {{ w.user.first_name }} {{ w.user.last_name }}</p>
-        </div>
+                              swal('Success', 'Payment approved successfully', 'success')
+                                  .then(() => {
+                                      location.reload();
+                                  });
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Confirm Approve</button>
-        </div>
-      </form>
+                          } else {
+                              swal('Error', data.message, 'error');
+                          }
+                      }
+                  });
 
-    </div>
-  </div>
-</div>
+              }
+          });
+  }
 
-<!-- ===================== DECLINE MODAL ===================== -->
-<div class="modal fade" id="declineModal{{ w.id }}" tabindex="-1" aria-labelledby="declineLabel{{ w.id }}" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
+  function disapproveWithdrawal(id) {
+      swal('Dispprove withdrawal', 'Are you sure you want to disapprove this withdraw?', 'warning')
+          .then((res) => {
+              if (res) {
 
-      <div class="modal-header">
-        <h5 class="modal-title" id="declineLabel{{ w.id }}">Decline Withdrawal</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
+                  $.ajax({
+                      type: 'POST',
+                      url: "{% url 'decline_withdrawal' %}",
+                      data: {
+                          id: id,
+                          csrfmiddlewaretoken: '{{ csrf_token }}'
+                      },
+                      success: function (data) {
+                          if (data.status === "success") {
 
-      <form method="POST" action="{% url 'decline_withdrawal' w.id %}">
-        {% csrf_token %}
-        <div class="modal-body">
-            <div class="form-group">
-                <label>Reason for decline</label>
-                <textarea name="reason" class="form-control" required placeholder="Enter reason..."></textarea>
-            </div>
-        </div>
+                              swal('Success', 'Withdraw declined', 'success')
+                                  .then(() => {
+                                      location.reload();
+                                  });
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-danger">Confirm Decline</button>
-        </div>
-      </form>
+                          } else {
+                              swal('Error', data.message, 'error');
+                          }
+                      }
+                  });
 
-    </div>
-  </div>
-</div>
-
-{% endfor %}
-
+              }
+          });
+  }
+</script>
 {% endblock %}

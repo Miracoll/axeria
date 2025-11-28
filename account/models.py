@@ -340,8 +340,14 @@ class LiveTrade(models.Model):
         ('sell', 'Sell'),
     ]
 
+    OUTCOME_CHIOCE = [
+        ('win', 'Win'),
+        ('lost', 'Lost'),
+        ('draw', 'Draw'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='live_trades')
-    category = models.CharField(max_length=50)
+    category = models.CharField(max_length=50, blank=True, null=True)
     ticker = models.CharField(max_length=20)
     striker = models.CharField(max_length=20)
     interval = models.CharField(max_length=10)   # e.g. "2" meaning 2 minutes
@@ -353,6 +359,9 @@ class LiveTrade(models.Model):
     closed_at = models.DateTimeField(blank=True, null=True)
     is_open = models.BooleanField(default=True)
     ref = models.UUIDField(default=uuid.uuid4, editable=False)
+    trader = models.ForeignKey(Trader, on_delete=models.SET_NULL, blank=True, null=True)
+    outcome = models.CharField(max_length=20, blank=True, null=True, choices=OUTCOME_CHIOCE)  # 'win', 'lost', etc.
+    profit = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
 
     def save(self, *args, **kwargs):
         # Auto-set closed_at on creation only

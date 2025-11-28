@@ -192,83 +192,14 @@
                                 
                                         <!-- Approve Button -->
                                         <td>
-                                            <button class='btn btn-primary'
-                                                data-toggle='modal' data-target='#approveModal{{p.id}}'>
-                                                <i>&check;</i>
-                                            </button>
+                                            <button class="btn btn-primary" onclick="approveDeposit({{p.id}})"><i>&check;</i></button>
                                         </td>
                                 
                                         <!-- Decline Button -->
                                         <td>
-                                            <button class='btn border btn-danger'
-                                                data-toggle='modal' data-target='#declineModal{{p.id}}'>
-                                                <i>&times;</i>
-                                            </button>
+                                            <button class="btn btn-danger" onclick="disapproveDeposit({{p.id}})"><i>&times;</i></button>
                                         </td>
                                     </tr>
-                                
-                                    <!-- ===================== APPROVE MODAL ===================== -->
-                                    <div class="modal fade" id="approveModal{{p.id}}" tabindex="-1" role="dialog">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                
-                                                <div class="modal-header bg-primary text-white">
-                                                    <h5 class="modal-title">Approve Payment</h5>
-                                                    <button type="button" class="close" data-dismiss="modal">
-                                                        <span>&times;</span>
-                                                    </button>
-                                                </div>
-                                
-                                                <form method="post" action="{% url 'approve-payment' %}">
-                                                    {% csrf_token %}
-                                                    <input type="hidden" name="payment_id" value="{{ p.id }}">
-                                
-                                                    <div class="modal-body">
-                                                        <p>Are you sure you want to approve the payment of 
-                                                           <strong>${{p.amount}}</strong> made by 
-                                                           <strong>{{p.user.first_name}}</strong>?
-                                                        </p>
-                                                    </div>
-                                
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                                        <button type="submit" name="approve" class="btn btn-primary">Approve</button>
-                                                    </div>
-                                                </form>
-                                
-                                            </div>
-                                        </div>
-                                    </div>
-                                
-                                    <!-- ===================== DECLINE MODAL ===================== -->
-                                    <div class="modal fade" id="declineModal{{p.id}}" tabindex="-1" role="dialog">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                
-                                                <div class="modal-header bg-danger text-white">
-                                                    <h5 class="modal-title">Decline Payment</h5>
-                                                    <button type="button" class="close" data-dismiss="modal">
-                                                        <span>&times;</span>
-                                                    </button>
-                                                </div>
-                                
-                                                <form method="post" action="{% url 'decline-payment' %}">
-                                                    {% csrf_token %}
-                                                    <input type="hidden" name="payment_id" value="{{ p.id }}">
-                                
-                                                    <div class="modal-body">
-                                                        <p>Are you sure you want to decline this payment?</p>
-                                                    </div>
-                                
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                                        <button type="submit" name="decline" class="btn btn-danger">Decline</button>
-                                                    </div>
-                                                </form>
-                                
-                                            </div>
-                                        </div>
-                                    </div>
                                 
                                     {% endfor %}
                                 </tbody>
@@ -401,5 +332,67 @@
 
     </div>
 </div>
+
+<script>
+    function approveDeposit(id) {
+        swal('Approve deposit', 'Are you sure you want to approve this deposit?', 'warning')
+            .then((res) => {
+                if (res) {
+
+                    $.ajax({
+                        type: 'POST',
+                        url: "{% url 'approve-payment' %}",
+                        data: {
+                            id: id,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success: function (data) {
+                            if (data.status === "success") {
+
+                                swal('Success', 'Payment approved successfully', 'success')
+                                    .then(() => {
+                                        location.reload();
+                                    });
+
+                            } else {
+                                swal('Error', data.message, 'error');
+                            }
+                        }
+                    });
+
+                }
+            });
+    }
+
+    function disapproveDeposit(id) {
+        swal('Dispprove deposit', 'Are you sure you want to disapprove this deposit?', 'warning')
+            .then((res) => {
+                if (res) {
+
+                    $.ajax({
+                        type: 'POST',
+                        url: "{% url 'decline-payment' %}",
+                        data: {
+                            id: id,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success: function (data) {
+                            if (data.status === "success") {
+
+                                swal('Success', 'Payment declined', 'success')
+                                    .then(() => {
+                                        location.reload();
+                                    });
+
+                            } else {
+                                swal('Error', data.message, 'error');
+                            }
+                        }
+                    });
+
+                }
+            });
+    }
+</script>
 
 {% endblock %}
