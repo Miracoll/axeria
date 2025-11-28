@@ -286,6 +286,7 @@
 							</thead>
 							<tbody>
 								{% for ot in open_trades %}
+								<tr>
 									<td><b>{{ ot.ref }}</b></td>
 									<td><b>$ {{ot.amount|intcomma}}</b></td>
 									<td>

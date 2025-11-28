@@ -240,114 +240,25 @@
         </div>
     </div>
 
-
-    <div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <!-- Modal -->
+    <div class="modal fade" id="alertModal" tabindex="-1">
+        <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Enter transaction hash</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
+    
+                <div class="modal-header" id="modalHeader">
+                    <h5 class="modal-title" id="modalTitle"></h5>
+                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
                 </div>
-                <div class="modal-body">
-                    <form method="post" id="hash-form">
-                        <input type="hidden" id="trx-id" readonly />
-                        <div class="form-group">
-                            <label>Hash</label>
-                            <input type="text" id="hash" class="form-control" placeholder="Enter transaction hash">
-                        </div>
-                        <div class="form-group">
-                            <button type="button" class="btn btn-primary btn-block" onclick="openApprove()">Approve
-                                transaction</button>
-                        </div>
-                </div>
-                </form>
+    
+                <div class="modal-body" id="modalMessage"></div>
+    
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-
+                    <button class="btn btn-secondary" data-dismiss="modal">OK</button>
                 </div>
+    
             </div>
         </div>
     </div>
-
-
-    <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="Edit users modal"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Portfolio</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-
-
-                    <form class="user" method="post" id="user-form">
-                        <input type="hidden" name="user_id" id="user_id" />
-                        <div class="form-group row">
-                            <label>Select a portfolio to edit: </label>
-                            <select class="form-control" name="portifolioName" id="portifolioName"
-                                onchange="changeBalance(this.value)" required>
-
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Balance (BTC): </label>
-                            <input type="number" class="form-control form-control-user" id="portifolioBalance"
-                                placeholder="Portifolio balance" name="portifolioBalance">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Profit (BTC): </label>
-                            <input type="number" class="form-control form-control-user" id="portifolioProfit"
-                                placeholder="Portifolio profit" name="portifolioProfit">
-                        </div>
-
-
-
-
-
-
-
-
-                        <div class="form-group">
-                            <label>Active: </label>
-
-
-                            <select name="active" class="form-control" id="select-box">
-
-                                <option value="active" id="active-yes">Yes </option>
-                                <option value="null" id="active-no">No </option>
-                            </select>
-                        </div>
-
-                        <button type="button" name="edit" class="btn btn-primary btn-user btn-block" id="user-submit"
-                            onclick="submit_form()">
-                            Edit client account
-                        </button>
-                        <hr>
-
-
-                    </form>
-
-
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-
 
     <!-- Bootstrap core JavaScript-->
     <script src="{% static 'admin/vendor/jquery/jquery.min.js' %}"></script>
@@ -366,144 +277,51 @@
     <!-- Page level custom scripts -->
     <script src="{% static 'admin/js/demo/chart-area-demo.js' %}"></script>
     <script src="{% static 'admin/js/demo/chart-pie-demo.js' %}"></script>
+
+    <!-- Modal Trigger Script -->
+    {% if messages %}
     <script>
-        function openApprove() {
-            var formData = $("#hash-form").serialize();
-            var trx_id = $("#trx-id").val();
-            var hash = $("#hash").val();
-            $.ajax({
-                type: 'post',
-                url: 'ajax.html?action=approve.html',
-                data: { 'trx_id': trx_id, 'hash': hash },
-                success: function (data) {
-                    swal("Great!", data, "success");
-                }
-            })
-        }
+        $(document).ready(function() {
 
-        function approve(id) {
-            $.ajax({
-                type: 'post',
-                url: 'ajax.html?action=approve-deposit.html',
-                data: { 'trx_id': id },
-                success: function (data) {
-                    swal("Great!", data, "success");
-                }
-            })
-        }
+            {% for message in messages %}
+                let text = "{{ message|escapejs }}";
+                let tag  = "{{ message.tags }}";   // error, success, warning, info
+            {% endfor %}
 
-        function gettrx(id) {
-            $.ajax({
-                type: 'post',
-                url: 'ajax.html?action=trx.html',
-                data: { 'id': id },
-                success: function (data) {
-                    $("#trx-id").val(data)
-                    $("#trx-modal-btn").click()
-                }
-            })
-        }
+            // Default styles
+            let title = "Notice";
+            let color = "bg-primary";
 
-        function submit_form() {
-            var myFormData = $("#user-form").serialize();
-            disable_btn();
-            $.ajax({
-                'type': 'post',
-                'url': 'ajax/edit-portifolios.html',
-                'data': myFormData,
-                'success': function (data) {
-                    alertify.alert(data);
-                    enable_btn();
-                }
-            });
-        }
+            if (tag.includes("error")) {
+                title = "Error";
+                color = "bg-danger";
+            }
+            else if (tag.includes("success")) {
+                title = "Success";
+                color = "bg-success";
+            }
+            else if (tag.includes("warning")) {
+                title = "Warning";
+                color = "bg-warning";
+            }
+            else if (tag.includes("info")) {
+                title = "Information";
+                color = "bg-info";
+            }
 
-        function disable_btn() {
-            $("#user-submit").attr("disabled", true);
+            // Apply dynamic title & color
+            $("#modalTitle").text(title);
+            $("#modalHeader").removeClass().addClass("modal-header text-white " + color);
 
-        }
-        function enable_btn() {
-            $("#user-submit").attr("disabled", false);
-        }
-        function changeBalance(id) {
-            $.ajax({
-                type: 'post',
-                url: 'ajax.html?action=get-balance.html',
-                data: { 'folioId': id },
-                success: function (data) {
-                    folioData = JSON.parse(data);
-                    console.log(folioData);
-                    $('#portifolioBalance').val(folioData.balance);
-                    $('#portifolioProfit').val(folioData.profit);
-                    var folioStatus = folioData.status;
-                    if (folioStatus == "active") {
-                        $("#active-no").attr("selected", false);
-                        $("#active-yes").attr("selected", true);
-                    }
-                    else {
-                        $("#active-yes").attr("selected", false);
-                        $("#active-no").attr("selected", true);
-                    }
-                }
-            })
-        }
-        function openModal(id) {
+            // Set the message text
+            $("#modalMessage").text(text);
 
-            $.ajax({
-                type: 'post',
-                url: 'ajax/get-portifolio.html',
-                data: { 'user_id': id },
-                success: function (data) {
-                    //console.log(id,data);
-
-                    var userdata = JSON.parse(data);
-                    console.log(userdata);
-
-                    $("#portifolioName").empty();
-                    userdata.map((data) => {
-
-                        $("#portifolioName").prepend(data.options);
-
-
-                    });
-                    changeBalance($("#portifolioName").val());
-                    $("#user_id").val(id);
-                    //$("#portifolioBalance").val(data.portifolioBalance)
-                    //$("#inputEmail").val(userdata.options);
-
-                    //$("#lastName").val(userdata.name);
-                    //$("#inputEmail").val(userdata.email);
-                    //$("#inputNumber").val(userdata.phone);
-                    //$("#inputWallet").val(userdata.wallet);
-                    //$("#inputTotalInvestment").val(userdata.amount);
-                    //$("#inputBalance").val(parseInt(userdata.balance));
-                    //$("#inputPlan").val(userdata.plan);
-                    //$("#inputProfit").val(userdata.profit);
-
-
-
-                    if (userdata.active == "yes") {
-                        $("#active-yes").attr("selected", true);
-                    }
-                    else {
-                        $("#active-no").attr("selected", true);
-                    }
-
-                    document.getElementById("hiddenEditbtn").click();
-                }
-            });
-        }
-        function openDecline(id) {
-            $.ajax({
-                type: "post",
-                url: "ajax/decline-trx.html",
-                data: { 'id': id },
-                success: function (data) {
-                    swal("Great", data, "success");
-                }
-            });
-        }
+            // Show modal
+            $("#alertModal").modal("show");
+        });
     </script>
+    {% endif %}
+
     {% block extra_script %}
     {% endblock extra_script %}
 

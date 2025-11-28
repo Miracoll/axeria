@@ -189,7 +189,7 @@ def fund(request):
             f"\nGo to admin panel to confirm this."
         )
 
-        messages.success(request, 'Payment added')
+        messages.success(request, 'Payment invoice created.\nPlease complete the payment.')
         return redirect('invoice', payment.ref)
     
     context = {

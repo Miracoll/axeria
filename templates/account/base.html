@@ -305,55 +305,79 @@
 		</div>
 	</div>
 
+	<!-- Modal -->
+    <div class="modal fade" id="alertModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+    
+                <div class="modal-header" id="modalHeader">
+                    <h5 class="modal-title" id="modalTitle"></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+    
+                <div class="modal-body" id="modalMessage"></div>
+    
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+                </div>
+    
+            </div>
+        </div>
+    </div>   
+
 	<!-- Ionicons & other libs -->
 	<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 	<script src="{% static 'assets/js/plugins/splide/splide.min.js' %}"></script>
 	<script src="{% static 'assets/js/base.js' %}"></script>
 
 	<!-- ❗ Load exactly ONE Bootstrap bundle at the very end -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-	<!-- Custom Modal JavaScript -->
-	<script>
-		// Open custom modal
-		function openCustomModal() {
-			document.getElementById('customSuccessModal').style.display = 'block';
-			document.body.style.overflow = 'hidden'; // Prevent body scroll
-		}
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script> -->
+	
+	<!-- Modal Trigger Script -->
+    {% if messages %}
+    <script>
+        $(document).ready(function() {
 
-		// Close custom modal
-		function closeCustomModal() {
-			document.getElementById('customSuccessModal').style.display = 'none';
-			document.body.style.overflow = ''; // Restore body scroll
-		}
+            {% for message in messages %}
+                let text = "{{ message|escapejs }}";
+                let tag  = "{{ message.tags }}";   // error, success, warning, info
+            {% endfor %}
 
-		// Attach to Buy/Sell buttons
-		document.addEventListener('DOMContentLoaded', function () {
-			const buyBtn = document.getElementById('buyBtn');
-			const sellBtn = document.getElementById('sellBtn');
+            // Default styles
+            let title = "Notice";
+            let color = "bg-primary";
 
-			if (buyBtn) buyBtn.addEventListener('click', openCustomModal);
-			if (sellBtn) sellBtn.addEventListener('click', openCustomModal);
-		});
-	</script>
+            if (tag.includes("error")) {
+                title = "Error";
+                color = "bg-danger";
+            }
+            else if (tag.includes("success")) {
+                title = "Success";
+                color = "bg-success";
+            }
+            else if (tag.includes("warning")) {
+                title = "Warning";
+                color = "bg-warning";
+            }
+            else if (tag.includes("info")) {
+                title = "Information";
+                color = "bg-info";
+            }
 
-	<!-- Toast demo (unchanged) -->
-	<script>
-		var amounts=[30000,45000,11500,16000,8000,10000,13000,17000,29000,30000,16000,28000,21000,51000,12000,17000,25000,9000,50000,4000];
-		const countryList=["Afghanistan","Albania","Algeria","American Samoa","Andorra","Angola","Anguilla","Antarctica","Antigua and Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas (the)","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia (Plurinational State of)","Bonaire, Sint Eustatius and Saba","Bosnia and Herzegovina","Botswana","Bouvet Island","Brazil","British Indian Ocean Territory (the)","Brunei Darussalam","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Cayman Islands (the)","Central African Republic (the)","Chad","Chile","China","Christmas Island","Cocos (Keeling) Islands (the)","Colombia","Comoros (the)","Congo (the Democratic Republic of the)","Congo (the)","Cook Islands (the)","Costa Rica","Croatia","Cuba","Curaçao","Cyprus","Czechia","Côte d'Ivoire","Denmark","Djibouti","Dominica","Dominican Republic (the)","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Falkland Islands (the) [Malvinas]","Faroe Islands (the)","Fiji","Finland","France","French Guiana","French Polynesia","French Southern Territories (the)","Gabon","Gambia (the)","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guadeloupe","Guam","Guatemala","Guernsey","Guinea","Guinea-Bissau","Guyana","Haiti","Heard Island and McDonald Islands","Holy See (the)","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran (Islamic Republic of)","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kiribati","Korea (the Democratic People's Republic of)","Korea (the Republic of)","Kuwait","Kyrgyzstan","Lao People's Democratic Republic (the)","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macao","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands (the)","Martinique","Mauritania","Mauritius","Mayotte","Mexico","Micronesia (Federated States of)","Moldova (the Republic of)","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands (the)","New Caledonia","New Zealand","Nicaragua","Niger (the)","Nigeria","Niue","Norfolk Island","Northern Mariana Islands (the)","Norway","Oman","Pakistan","Palau","Palestine, State of","Panama","Papua New Guinea","Paraguay","Peru","Philippines (the)","Pitcairn","Poland","Portugal","Puerto Rico","Qatar","Republic of North Macedonia","Romania","Russian Federation (the)","Rwanda","Réunion","Saint Barthélemy","Saint Helena, Ascension and Tristan da Cunha","Saint Kitts and Nevis","Saint Lucia","Saint Martin (French part)","Saint Pierre and Miquelon","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Sint Maarten (Dutch part)","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Georgia and the South Sandwich Islands","South Sudan","Spain","Sri Lanka","Sudan (the)","Suriname","Svalbard and Jan Mayen","Sweden","Switzerland","Syrian Arab Republic","Taiwan (Province of China)","Tajikistan","Tanzania, United Republic of","Thailand","Timor-Leste","Togo","Tokelau","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Turks and Caicos Islands (the)","Tuvalu","Uganda","Ukraine","United Arab Emirates (the)","United Kingdom of Great Britain and Northern Ireland (the)","United States Minor Outlying Islands (the)","United States of America (the)","Uruguay","Uzbekistan","Vanuatu","Venezuela (Bolivarian Republic of)","Viet Nam","Virgin Islands (British)","Virgin Islands (U.S.)","Wallis and Futuna","Western Sahara","Yemen","Zambia","Zimbabwe","Åland Islands"];
-		function showToast(){
-			var random=Math.floor(Math.random()*countryList.length);
-			var selectedCountry=countryList[random];
-			var randomamt=Math.floor(Math.random()*amounts.length);
-			var selectedAmt=amounts[randomamt];
-			var generatedText="Someone from "+selectedCountry+" just Invested <b class='text-info'>$"+selectedAmt+"</b> in RSFX";
-			$('#toast').html(generatedText);
-			$('#toast').toast({delay:3000}).toast('show');
-		}
-		setInterval(showToast,10000);
-	</script>
+            // Apply dynamic title & color
+            $("#modalTitle").text(title);
+            $("#modalHeader").removeClass().addClass("modal-header text-white " + color);
 
-	{% block extra_script %}
-	{% endblock %}
+            // Set the message text
+            $("#modalMessage").text(text);
+
+            // Show modal
+            $("#alertModal").modal("show");
+        });
+    </script>
+    {% endif %}
 </body>
 </html>

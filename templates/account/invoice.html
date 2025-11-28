@@ -15,6 +15,20 @@
                 </button>
             </div>
 
+            <script>
+                function copyAddress() {
+                    const input = document.getElementById("payToAddress");
+                    input.select();  
+                    input.setSelectionRange(0, 99999); // For mobile devices
+                
+                    navigator.clipboard.writeText(input.value).then(() => {
+                        alert("Address copied!");
+                    }).catch(err => {
+                        alert("Failed to copy.");
+                    });
+                }
+            </script>
+                
             <div class="invoice-invoice-divider"></div>
 
             <div class="invoice-invoice-section">
