@@ -30,7 +30,7 @@
                             Write message
                         </label>
                         <textarea name="message" class="form-control" rows="5" id="comment"
-                            placeholder="Message..."></textarea>
+                            placeholder="Message..." style="display:none;"></textarea>
                         <div id="editor-container" style="height:450px">
 
                         </div>
@@ -53,3 +53,23 @@
 
 </div>
 {% endblock %}
+{% block extra_script %}
+
+<!-- Page level custom scripts -->
+<script src="{% static 'admin/js/demo/datatables-demo.js' %}"></script>
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+    var quill = new Quill('#editor-container', {
+
+        modules: {
+
+            toolbar: true
+        },
+        placeholder: 'Compose an epic...',
+        theme: 'snow'  // or 'bubble'
+    });
+    function filltext() {
+        $("#comment").val(quill.container.firstChild.innerHTML);
+    }
+</script>
+{% endblock extra_script %}

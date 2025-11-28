@@ -14,6 +14,8 @@ from django.utils import timezone
 import qrcode
 import requests
 import yfinance as yf
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import strip_tags
 
 from account.models import Config, CopyTrade, IPAddress, InvestmentPlan, KycVerification, LiveTrade, Payment, PaymentMethod, Portfolio, Trader, Transaction, User, Withdrawal
 from account.utils import add_transaction
@@ -627,30 +629,37 @@ def newsletter(request):
 @allowed_users(allowed_roles=['admin'])
 def message(request):
     traders = User.objects.filter(groups__name='trader')
+
     if request.method == 'POST':
         title = request.POST.get('title')
-        msg = request.POST.get('message')
+        html_message = request.POST.get('message')   # Quill HTML
         email = request.POST.get('email')
 
-        if not title or not msg or not email:
+        if not title or not html_message or not email:
             messages.error(request, "All fields are required.")
-            return render(request, 'manager/messages.html')
+            return redirect('admin-message')
 
         try:
-            send_mail(
+            # Convert HTML → plain text version
+            text_message = strip_tags(html_message)
+
+            msg = EmailMultiAlternatives(
                 subject=title,
-                message=msg,
+                body=text_message,         # plain text version
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[email],
-                fail_silently=False,
+                to=[email]
             )
+            msg.attach_alternative(html_message, "text/html")  # HTML version
+            msg.send()
+
             messages.success(request, "Message sent successfully!")
+
         except Exception as e:
             messages.error(request, f"Failed to send email: {e}")
 
         return redirect('admin-message')
 
-    return render(request, 'manager/messages.html', {'traders':traders})
+    return render(request, 'manager/messages.html', {'traders': traders})
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
