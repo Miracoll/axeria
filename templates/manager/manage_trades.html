@@ -66,9 +66,9 @@
                                         <td>${{ trade.amount_copying }}</td>
                                         <td>{{ trade.is_active|yesno|capfirst }}</td>
                                         <td>
-                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#manageTradeModal-{{trade.id}}">
+                                            <a type="button" class="btn btn-primary" href="{% url 'admin-user-trade' trade.id %}">
                                                 Take Trade
-                                            </button>
+                                            </a>
                                         </td>
                                     </tr>
                                 {% endfor %}

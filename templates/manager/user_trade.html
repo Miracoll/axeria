@@ -1,0 +1,368 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div id="content">
+
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+
+        <!-- Page Heading -->
+        <h1 class="h3 mb-2 text-gray-800">User Trades</h1>
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Data Tables</h6>
+                <button class="btn btn-primary float-right" data-toggle="modal" data-target="#create-trade">
+                    Create Trade
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table" id="dataTable" width="100%" cellspacing="0">
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Ticker</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>ID</th>
+                                <th>Ticker</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            {% for ut in user_trades %}
+                            <tr>
+                                <td>{{ut.id}}</td>
+                                <td>AAPL</td>
+                                <td>100</td>
+                                <td>open</td>
+                                <td>Friday 28th of November 2025</td>
+                                <td>
+                                    <button class="btn btn-primary" data-toggle="modal" data-target="#edit-trade-{{ut.id}}"><i
+                                            class="fas fa-user-edit"></i></button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger" onclick="deleteTrade(62)"><i
+                                            class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+
+</div>
+
+{% for ut in user_trades %}
+<!-- Edit Trade Modal - Trade 62 -->
+<div class="modal fade" id="edit-trade-{{ut.id}}" tabindex="-1" role="dialog" aria-labelledby="Edit users modal"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit this user's trades</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form class="user" method="post" id="user-form-62">
+
+                    <input type="hidden" name="trade_id" value='62' />
+
+                    <div class="form-group my-2">
+                        <label class="form-label">Ticker</label>
+                        <select name="ticker" class="form-select form-control">
+                            <option value="AAPL" selected>AAPL - Apple Inc.</option>
+                            <option value="MSFT">MSFT - Microsoft Corporation</option>
+                            <option value="GOOGL">GOOGL - Alphabet Inc. (Google)</option>
+                            <option value="AMZN">AMZN - Amazon.com Inc.</option>
+                            <option value="TSLA">TSLA - Tesla Inc.</option>
+                            <option value="BRK.A">BRK.A - Berkshire Hathaway Inc.</option>
+                            <option value="NVDA">NVDA - NVIDIA Corporation</option>
+                            <option value="META">META - Meta Platforms Inc. (Facebook)</option>
+                            <option value="V">V - Visa Inc.</option>
+                            <option value="JNJ">JNJ - Johnson & Johnson</option>
+                            <option value="JPM">JPM - JPMorgan Chase & Co.</option>
+                            <option value="XOM">XOM - Exxon Mobil Corporation</option>
+                            <option value="NFLX">NFLX - Netflix Inc.</option>
+                            <option value="DIS">DIS - The Walt Disney Company</option>
+                            <option value="NKE">NKE - Nike Inc.</option>
+                            <option value="WMT">WMT - Walmart Inc.</option>
+                            <option value="PFE">PFE - Pfizer Inc.</option>
+                            <option value="KO">KO - The Coca-Cola Company</option>
+                            <option value="PEP">PEP - PepsiCo Inc.</option>
+                            <option value="T">T - AT&T Inc.</option>
+                            <option value="BABA">BABA - Alibaba Group Holding Ltd.</option>
+                            <option value="CSCO">CSCO - Cisco Systems Inc.</option>
+                            <option value="INTC">INTC - Intel Corporation</option>
+                            <option value="CRM">CRM - Salesforce.com Inc.</option>
+                            <option value="AMD">AMD - Advanced Micro Devices Inc.</option>
+                            <option value="SPY">SPY - SPDR S&P 500 ETF</option>
+                            <option value="VOO">VOO - Vanguard S&P 500 ETF</option>
+                            <option value="QQQ">QQQ - Invesco QQQ Trust</option>
+                            <option value="ARKK">ARKK - ARK Innovation ETF</option>
+                            <option value="BND">BND - Vanguard Total Bond Market ETF</option>
+                            <option value="SPX">SPX - S&P 500 Index</option>
+                            <option value="EURUSD">EURUSD - Euro/US Dollar</option>
+                            <option value="GBPUSD">GBPUSD - British Pound/US Dollar</option>
+                            <option value="USDJPY">USDJPY - US Dollar/Japanese Yen</option>
+                            <option value="AUDUSD">AUDUSD - Australian Dollar/US Dollar</option>
+                            <option value="USDCAD">USDCAD - US Dollar/Canadian Dollar</option>
+                            <option value="USDCHF">USDCHF - US Dollar/Swiss Franc</option>
+                            <option value="NZDUSD">NZDUSD - New Zealand Dollar/US Dollar</option>
+                            <option value="EURGBP">EURGBP - Euro/British Pound</option>
+                            <option value="EURJPY">EURJPY - Euro/Japanese Yen</option>
+                            <option value="GBPJPY">GBPJPY - British Pound/Japanese Yen</option>
+                            <option value="BTC-USD">BTC-USD - Bitcoin</option>
+                            <option value="ETH-USD">ETH-USD - Ethereum</option>
+                            <option value="LTC-USD">LTC-USD - Litecoin</option>
+                            <option value="XRP-USD">XRP-USD - Ripple (XRP)</option>
+                            <option value="ADA-USD">ADA-USD - Cardano</option>
+                            <option value="DOT-USD">DOT-USD - Polkadot</option>
+                            <option value="SOL-USD">SOL-USD - Solana</option>
+                            <option value="DOGE-USD">DOGE-USD - Dogecoin</option>
+                            <option value="BNB-USD">BNB-USD - Binance Coin</option>
+                            <option value="AVAX-USD">AVAX-USD - Avalanche</option>
+                            <option value="MATIC-USD">MATIC-USD - Polygon</option>
+                            <option value="SHIB-USD">SHIB-USD - Shiba Inu</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group my-2">
+                        <label class="form-label">Amount</label>
+                        <input type="number" class="form-control" name="amount" value="100" required />
+                    </div>
+
+                    <div class="form-group my-2">
+                        <label class="form-label">Profit</label>
+                        <input type="number" class="form-control" name="profit" value="0" required />
+                    </div>
+
+                    <div class="form-group my-2">
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-select form-control" required>
+                            <option value="open" selected>Open</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group my-2">
+                        <label class="form-label">Date</label>
+                        <input type="text" class="form-control" name="date" value="Friday 28th of November 2025"
+                            required />
+                    </div>
+
+                    <button type="submit" name="edit" class="btn btn-primary btn-user btn-block" id="user-submit">
+                        Edit Trade
+                    </button>
+                    <hr>
+
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- Create Trade Modal -->
+<div class="modal fade" id="create-trade" tabindex="-1" role="dialog" aria-labelledby="Create Trade Modal"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create Live Trade for User</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="user" method="post" id="live-trade-form">
+                    <!-- Hidden input for user_id -->
+                    <input type="hidden" name="user_id" value="419" />
+
+                    <!-- Ticker/Symbol Selection -->
+                    <div class="form-group my-2">
+                        <label class="form-label">Symbol/Ticker</label>
+                        <select name="ticker" class="form-select form-control">
+                            <option value="AAPL">AAPL - Apple Inc.</option>
+                            <option value="MSFT">MSFT - Microsoft Corporation</option>
+                            <option value="GOOGL">GOOGL - Alphabet Inc. (Google)</option>
+                            <option value="AMZN">AMZN - Amazon.com Inc.</option>
+                            <option value="TSLA">TSLA - Tesla Inc.</option>
+                            <option value="BRK.A">BRK.A - Berkshire Hathaway Inc.</option>
+                            <option value="NVDA">NVDA - NVIDIA Corporation</option>
+                            <option value="META">META - Meta Platforms Inc. (Facebook)</option>
+                            <option value="V">V - Visa Inc.</option>
+                            <option value="JNJ">JNJ - Johnson & Johnson</option>
+                            <option value="JPM">JPM - JPMorgan Chase & Co.</option>
+                            <option value="XOM">XOM - Exxon Mobil Corporation</option>
+                            <option value="NFLX">NFLX - Netflix Inc.</option>
+                            <option value="DIS">DIS - The Walt Disney Company</option>
+                            <option value="NKE">NKE - Nike Inc.</option>
+                            <option value="WMT">WMT - Walmart Inc.</option>
+                            <option value="PFE">PFE - Pfizer Inc.</option>
+                            <option value="KO">KO - The Coca-Cola Company</option>
+                            <option value="PEP">PEP - PepsiCo Inc.</option>
+                            <option value="T">T - AT&T Inc.</option>
+                            <option value="BABA">BABA - Alibaba Group Holding Ltd.</option>
+                            <option value="CSCO">CSCO - Cisco Systems Inc.</option>
+                            <option value="INTC">INTC - Intel Corporation</option>
+                            <option value="CRM">CRM - Salesforce.com Inc.</option>
+                            <option value="AMD">AMD - Advanced Micro Devices Inc.</option>
+                            <option value="SPY">SPY - SPDR S&P 500 ETF</option>
+                            <option value="VOO">VOO - Vanguard S&P 500 ETF</option>
+                            <option value="QQQ">QQQ - Invesco QQQ Trust</option>
+                            <option value="ARKK">ARKK - ARK Innovation ETF</option>
+                            <option value="BND">BND - Vanguard Total Bond Market ETF</option>
+                            <option value="SPX">SPX - S&P 500 Index</option>
+                            <option value="EURUSD">EURUSD - Euro/US Dollar</option>
+                            <option value="GBPUSD">GBPUSD - British Pound/US Dollar</option>
+                            <option value="USDJPY">USDJPY - US Dollar/Japanese Yen</option>
+                            <option value="AUDUSD">AUDUSD - Australian Dollar/US Dollar</option>
+                            <option value="USDCAD">USDCAD - US Dollar/Canadian Dollar</option>
+                            <option value="USDCHF">USDCHF - US Dollar/Swiss Franc</option>
+                            <option value="NZDUSD">NZDUSD - New Zealand Dollar/US Dollar</option>
+                            <option value="EURGBP">EURGBP - Euro/British Pound</option>
+                            <option value="EURJPY">EURJPY - Euro/Japanese Yen</option>
+                            <option value="GBPJPY">GBPJPY - British Pound/Japanese Yen</option>
+                            <option value="BTC-USD">BTC-USD - Bitcoin</option>
+                            <option value="ETH-USD">ETH-USD - Ethereum</option>
+                            <option value="LTC-USD">LTC-USD - Litecoin</option>
+                            <option value="XRP-USD">XRP-USD - Ripple (XRP)</option>
+                            <option value="ADA-USD">ADA-USD - Cardano</option>
+                            <option value="DOT-USD">DOT-USD - Polkadot</option>
+                            <option value="SOL-USD">SOL-USD - Solana</option>
+                            <option value="DOGE-USD">DOGE-USD - Dogecoin</option>
+                            <option value="BNB-USD">BNB-USD - Binance Coin</option>
+                            <option value="AVAX-USD">AVAX-USD - Avalanche</option>
+                            <option value="MATIC-USD">MATIC-USD - Polygon</option>
+                            <option value="SHIB-USD">SHIB-USD - Shiba Inu</option>
+                        </select>
+                    </div>
+
+                    <!-- Expert Selection (if this is for copy trading) -->
+                    <div class="form-group my-2">
+                        <label class="form-label">Expert (Optional)</label>
+                        <select name="expert" class="form-select form-control">
+                            <option value="">None (Direct Trade)</option>
+                            <option value="33">Tener Genek</option>
+                            <option value="41">Danicrypto7 | crypto investor</option>
+                            <option value="42">Shariq Amin</option>
+                            <option value="43">Carsandinvesting</option>
+                            <option value="44">Tiger Crypto God</option>
+                            <option value="45">Crypto King</option>
+                            <option value="46">3Commas GPT 4</option>
+                            <option value="47">M8 Trader</option>
+                            <option value="48">Saadvloger2</option>
+                            <option value="49">Gey</option>
+                        </select>
+                    </div>
+
+                    <!-- Amount -->
+                    <div class="form-group my-2">
+                        <label class="form-label">Amount</label>
+                        <input type="number" class="form-control" name="amount" value="" step="0.01" required />
+                    </div>
+
+                    <!-- Interval (minutes) -->
+                    <div class="form-group my-2">
+                        <label class="form-label">Interval (minutes)</label>
+                        <select name="interval" class="form-select form-control">
+                            <option value="1">1 min</option>
+                            <option value="3">3 min</option>
+                            <option value="5">5 min</option>
+                            <option value="15">15 min</option>
+                            <option value="30">30 min</option>
+                        </select>
+                    </div>
+
+                    <!-- Strike Rate -->
+                    <div class="form-group my-2">
+                        <label class="form-label">Strike Rate</label>
+                        <select name="strike" class="form-select form-control">
+                            <option value="60% & 1%">60% & 1%</option>
+                            <option value="29% & 1%">29% & 1%</option>
+                            <option value="5% & 2%">5% & 2%</option>
+                            <option value="5% & 11%">5% & 11%</option>
+                            <option value="1% & 85%">1% & 85%</option>
+                        </select>
+                    </div>
+
+                    <!-- Trade Type -->
+                    <div class="form-group my-2">
+                        <label class="form-label">Trade Type</label>
+                        <select name="trade_type" class="form-select form-control" required>
+                            <option value="buy">Buy</option>
+                            <option value="sell">Sell</option>
+                        </select>
+                    </div>
+
+                    <!-- Outcome Prediction -->
+                    <div class="form-group my-2">
+                        <label class="form-label">Trade Outcome</label>
+                        <select name="outcome" class="form-select form-control" required>
+                            <option value="random">Random</option>
+                            <option value="win">Win</option>
+                            <option value="loss">Loss</option>
+                        </select>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" name="create_live_trade" class="btn btn-primary btn-user btn-block">
+                        Create Live Trade
+                    </button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function deleteTrade(id) {
+        swal('Delete trade', 'Are you sure you want to delete this trade', 'warning')
+            .then((res) => {
+                if (res) {
+                    $.ajax({
+                        type: 'post',
+                        url: 'ajax/delete-user-trade.php',
+                        data: { id },
+                        success: function (data) {
+                            swal('Success', 'You have deleted this trade', 'success')
+                                .then(() => {
+                                    location.reload();
+                                })
+                        }
+                    })
+                }
+            })
+    }
+</script>
+{% endblock %}

@@ -2,6 +2,7 @@ import base64
 from datetime import date
 from decimal import Decimal
 from django.utils.dateparse import parse_date
+from django.contrib.contenttypes.models import ContentType
 import requests
 
 from account.models import Transaction
@@ -18,15 +19,17 @@ def decode_amount(encoded):
     decoded = base64.urlsafe_b64decode(encoded.encode()).decode()
     return Decimal(decoded)
 
-def add_transaction(type: str, amount, status: str, image=None):
+def add_transaction(type: str, amount, status: str, user=None, related_obj=None, image=None):
     """
     Adds a transaction record to the database with today's date.
     
     Parameters:
-    - type: str -> 'live_trade', 'deposit', 'withdrawal'
+    - type: str -> 'live_trade', 'deposit', 'withdrawal', 'trade'
     - amount: Decimal or float
     - status: str -> 'win', 'completed', 'pending', 'approved', etc.
-    - image: ImageField or None (optional)
+    - user: User object (optional)
+    - related_obj: Any model instance (optional) -> sets GenericForeignKey
+    - image: ImageField or str path (optional)
     
     Returns:
     - Transaction object
@@ -35,12 +38,21 @@ def add_transaction(type: str, amount, status: str, image=None):
     if not isinstance(amount, Decimal):
         amount = Decimal(amount)
 
+    # Prepare generic relation fields
+    content_type = object_id = None
+    if related_obj:
+        content_type = ContentType.objects.get_for_model(related_obj)
+        object_id = related_obj.pk
+
     transaction = Transaction.objects.create(
         type=type,
         date=date.today(),
         amount=amount,
         status=status,
-        image=image or 'images/2.png'  # default if none provided
+        image=image or 'images/2.png',  # default if none provided
+        user=user,
+        content_type=content_type,
+        object_id=object_id
     )
     return transaction
 

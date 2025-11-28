@@ -91,7 +91,15 @@ def home(request):
         TradeRecord.objects.create(
             live_trade=trade,
             user=request.user,
-            status='active'
+            status='active',
+        )
+
+        add_transaction(
+            type='live_trade',
+            amount=amount,
+            status='completed',
+            user=request.user,
+            related_obj=trade,
         )
 
         telegram(
@@ -139,6 +147,14 @@ def home(request):
             entry_price=entry_price,
         )
 
+        add_transaction(
+            type='live_trade',
+            amount=amount,
+            status='completed',
+            user=request.user,
+            related_obj=trade,
+        )
+
         telegram(
             f"Hello Admin, {request.user.username} just sell from live trade:"
             f"{trade.category.upper()}.\nGo to admin panel to confirm this."
@@ -172,16 +188,18 @@ def fund(request):
             messages.error(request, 'No such payment method')
             return redirect('fund')
         
-        add_transaction(
-            type='deposit',
-            amount=amount,
-            status='pending'
-        )
-        
         payment = Payment.objects.create(
             user=request.user,
             amount=amount,
             method=method
+        )
+
+        add_transaction(
+            type='deposit',
+            amount=amount,
+            status='pending',
+            user=request.user,
+            related_obj=payment,
         )
 
         telegram(
@@ -251,22 +269,29 @@ def profit_withdrawal(request):
         currency = request.POST.get('currency')
         address = request.POST.get('address')
 
-        add_transaction(
-            type='withdrawal',
-            amount=amount,
-            status='pending'
-        )
-
         config = Config.objects.first()
+        charges = Decimal(config.withdrawal_charge)
 
-        Withdrawal.objects.create(
+        if (amount + charges) > request.user.profit:
+            messages.error(request, 'Low balance')
+            return redirect('profit-withdraw')
+
+        withdraw = Withdrawal.objects.create(
             user = request.user,
             wallet_address = address,
             amount = amount,
             name = currency,
             withdrawal_type = 'profit',
             charges = config.withdrawal_charge,
-            available_for_withdraw = amount - config.withdrawal_charge
+            available_for_withdraw = amount + config.withdrawal_charge
+        )
+
+        add_transaction(
+            type='withdrawal',
+            amount=amount,
+            status='pending',
+            user=request.user,
+            related_obj=withdraw,
         )
 
         telegram(
@@ -284,24 +309,37 @@ def profit_withdrawal(request):
 def balance_withdrawal(request):
 
     if request.method == 'POST':
-        amount = request.POST.get('amount')
+        amount = Decimal(request.POST.get('amount'))
         currency = request.POST.get('currency')
         address = request.POST.get('address')
 
+        config = Config.objects.first()
+        charges = Decimal(config.withdrawal_charge)
+
+        if (amount + charges) > request.user.current_deposit:
+            messages.error(request, 'Low balance')
+            return redirect('balance-withdraw')
+
+        withdraw = Withdrawal.objects.create(
+            user=request.user,
+            wallet_address=address,
+            amount=amount,
+            name=currency,
+            withdrawal_type='deposit',
+            charges=charges,
+            available_for_withdraw=amount + charges
+        )
+
+        # Add transaction linked to this withdrawal
         add_transaction(
             type='withdrawal',
             amount=amount,
-            status='pending'
+            status='pending',
+            user=request.user,
+            related_obj=withdraw,
         )
 
-        Withdrawal.objects.create(
-            user = request.user,
-            wallet_address = address,
-            amount = amount,
-            name = currency,
-            withdrawal_type = 'deposit'
-        )
-
+        # Notify admin
         telegram(
             f"Hello Admin, {request.user.username} just placed a balance withdrawal"
             f"\nGo to admin panel to confirm this."
@@ -330,7 +368,7 @@ def stock(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin', 'trader'])
 def trades(request):
-    copied_traders = CopyTrade.objects.all()
+    copied_traders = CopyTrade.objects.filter(user=request.user, is_active=True)
     if request.method == 'POST' and 'withdraw' in request.POST:
         trade_id = request.POST.get('trader_id')
         withdraw_amount = request.POST.get('withdraw_amount')
@@ -373,7 +411,9 @@ def trades(request):
         add_transaction(
             type='withdrawal',
             amount=withdraw_amount,
-            status='pending'
+            status='pending',
+            user=request.user,
+            related_obj=withdraw,
         )
 
         telegram(
@@ -458,7 +498,7 @@ def copy_trader(request):
             return redirect("copy-trader")
 
         # Create CopyTrade record
-        CopyTrade.objects.create(
+        trade = CopyTrade.objects.create(
             user=request.user,
             trader=trader,
             amount_copying=amount,
@@ -475,7 +515,9 @@ def copy_trader(request):
         add_transaction(
             type='live_trade',
             amount=amount,
-            status='pending'
+            status='pending',
+            user=request.user,
+            related_obj=trade,
         )
 
         messages.success(request, "You have successfully started copying this trader!")

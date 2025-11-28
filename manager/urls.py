@@ -8,6 +8,7 @@ urlpatterns = [
     path('experts/', views.expert, name='admin-experts'),
     path('edit-users/', views.edit_users, name='admin-edit-user'),
     path('manage-trades/', views.manage_trade, name='admin-manage-trade'),
+    path('user-trade/<int:trade_id>/', views.user_trade, name='admin-user-trade'),
     path('activate/', views.activate, name='admin-activate'),
     path('kyc', views.kyc, name='admin-kyc'),
     path('edit-portfolio/', views.edit_portfolio, name='admin-edit-portfolio'),

@@ -8,9 +8,10 @@ from django.core.mail import send_mass_mail, send_mail
 from django.contrib.auth import update_session_auth_hash
 from django.core.files.base import ContentFile
 from django.db.models import Sum
+from django.contrib.contenttypes.models import ContentType
 import qrcode
 
-from account.models import Config, CopyTrade, IPAddress, InvestmentPlan, KycVerification, Payment, PaymentMethod, Portfolio, Trader, User, Withdrawal
+from account.models import Config, CopyTrade, IPAddress, InvestmentPlan, KycVerification, Payment, PaymentMethod, Portfolio, Trader, Transaction, User, Withdrawal
 from utils.decorators import allowed_users
 
 # Create your views here.
@@ -49,6 +50,15 @@ def approve_payment(request):
         u.current_deposit += p.amount
         u.save()
 
+        # ✅ Update corresponding Transaction if it exists
+        transaction = Transaction.objects.filter(
+            content_type=ContentType.objects.get_for_model(Payment),
+            object_id=p.id
+        ).first()
+
+        transaction.status = "completed"  # update status
+        transaction.save()
+
         messages.success(request, "Payment approved successfully.")
     return redirect("admin-home")
 
@@ -60,6 +70,15 @@ def decline_payment(request):
         p = Payment.objects.get(id=payment_id)
         p.status = "failed"
         p.save()
+
+        # ✅ Update corresponding Transaction if it exists
+        transaction = Transaction.objects.filter(
+            content_type=ContentType.objects.get_for_model(Payment),
+            object_id=p.id
+        ).first()
+
+        transaction.status = "completed"  # update status
+        transaction.save()
         messages.error(request, "Payment declined.")
     return redirect("admin-home")
 
@@ -79,6 +98,19 @@ def approve_withdrawal(request, id):
     w = Withdrawal.objects.get(id=id)
     w.status = "approved"
     w.save()
+
+    u = User.objects.get(id=w.user.id)
+    u.current_deposit -= w.amount
+    u.save()
+
+    # ✅ Update corresponding Transaction if it exists
+    transaction = Transaction.objects.filter(
+        content_type=ContentType.objects.get_for_model(Withdrawal),
+        object_id=w.id
+    ).first()
+
+    transaction.status = "completed"  # update status
+    transaction.save()
     messages.success(request, "Withdrawal approved")
     return redirect('admin-withdrawal')
 
@@ -87,8 +119,17 @@ def approve_withdrawal(request, id):
 def decline_withdrawal(request, id):
     w = Withdrawal.objects.get(id=id)
     w.status = "rejected"
-    w.rejected_reason = request.POST.get('reason')
     w.save()
+
+    # ✅ Update corresponding Transaction if it exists
+    transaction = Transaction.objects.filter(
+        content_type=ContentType.objects.get_for_model(Payment),
+        object_id=w.id
+    ).first()
+
+    transaction.status = "completed"  # update status
+    transaction.save()
+
     messages.error(request, "Withdrawal declined")
     return redirect('admin-withdrawal')
 
@@ -310,6 +351,16 @@ def manage_trade(request):
         except CopyTrade.DoesNotExist:
             messages.error(request, "Trade record not found.")
     return render(request, 'manager/manage_trades.html', {'trades':trades})
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def user_trade(request, trade_id):
+    trade = CopyTrade.objects.get(id=trade_id)
+    user_trades = CopyTrade.objects.filter(user=trade.user)
+    context = {
+        'user_trades': user_trades,
+    }
+    return render(request, 'manager/user_trade.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])

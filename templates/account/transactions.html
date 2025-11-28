@@ -7,7 +7,6 @@
 
     </div>
     <div class="transactions">
-        <!-- item -->
         {% for transaction in transactions %}
         <a href="#" class="item">
             <div class="detail">
@@ -18,7 +17,7 @@
                 </div>
             </div>
             <div class="right">
-                <div class="price {% if transaction.status == 'win' or transaction.status == 'approved' or transaction.status == 'pending' %}text-success{% else %}text-danger{% endif %}">
+                <div class="price {% if transaction.status in 'win approved pending' %}text-success{% else %}text-danger{% endif %}">
                     $ {{ transaction.amount }}
                 </div>
                 <p>{{ transaction.status|capfirst }}</p>
@@ -27,8 +26,8 @@
         {% empty %}
         <p>No transactions found.</p>
         {% endfor %}
-
     </div>
+    
 </div>
 
 <br>

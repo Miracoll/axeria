@@ -5,6 +5,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.utils.text import slugify
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+
 
 # Create your models here.
 
@@ -162,6 +165,7 @@ class Transaction(models.Model):
         ('live_trade', 'Live Trade'),
         ('deposit', 'Deposit'),
         ('withdrawal', 'Withdrawal'),
+        ('trade', 'Trade'),
     ]
 
     STATUS_CHOICES = [
@@ -169,7 +173,7 @@ class Transaction(models.Model):
         ('completed', 'Completed'),
         ('pending', 'Pending'),
         ('approved', 'Approved'),
-        ('lost', 'Lost'),  # optional extra status
+        ('lost', 'Lost'),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
@@ -179,6 +183,11 @@ class Transaction(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     image = models.ImageField(upload_to='transactions', default='images/2.png')
     ref = models.UUIDField(default=uuid.uuid4, editable=False)
+
+    # ⭐ Generic relation fields
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    related_object = GenericForeignKey('content_type', 'object_id')
 
     class Meta:
         ordering = ['-date']
