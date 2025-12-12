@@ -73,6 +73,7 @@
 
                 <form method="post">
                     {% csrf_token %}
+                    <input type="hidden" name="trader_id" value="{{trader.id}}">
                     <div class="form-group my-4">
                         <label>Amount to Invest (Min: ${{ trader.min_deposit }}):</label>
                         <input type="text" class="form-control" name="amount" />

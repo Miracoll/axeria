@@ -25,7 +25,7 @@
                         <div class="mb-2">
                             <div>
                                 <span class="badge bg-secondary">DURATION: {{ trade.trader.duration_weeks }} week(s)</span>
-                                <span class="badge bg-secondary">AMOUNT COPYING: {{ trade.amount }}</span>
+                                <span class="badge bg-secondary">AMOUNT COPYING: ${{ trade.amount_copying|intcomma }}</span>
                                 <span class="badge bg-secondary">DAILY ROI: {{ trade.trader.daily_roi }}%</span>
                             </div>
                             <div style="text-align: center;">
@@ -97,7 +97,7 @@
                 </div>
                 <form method="post">
                     {% csrf_token %}
-                    <input type="hidden" name="trader_id" value="{{trade.trader.id}}"/>
+                    <input type="hidden" name="trader_id" value="{{trade.id}}"/>
                     <div class="form-group my-4">
                         <label for="amount">Amount to Add:</label>
                         <input type="text" class="form-control" id="amount" name="top_amount"/>

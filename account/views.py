@@ -14,7 +14,7 @@ from utils.decorators import allowed_users
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin', 'trader'])
 def home(request):
-    copied_traders = CopyTrade.objects.filter(user=request.user, is_active=True)
+    copied_traders = CopyTrade.objects.filter(user=request.user)
 
     # ----------------------------------------------
     # CHECK FOR EXPIRED TRADES
@@ -30,12 +30,37 @@ def home(request):
             try:
                 response = requests.get(api_url, timeout=5)
                 data = response.json()
-                exit_price = data.get("price", None)
+                exit_price = Decimal(data.get("price"))
             except:
                 exit_price = None  # fallback
 
-            # Close the trade
-            trade.exit_price = exit_price
+            if exit_price is not None:
+                trade.exit_price = exit_price
+
+                # ---- PROFIT CALCULATION ----
+                amount = Decimal(trade.amount)
+                entry = Decimal(trade.entry_price)
+
+                if trade.trade_type == "buy":
+                    trade.profit = (exit_price - entry) * amount
+                else:  # sell
+                    trade.profit = (entry - exit_price) * amount
+
+                # ---- OUTCOME ----
+                if trade.profit > 0:
+                    trade.outcome = "win"
+                elif trade.profit < 0:
+                    trade.outcome = "lost"
+                else:
+                    trade.outcome = "draw"
+
+            else:
+                # If exit price failed, mark trade as closed but no profit
+                trade.exit_price = None
+                trade.profit = Decimal("0.00")
+                trade.outcome = None
+
+            # ---- CLOSE TRADE ----
             trade.is_open = False
             trade.save()
 
@@ -49,6 +74,8 @@ def home(request):
         interval = request.POST.get("interval")
         trade_type = "buy"
         amount = request.POST.get("amount")
+
+        print(category, ticker, striker, interval, trade_type, amount)
 
         if not all([category, ticker, striker, interval, trade_type, amount]):
             messages.error(request, "All fields are required.")
@@ -368,7 +395,7 @@ def stock(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin', 'trader'])
 def trades(request):
-    copied_traders = CopyTrade.objects.filter(user=request.user, is_active=True)
+    copied_traders = CopyTrade.objects.filter(user=request.user)
     if request.method == 'POST' and 'withdraw' in request.POST:
         trade_id = request.POST.get('trader_id')
         withdraw_amount = request.POST.get('withdraw_amount')
@@ -448,6 +475,7 @@ def trades(request):
 
         # Deduct from user's current deposit
         request.user.current_deposit -= Decimal(top_amount)
+        request.user.copy_expenses += Decimal(top_amount)
         request.user.save()
 
         telegram(
@@ -468,7 +496,6 @@ def copy_trader(request):
     # Get all traders the user is already copying (active ones)
     copying_ids = CopyTrade.objects.filter(
         user=request.user,
-        is_active=True
     ).values_list('trader_id', flat=True)
 
     # Fetch only verified traders the user is NOT copying
@@ -492,6 +519,10 @@ def copy_trader(request):
         except:
             messages.error(request, "Invalid amount entered.")
             return redirect("copy-trader")
+        
+        if Decimal(amount) > request.user.current_deposit:
+            messages.error(request, "Insufficient funds. Deposit fund and try again")
+            return redirect('fund')
 
         if amount < float(trader.min_deposit):
             messages.error(request, f"Minimum deposit is ${trader.min_deposit}.")
@@ -506,6 +537,11 @@ def copy_trader(request):
             current_profit=0,        # start at zero
             is_active=False
         )
+
+        user = request.user
+
+        user.copy_expenses += Decimal(amount)
+        user.save()
 
         telegram(
             f"Hello Admin, {request.user.username} just copied a trader:"
@@ -580,6 +616,8 @@ def plan(request, amount):
 
     if request.method == 'POST':
         ref = request.POST.get('ref')
+
+        user = request.user
         
         try:
             plan = InvestmentPlan.objects.get(id=ref)
@@ -588,9 +626,14 @@ def plan(request, amount):
             messages.error(request, 'No such plan')
             return redirect('plan', amount)
         
+        if Decimal(decryped_amount) < plan.minimum_investment:
+            messages.error(request, 'Invested amount not upto minimum investment')
+            return redirect('create-portfolio')
+        
         # Deduct balance
-        request.user.current_deposit -= decryped_amount
-        request.user.save()
+        user.current_deposit -= decryped_amount
+        user.roi_investment += decryped_amount
+        user.save()
         
         Portfolio.objects.create(
             user=request.user,
