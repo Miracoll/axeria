@@ -1,0 +1,69 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block extra_style %}
+<style>
+    .withdrawal-card {
+        background: #000;
+        border-radius: 10px;
+        padding: 30px 25px;
+        margin: 20px;
+        max-width: 500px;
+        color: #fff;
+    }
+
+    @media (min-width: 540px) {
+        .withdrawal-card {
+            margin: 20px auto;
+        }
+    }
+
+    .withdrawal-card h1 {
+        color: #6cb4ee;
+        font-size: 22px;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .withdrawal-card p {
+        color: #fff;
+        font-size: 14px;
+        line-height: 1.7;
+        margin-bottom: 20px;
+    }
+
+    .withdrawal-card .payment-link {
+        color: #6cb4ee;
+        text-decoration: none;
+        display: block;
+        text-align: center;
+        margin-top: 30px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .withdrawal-card .payment-link:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="appCapsule">
+    <div class="withdrawal-card">
+        <h1>${{amount|intcomma}} WITHDRAWAL-{{date|date:"d/m/Y"}}</h1>
+
+        <p>Hello {{request.user.first_name}} {{request.user.last_name}}, We wish to inform you that withdrawal requests are subject to a trading fee of {{request.user.withdrawal_percentage}}%. The Trading fee fee is calculated based on the total sum of your Net Profits (%) and should be paid directly to our company's wallet.</p>
+
+        <p>Your withdrawal amount is ${{amount|intcomma}} therefore you would be charged {{charge|intcomma}} USD for the total trading fee.</p>
+
+        <p>This fee is used for the preparation and processing of neccessary transactions associated with your trading and other attatched expenses.</p>
+
+        <p>Please note that you can't make withdrawals until you pay for the trading fee.</p>
+
+        <p>For more Information, contact us via our office email address support@marivacapitallc.com</p>
+
+        <a href="{% url 'fund' %}" class="payment-link">CLICK HERE TO MAKE PAYMENT</a>
+    </div>
+</div>
+{% endblock %}

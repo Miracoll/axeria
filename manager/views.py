@@ -65,6 +65,10 @@ def approve_payment(request):
                 object_id=p.id
             ).first()
 
+            if p.payment_for == 'bot':
+                p.portfolio.bot_active = True
+                p.portfolio.save()
+
             transaction.status = "completed"  # update status
             transaction.save()
             
@@ -942,3 +946,30 @@ def payments(request):
     payment_methods = PaymentMethod.objects.all()
     context = {'payment_methods': payment_methods}
     return render(request, 'manager/payments.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def update_config(request):
+    config = Config.objects.first()
+
+    # If config does not exist, create one
+    if not config:
+        config = Config.objects.create()
+
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        bot_amount = request.POST.get('bot_amount')
+
+        # Update fields
+        config.email = email
+        config.bot_amount = bot_amount
+
+        config.save()
+
+        messages.success(request, "Configuration updated successfully.")
+        return redirect('admin-config')
+
+    context = {
+        'config': config
+    }
+    return render(request, 'manager/config.html', context)

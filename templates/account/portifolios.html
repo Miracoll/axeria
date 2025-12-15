@@ -134,6 +134,7 @@
     </div>
 </div>
 
+{% for p in portfolios %}
 <!-- Select Bot Modal -->
 <div class="modal fade" id="selectBotModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -143,11 +144,13 @@
                 <button class="btn text-white" type="button" data-bs-dismiss="modal" aria-label="Close">&times;</button>
             </div>
             <div class="modal-body">
-                <form>
+                <form method="post">
+                    {% csrf_token %}
                     <div class="row">
+                        <input type="hidden" name="port_id" value="{{p.id}}">
                         <div class="col-6">
                             <label>Portfolio</label>
-                            <select>
+                            <select name="bot_type">
                                 <option selected>New Investment I</option>
                                 <option>New Investment II</option>
                                 <option>New Investment III</option>
@@ -155,7 +158,7 @@
                         </div>
                         <div class="col-6">
                             <label>Bot name</label>
-                            <select>
+                            <select name="name">
                                 <option selected>Apexbot</option>
                                 <option>Probot</option>
                                 <option>Smartbot</option>
@@ -166,17 +169,17 @@
 
                     <div>
                         <label>Currency</label>
-                        <select>
-                            <option selected>Bitcoin</option>
-                            <option>Ethereum</option>
-                            <option>USD</option>
+                        <select name="currency">
+                            {% for m in methods %}
+                            <option value='{{m.ref}}'>{{m.name}}</option>
+                            {% endfor %}
                         </select>
                     </div>
 
                     <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px;">
                         <button type="button" data-bs-dismiss="modal"
                             style="background: transparent; border: 2px solid #666; border-radius: 8px; color: #fff; padding: 8px 20px; font-size: 13px; font-weight: 500; cursor: pointer;">Close</button>
-                        <button type="submit"
+                        <button type="submit" name="bot_purchase"
                             style="background: #4a9bb8; border: none; border-radius: 8px; color: #fff; padding: 8px 20px; font-size: 13px; font-weight: 600; cursor: pointer;">Continue</button>
                     </div>
                 </form>
@@ -185,7 +188,9 @@
     </div>
 </div>
 <!-- * Select Bot Modal -->
+{% endfor %}
 
+{% for p in portfolios %}
 <!-- Add More Funds Modal -->
 <div class="modal fade" id="addFundsModal">
     <div class="modal-dialog modal-dialog-centered">
@@ -196,9 +201,11 @@
             </div>
             <div class="modal-body">
                 <div>
-                    <center>WALLET BALANCE: <br /><b>$10,000.00</b></center>
+                    <center>WALLET BALANCE: <br /><b>${{request.user.current_deposit|intcomma}}</b></center>
                 </div>
                 <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="port_id" value="{{p.id}}">
                     <div class="form-group my-4">
                         <label for="amount">Amount to Add:</label>
                         <input type="text" class="form-control" id="amount" name="amount" />
@@ -210,6 +217,7 @@
     </div>
 </div>
 <!-- * Add More Funds Modal -->
+ {% endfor %}
 
 <!-- Withdraw Funds Modal -->
 <div class="modal fade" id="withdrawFundsModal">

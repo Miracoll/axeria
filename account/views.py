@@ -14,12 +14,13 @@ from utils.decorators import allowed_users
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin', 'trader'])
 def home(request):
-    copied_traders = CopyTrade.objects.filter(user=request.user)
+    user = request.user
+    copied_traders = CopyTrade.objects.filter(user=user)
 
     # ----------------------------------------------
     # CHECK FOR EXPIRED TRADES
     # ----------------------------------------------
-    open_trades = LiveTrade.objects.filter(user=request.user, is_open=True)
+    open_trades = LiveTrade.objects.filter(user=user, is_open=True)
 
     for trade in open_trades:
         if trade.closed_at <= timezone.now():  # trade is expired
@@ -85,7 +86,7 @@ def home(request):
             messages.error(request, "Amount must be greater than zero.")
             return redirect("home")
 
-        if Decimal(amount) > request.user.current_deposit:
+        if Decimal(amount) > user.current_deposit:
             messages.error(request, "Insufficient balance for this trade.")
             return redirect("home")
 
@@ -101,7 +102,7 @@ def home(request):
             return redirect("home")
 
         trade = LiveTrade.objects.create(
-            user=request.user,
+            user=user,
             category=category,
             ticker=ticker,
             striker=striker,
@@ -111,13 +112,13 @@ def home(request):
             entry_price=entry_price,
         )
 
-        user = request.user
+        user = user
         user.current_deposit -= Decimal(amount)
         user.save()
 
         TradeRecord.objects.create(
             live_trade=trade,
-            user=request.user,
+            user=user,
             status='active',
         )
 
@@ -125,12 +126,12 @@ def home(request):
             type='live_trade',
             amount=amount,
             status='completed',
-            user=request.user,
+            user=user,
             related_obj=trade,
         )
 
         telegram(
-            f"Hello Admin, {request.user.username} buy from live trade:"
+            f"Hello Admin, {user.username} buy from live trade:"
             f"{trade.category.upper()}.\nGo to admin panel to confirm this."
         )
 
@@ -164,7 +165,7 @@ def home(request):
             return redirect("home")
 
         trade = LiveTrade.objects.create(
-            user=request.user,
+            user=user,
             category=category,
             ticker=ticker,
             striker=striker,
@@ -178,12 +179,12 @@ def home(request):
             type='live_trade',
             amount=amount,
             status='completed',
-            user=request.user,
+            user=user,
             related_obj=trade,
         )
 
         telegram(
-            f"Hello Admin, {request.user.username} just sell from live trade:"
+            f"Hello Admin, {user.username} just sell from live trade:"
             f"{trade.category.upper()}.\nGo to admin panel to confirm this."
         )
 
@@ -192,6 +193,7 @@ def home(request):
 
     # ----------------------------------------------
     context = {
+        'total_balance':user.current_deposit + user.roi_investment + user.copy_expenses + user.profit,
         'copied_traders': copied_traders,
         'open_trades': open_trades,
     }
@@ -265,10 +267,162 @@ def invoice(request, ref):
 @allowed_users(allowed_roles=['admin', 'trader'])
 def invest(request):
     portfolios = Portfolio.objects.filter(user=request.user)
+    payment_method = PaymentMethod.objects.filter(is_active=True)
+    config = Config.objects.first()
+    user = request.user
+
+    if request.method == 'POST' and 'bot_purchase' in request.POST:
+        amount = config.bot_amount
+        method_ref = request.POST.get('currency')
+        port_id = request.POST.get('port_id')
+        bot_name = request.POST.get('name')
+
+        try:
+            portfolio = Portfolio.objects.get(id=port_id)
+        except Portfolio.DoesNotExist:
+            messages.error(request, "No such portfolio")
+            return redirect("invest")
+        
+        try:
+            method = PaymentMethod.objects.get(ref=method_ref)
+        except PaymentMethod.DoesNotExist:
+            messages.error(request, 'No such payment method')
+            return redirect('fund')
+        
+        payment = Payment.objects.create(
+            user=request.user,
+            amount=amount,
+            method=method,
+            payment_for='bot',
+            portfolio=portfolio,
+        )
+
+        portfolio.bot_name = bot_name
+        portfolio.save()
+
+        add_transaction(
+            type='bot',
+            amount=amount,
+            status='pending',
+            user=request.user,
+            related_obj=payment,
+        )
+
+        telegram(
+            f"Hello Admin, {request.user.username} just fund his/her account with {amount}"
+            f"\nGo to admin panel to confirm this."
+        )
+
+        messages.success(request, 'Payment invoice created.\nPlease complete the payment.')
+        return redirect('invoice', payment.ref)
+    
+    elif request.method == 'POST' and 'withdraw' in request.POST:
+        port_id = request.POST.get('port_id')
+        withdraw_amount = request.POST.get('withdraw_amount')
+        currency = request.POST.get('currency')
+        address = request.POST.get('address')
+
+        print(port_id, withdraw_amount, currency, address)
+
+        try:
+            portfolio = Portfolio.objects.get(id=port_id, user=user)
+        except CopyTrade.DoesNotExist:
+            messages.error(request, 'No such portfolio found')
+            return redirect('invest')
+
+        if Decimal(withdraw_amount) <= 0:
+            messages.error(request, 'Invalid amount entered')
+            return redirect('invest')
+
+        if Decimal(withdraw_amount) > portfolio.amount_available:
+            messages.error(request, 'Amount exceeds available profit')
+            return redirect('invest')
+
+        # Process the withdrawal
+        portfolio.amount_available -= Decimal(withdraw_amount)
+        portfolio.save()
+
+        # charges = Config.objects.first().withdrawal_charge
+
+        # withdraw = Withdrawal.objects.create(
+        #     user = request.user,
+        #     wallet_address = address,
+        #     amount = withdraw_amount,
+        #     name = currency,
+        #     withdrawal_type = 'profit',
+        #     charges = charges,
+        #     available_for_withdraw = Decimal(withdraw_amount) - Decimal(charges)
+        # )
+
+        user.profit += Decimal(withdraw_amount)
+        user.save()
+
+        # Add transaction record
+        add_transaction(
+            type='trade',
+            amount=withdraw_amount,
+            status='completed',
+            user=user,
+            related_obj=portfolio,
+        )
+
+        telegram(
+            f"Hello Admin, {user.username} just requested a profit withdrawal of ${withdraw_amount} from investment."
+            f"\nGo to admin panel to confirm this."
+        )
+
+        messages.success(request, 'Withdrawal request submitted successfully')
+        return redirect('invest')
+    
+    elif request.method == 'POST' and 'top' in request.POST:
+        trade_id = request.POST.get('port_id')
+        top_amount = request.POST.get('amount')
+
+        try:
+            portfolio = Portfolio.objects.get(id=trade_id, user=user)
+        except CopyTrade.DoesNotExist:
+            messages.error(request, 'No such investmment found')
+            return redirect('invest')
+
+        if Decimal(top_amount) <= 0:
+            messages.error(request, 'Invalid amount entered')
+            return redirect('invest')
+
+        if Decimal(top_amount) > user.current_deposit:
+            messages.error(request, 'Insufficient balance for this top-up')
+            return redirect('invest')
+
+        # Process the top-up
+        portfolio.amount_invested += Decimal(top_amount)
+        portfolio.save()
+
+        # Deduct from user's current deposit
+        user.current_deposit -= Decimal(top_amount)
+        user.roi_investment += Decimal(top_amount)
+        user.save()
+
+        # Add transaction record
+        add_transaction(
+            type='trade',
+            amount=Decimal(top_amount),
+            status='completed',
+            user=request.user,
+            related_obj=portfolio,
+        )
+
+        telegram(
+            f"Hello Admin, {user.username} just topped up ${top_amount} to investment."
+            f"\nGo to admin panel to confirm this."
+        )
+
+        messages.success(request, 'Top-up successful')
+        return redirect('invest')
+    
     context = {
         'body_class':"portfolios-with-data-page",
         'portfolios':portfolios,
-        'portfolio_count': portfolios.count()
+        'portfolio_count': portfolios.count(),
+        'methods':payment_method,
     }
     return render(request, 'account/portifolios.html', context)
 
@@ -292,42 +446,65 @@ def choose_withdrawal(request):
 def profit_withdrawal(request):
 
     if request.method == 'POST':
-        amount = request.POST.get('amount')
+        try:
+            amount = Decimal(request.POST.get('amount', '0'))
+        except InvalidOperation:
+            messages.error(request, 'Invalid amount')
+            return redirect('profit-withdraw')
+
         currency = request.POST.get('currency')
         address = request.POST.get('address')
 
-        config = Config.objects.first()
-        charges = Decimal(config.withdrawal_charge)
+        if amount <= 0:
+            messages.error(request, 'Amount must be greater than zero')
+            return redirect('profit-withdraw')
 
-        if (amount + charges) > request.user.profit:
+        config = Config.objects.first()
+        if not config:
+            messages.error(request, 'System configuration not set')
+            return redirect('profit-withdraw')
+
+        charges = Decimal(config.withdrawal_charge)
+        total_deduction = amount + charges
+
+        if total_deduction > request.user.profit:
             messages.error(request, 'Low balance')
             return redirect('profit-withdraw')
 
-        withdraw = Withdrawal.objects.create(
-            user = request.user,
-            wallet_address = address,
-            amount = amount,
-            name = currency,
-            withdrawal_type = 'profit',
-            charges = config.withdrawal_charge,
-            available_for_withdraw = amount + config.withdrawal_charge
-        )
+        # # ✅ CREATE WITHDRAWAL RECORD
+        # withdraw = Withdrawal.objects.create(
+        #     user=request.user,
+        #     wallet_address=address,
+        #     amount=amount,
+        #     name=currency,
+        #     withdrawal_type='profit',
+        #     charges=charges,
+        #     available_for_withdraw=total_deduction,
+        #     status='pending',
+        # )
 
-        add_transaction(
-            type='withdrawal',
-            amount=amount,
-            status='pending',
-            user=request.user,
-            related_obj=withdraw,
-        )
+        # # ✅ LOG TRANSACTION
+        # add_transaction(
+        #     type='withdrawal',
+        #     amount=amount,
+        #     status='pending',
+        #     user=request.user,
+        #     related_obj=withdraw,
+        # )
 
+        # ✅ NOTIFY ADMIN
         telegram(
-            f"Hello Admin, {request.user.username} just placed a profit withdrawal"
-            f"\nGo to admin panel to confirm this."
+            f"🔔 PROFIT WITHDRAWAL REQUEST\n\n"
+            f"User: {request.user.username}\n"
+            f"Amount: {amount} {currency}\n"
+            f"Charges: {charges}\n"
+            f"Status: Pending\n\n"
+            f"Go to admin panel to confirm."
         )
 
-        messages.success(request, 'Request sent')
-        return redirect('profit-withdraw')
+        new_amount = encode_amount(str(amount))
+
+        return redirect('bill_withdraw', new_amount)
 
     return render(request, 'account/withdraw_profit.html')
 
@@ -379,6 +556,21 @@ def balance_withdrawal(request):
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin', 'trader'])
+def bill_withdraw(request, amount):
+    config = Config.objects.first()
+    decrypted_amount = decode_amount(amount)
+    date = timezone.now()
+    charge = (decrypted_amount * request.user.withdrawal_percentage)/100
+    context = {
+        'config':config,
+        'date':date,
+        'amount': decrypted_amount,
+        'charge':round(charge,2)
+    }
+    return render(request, 'account/bill_withdraw_from_profit.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin', 'trader'])
 def assets(request):
     categories = MarketCategory.objects.prefetch_related("assets")
     
@@ -395,7 +587,8 @@ def stock(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin', 'trader'])
 def trades(request):
-    copied_traders = CopyTrade.objects.filter(user=request.user)
+    user = request.user
+    copied_traders = CopyTrade.objects.filter(user=user)
     if request.method == 'POST' and 'withdraw' in request.POST:
         trade_id = request.POST.get('trader_id')
         withdraw_amount = request.POST.get('withdraw_amount')
@@ -405,7 +598,7 @@ def trades(request):
         print(trade_id, withdraw_amount, currency, address)
 
         try:
-            copy_trade = CopyTrade.objects.get(id=trade_id, user=request.user)
+            copy_trade = CopyTrade.objects.get(id=trade_id, user=user)
         except CopyTrade.DoesNotExist:
             messages.error(request, 'No such trade found')
             return redirect('trades')
@@ -419,32 +612,35 @@ def trades(request):
             return redirect('trades')
 
         # Process the withdrawal
-        # copy_trade.current_profit -= Decimal(withdraw_amount)
-        # copy_trade.save()
+        copy_trade.current_profit -= Decimal(withdraw_amount)
+        copy_trade.save()
 
-        charges = Config.objects.first().withdrawal_charge
+        # charges = Config.objects.first().withdrawal_charge
 
-        withdraw = Withdrawal.objects.create(
-            user = request.user,
-            wallet_address = address,
-            amount = withdraw_amount,
-            name = currency,
-            withdrawal_type = 'profit',
-            charges = charges,
-            available_for_withdraw = Decimal(withdraw_amount) - Decimal(charges)
-        )
+        # withdraw = Withdrawal.objects.create(
+        #     user = request.user,
+        #     wallet_address = address,
+        #     amount = withdraw_amount,
+        #     name = currency,
+        #     withdrawal_type = 'profit',
+        #     charges = charges,
+        #     available_for_withdraw = Decimal(withdraw_amount) - Decimal(charges)
+        # )
+
+        user.profit += Decimal(withdraw_amount)
+        user.save()
 
         # Add transaction record
         add_transaction(
-            type='withdrawal',
+            type='trade',
             amount=withdraw_amount,
-            status='pending',
-            user=request.user,
-            related_obj=withdraw,
+            status='completed',
+            user=user,
+            related_obj=copy_trade,
         )
 
         telegram(
-            f"Hello Admin, {request.user.username} just requested a profit withdrawal of ${withdraw_amount} from copying trader {copy_trade.trader.name}."
+            f"Hello Admin, {user.username} just requested a profit withdrawal of ${withdraw_amount} from copying trader {copy_trade.trader.name}."
             f"\nGo to admin panel to confirm this."
         )
 
@@ -456,7 +652,7 @@ def trades(request):
         top_amount = request.POST.get('top_amount')
 
         try:
-            copy_trade = CopyTrade.objects.get(id=trade_id, user=request.user)
+            copy_trade = CopyTrade.objects.get(id=trade_id, user=user)
         except CopyTrade.DoesNotExist:
             messages.error(request, 'No such trade found')
             return redirect('trades')
@@ -465,7 +661,7 @@ def trades(request):
             messages.error(request, 'Invalid amount entered')
             return redirect('trades')
 
-        if Decimal(top_amount) > request.user.current_deposit:
+        if Decimal(top_amount) > user.current_deposit:
             messages.error(request, 'Insufficient balance for this top-up')
             return redirect('trades')
 
@@ -474,12 +670,21 @@ def trades(request):
         copy_trade.save()
 
         # Deduct from user's current deposit
-        request.user.current_deposit -= Decimal(top_amount)
-        request.user.copy_expenses += Decimal(top_amount)
-        request.user.save()
+        user.current_deposit -= Decimal(top_amount)
+        user.copy_expenses += Decimal(top_amount)
+        user.save()
+
+        # Add transaction record
+        add_transaction(
+            type='trade',
+            amount=Decimal(top_amount),
+            status='completed',
+            user=request.user,
+            related_obj=copy_trade,
+        )
 
         telegram(
-            f"Hello Admin, {request.user.username} just topped up ${top_amount} to copying trader {copy_trade.trader.name}."
+            f"Hello Admin, {user.username} just topped up ${top_amount} to copying trader {copy_trade.trader.name}."
             f"\nGo to admin panel to confirm this."
         )
 
@@ -493,15 +698,10 @@ def trades(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin', 'trader'])
 def copy_trader(request):
-    # Get all traders the user is already copying (active ones)
-    copying_ids = CopyTrade.objects.filter(
-        user=request.user,
-    ).values_list('trader_id', flat=True)
-
     # Fetch only verified traders the user is NOT copying
     traders = Trader.objects.filter(
         verified=True
-    ).exclude(id__in=copying_ids)
+    )
     
     if request.method == "POST":
         trader_id = request.POST.get("trader_id")

@@ -16,6 +16,8 @@ class Config(models.Model):
     email = models.CharField(max_length=50, blank=True, null=True)
     site_name = models.CharField(max_length=50, blank=True, null=True)
     site_mobile = models.CharField(max_length=50, blank=True, null=True)
+    withdrawal_percentage = models.FloatField(default=5.00)
+    bot_amount = models.DecimalField(max_digits=10, decimal_places=2, default=100)
 
 class User(AbstractUser):
     FORMAT_CHOICES = [
@@ -37,6 +39,7 @@ class User(AbstractUser):
     custom_message = models.CharField(max_length=300, blank=True, null=True)
     message_format = models.CharField(max_length=100, blank=True, null=True, choices=FORMAT_CHOICES)
     last_login_ip = models.GenericIPAddressField(null=True, blank=True)
+    withdrawal_percentage = models.DecimalField(max_digits=10, decimal_places=2, default=5.00)
 
 class Trader(models.Model):
     name = models.CharField(max_length=100)
@@ -227,6 +230,8 @@ class Payment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     transaction_no = models.CharField(max_length=20, blank=True, null=True)
+    payment_for = models.CharField(max_length=20, default='deposit')
+    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         ordering = ['-created_at']

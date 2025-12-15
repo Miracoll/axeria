@@ -1,0 +1,46 @@
+{% extends 'manager/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+
+    <div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">Register a Trader</h1>
+                        </div>
+                        <form class="user" method="post">
+                            {% csrf_token %}
+
+                            <div class="form-group">
+                                <input type="email" class="form-control form-control-user" placeholder="Email"
+                                    name="email" value="{{ config.email }}">
+                            </div>
+
+                            <div class="form-group">
+                                <input type="number" class="form-control form-control-user" placeholder="Bot Amount"
+                                    name="bot_amount" value="{{ config.bot_amount }}">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-user btn-block">
+                                Update Configuration
+                            </button>
+                            <hr>
+                            <center>
+                                <a href="{% url 'admin-home' %}">Return to dashboard</a>
+                            </center>
+
+                        </form>
+                        <hr>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

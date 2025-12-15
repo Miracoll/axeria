@@ -9,7 +9,7 @@
 			<div class="balance">
 				<div class="left">
 					<span class="title">Total Balance</span>
-					<h1 class="total">$ {{request.user.current_deposit}}</h1>
+					<h1 class="total">$ {{total_balance|intcomma}}</h1>
 				</div>
 				<div class="right"></div>
 			</div>
@@ -45,13 +45,13 @@
 			<div class="col-6">
 				<div class="stat-box">
 					<div class="title">Profit In Wallet</div>
-					<div class="value text-success" style="font-size:20px;">$ {{request.user.profit}}</div>
+					<div class="value text-success" style="font-size:20px;">$ {{request.user.profit|intcomma}}</div>
 				</div>
 			</div>
 			<div class="col-6">
 				<div class="stat-box">
 					<div class="title">Copy Expenses</div>
-					<div class="value text-danger" style="font-size:20px;">$ {{request.user.copy_expenses}}</div>
+					<div class="value text-danger" style="font-size:20px;">$ {{request.user.copy_expenses|intcomma}}</div>
 				</div>
 			</div>
 		</div>
@@ -59,13 +59,13 @@
 			<div class="col-6">
 				<div class="stat-box">
 					<div class="title">ROI Investment</div>
-					<div class="value text-success" style="font-size:20px;">$ {{request.user.roi_investment}}</div>
+					<div class="value text-success" style="font-size:20px;">$ {{request.user.roi_investment|intcomma}}</div>
 				</div>
 			</div>
 			<div class="col-6">
 				<div class="stat-box">
 					<div class="title">Deposit Balance</div>
-					<div class="value" style="font-size:20px;">$ {{request.user.current_deposit}}</div>
+					<div class="value" style="font-size:20px;">$ {{request.user.current_deposit|intcomma}}</div>
 				</div>
 			</div>
 		</div>

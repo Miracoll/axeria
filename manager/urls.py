@@ -27,4 +27,5 @@ urlpatterns = [
     path('withdraw/decline/', views.decline_withdrawal, name='decline_withdrawal'),
     path("approve-payment/", views.approve_payment, name="approve-payment"),
     path("decline-payment/", views.decline_payment, name="decline-payment"),
+    path('update-configuration/', views.update_config, name="admin-config"),
 ]
