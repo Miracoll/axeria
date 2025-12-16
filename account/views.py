@@ -24,46 +24,24 @@ def home(request):
 
     for trade in open_trades:
         if trade.closed_at <= timezone.now():  # trade is expired
-            # Fetch exit price from API
-            api_symbol = trade.ticker.replace("/", "")
-            api_url = f"https://api.binance.com/api/v3/ticker/price?symbol={api_symbol}"
-
-            try:
-                response = requests.get(api_url, timeout=5)
-                data = response.json()
-                exit_price = Decimal(data.get("price"))
-            except:
-                exit_price = None  # fallback
-
-            if exit_price is not None:
-                trade.exit_price = exit_price
-
-                # ---- PROFIT CALCULATION ----
-                amount = Decimal(trade.amount)
-                entry = Decimal(trade.entry_price)
-
-                if trade.trade_type == "buy":
-                    trade.profit = (exit_price - entry) * amount
-                else:  # sell
-                    trade.profit = (entry - exit_price) * amount
-
-                # ---- OUTCOME ----
-                if trade.profit > 0:
-                    trade.outcome = "win"
-                elif trade.profit < 0:
-                    trade.outcome = "lost"
-                else:
-                    trade.outcome = "draw"
-
+            
+            if trade.profit > 0:
+                trade.outcome = "win"
+                user.profit += trade.profit
+                user.save()
+            elif trade.profit < 0:
+                trade.outcome = "lost"
+                user.profit += trade.profit
+                user.save()
             else:
-                # If exit price failed, mark trade as closed but no profit
-                trade.exit_price = None
-                trade.profit = Decimal("0.00")
-                trade.outcome = None
+                trade.outcome = "draw"
 
             # ---- CLOSE TRADE ----
             trade.is_open = False
             trade.save()
+            
+            messages.info(request, f"You {trade.outcome.lower()}")
+            return redirect('home')
 
     # ----------------------------------------------
     # BUY REQUEST
@@ -75,8 +53,6 @@ def home(request):
         interval = request.POST.get("interval")
         trade_type = "buy"
         amount = request.POST.get("amount")
-
-        print(category, ticker, striker, interval, trade_type, amount)
 
         if not all([category, ticker, striker, interval, trade_type, amount]):
             messages.error(request, "All fields are required.")
@@ -90,16 +66,18 @@ def home(request):
             messages.error(request, "Insufficient balance for this trade.")
             return redirect("home")
 
-        api_symbol = ticker.replace("/", "")
-        api_url = f"https://api.binance.com/api/v3/ticker/price?symbol={api_symbol}"
+        # api_symbol = ticker.replace("/", "")
+        # print(api_symbol)
+        # api_url = f"https://api.binance.com/api/v3/ticker/price?symbol={api_symbol}"
 
-        try:
-            response = requests.get(api_url, timeout=5)
-            data = response.json()
-            entry_price = data["price"]
-        except:
-            messages.error(request, "Failed to fetch price.")
-            return redirect("home")
+        # try:
+        #     response = requests.get(api_url, timeout=5)
+        #     data = response.json()
+        #     print(data)
+        #     entry_price = data["price"]
+        # except:
+        #     messages.error(request, "Failed to fetch price.")
+        #     return redirect("home")
 
         trade = LiveTrade.objects.create(
             user=user,
@@ -109,7 +87,8 @@ def home(request):
             interval=interval,
             trade_type=trade_type,
             amount=amount,
-            entry_price=entry_price,
+            outcome='loss',
+            # entry_price=entry_price,
         )
 
         user = user
@@ -135,7 +114,7 @@ def home(request):
             f"{trade.category.upper()}.\nGo to admin panel to confirm this."
         )
 
-        messages.success(request, f"Trade opened at {entry_price}! Ref: {trade.ref}")
+        messages.success(request, f"Trade opened")
         return redirect("home")
 
     # ----------------------------------------------
@@ -153,16 +132,16 @@ def home(request):
             messages.error(request, "All fields are required.")
             return redirect("home")
 
-        api_symbol = ticker.replace("/", "")
-        api_url = f"https://api.binance.com/api/v3/ticker/price?symbol={api_symbol}"
+        # api_symbol = ticker.replace("/", "")
+        # api_url = f"https://api.binance.com/api/v3/ticker/price?symbol={api_symbol}"
 
-        try:
-            response = requests.get(api_url, timeout=5)
-            data = response.json()
-            entry_price = data["price"]
-        except:
-            messages.error(request, "Failed to fetch price.")
-            return redirect("home")
+        # try:
+        #     response = requests.get(api_url, timeout=5)
+        #     data = response.json()
+        #     entry_price = data["price"]
+        # except:
+        #     messages.error(request, "Failed to fetch price.")
+        #     return redirect("home")
 
         trade = LiveTrade.objects.create(
             user=user,
@@ -172,7 +151,8 @@ def home(request):
             interval=interval,
             trade_type=trade_type,
             amount=amount,
-            entry_price=entry_price,
+            outcome='loss',
+            # entry_price=entry_price,
         )
 
         add_transaction(
@@ -188,7 +168,7 @@ def home(request):
             f"{trade.category.upper()}.\nGo to admin panel to confirm this."
         )
 
-        messages.success(request, f"Trade opened at {entry_price}! Ref: {trade.ref}")
+        messages.success(request, f"Trade opened")
         return redirect("home")
 
     # ----------------------------------------------
@@ -612,6 +592,11 @@ def trades(request):
             return redirect('trades')
 
         # Process the withdrawal
+        print(type(copy_trade.current_profit), type(Decimal(withdraw_amount)))
+        print(copy_trade.current_profit, Decimal(withdraw_amount))
+        print(copy_trade.current_profit - Decimal(withdraw_amount))
+        print(copy_trade.current_profit + Decimal(withdraw_amount))
+
         copy_trade.current_profit -= Decimal(withdraw_amount)
         copy_trade.save()
 
@@ -644,7 +629,7 @@ def trades(request):
             f"\nGo to admin panel to confirm this."
         )
 
-        messages.success(request, 'Withdrawal request submitted successfully')
+        messages.success(request, f'Withdrawal request submitted successfully')
         return redirect('trades')
     
     elif request.method == 'POST' and 'top' in request.POST:

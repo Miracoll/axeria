@@ -98,10 +98,10 @@ class CopyTrade(models.Model):
 
         return profit.quantize(Decimal("0.01"))
 
-    def save(self, *args, **kwargs):
-        # Automatically update profit whenever the object is saved
-        self.current_profit = self.calculate_profit()
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     # Automatically update profit whenever the object is saved
+    #     self.current_profit = self.calculate_profit()
+    #     super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.user.username} copying {self.trader.name}"
@@ -358,7 +358,7 @@ class LiveTrade(models.Model):
     interval = models.CharField(max_length=10)   # e.g. "2" meaning 2 minutes
     trade_type = models.CharField(max_length=10, choices=TRADE_TYPE_CHOICES)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
-    entry_price = models.DecimalField(max_digits=20, decimal_places=5)
+    entry_price = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     exit_price = models.DecimalField(max_digits=20, decimal_places=5, blank=True, null=True)
     opened_at = models.DateTimeField(default=timezone.now)
     closed_at = models.DateTimeField(blank=True, null=True)
@@ -367,6 +367,7 @@ class LiveTrade(models.Model):
     trader = models.ForeignKey(Trader, on_delete=models.SET_NULL, blank=True, null=True)
     outcome = models.CharField(max_length=20, blank=True, null=True, choices=OUTCOME_CHIOCE)  # 'win', 'lost', etc.
     profit = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    admin_create = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         # Auto-set closed_at on creation only

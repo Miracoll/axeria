@@ -395,6 +395,7 @@ def user_trade(request, trade_id):
     trade = CopyTrade.objects.get(id=trade_id)
     traders = Trader.objects.all()
     user_trades = LiveTrade.objects.filter(user=trade.user).order_by('-opened_at')
+    user = trade.user
 
     if request.method == "POST" and "create_live_trade" in request.POST:
         ticker = request.POST.get("ticker")
@@ -410,28 +411,32 @@ def user_trade(request, trade_id):
 
         print("Creating live trade with:", ticker, striker, interval, trade_type, amount, expert, outcome, category)
 
-        if category == "crypto":
-            api_symbol = ticker.replace("/", "")
-            api_url = f"https://api.binance.com/api/v3/ticker/price?symbol={api_symbol}"
+        if user.current_deposit < Decimal(amount):
+            messages.error(request, "User balance is low")
+            return redirect('"admin-user-trade", trade_id=trade_id')
 
-            try:
-                response = requests.get(api_url, timeout=5)
-                data = response.json()
-                entry_price = data["price"]
-            except:
-                messages.error(request, "Failed to fetch price.")
-                return redirect("admin-user-trade", trade_id=trade_id)
-        else:
-            try:
-                stock = yf.Ticker(ticker)
-                data = stock.history(period="1d")
-                price = data['Close'].iloc[-1]
-                entry_price =  price
-            except Exception as e:
-                messages.error(request, f"Failed to fetch stock price: {str(e)}")
-                return redirect("admin-user-trade", trade_id=trade_id)
+        # if category == "crypto":
+        #     api_symbol = ticker.replace("/", "")
+        #     api_url = f"https://api.binance.com/api/v3/ticker/price?symbol={api_symbol}"
 
-        trade = LiveTrade.objects.create(
+        #     try:
+        #         response = requests.get(api_url, timeout=5)
+        #         data = response.json()
+        #         entry_price = data["price"]
+        #     except:
+        #         messages.error(request, "Failed to fetch price.")
+        #         return redirect("admin-user-trade", trade_id=trade_id)
+        # else:
+        #     try:
+        #         stock = yf.Ticker(ticker)
+        #         data = stock.history(period="1d")
+        #         price = data['Close'].iloc[-1]
+        #         entry_price =  price
+        #     except Exception as e:
+        #         messages.error(request, f"Failed to fetch stock price: {str(e)}")
+        #         return redirect("admin-user-trade", trade_id=trade_id)
+
+        user_live_trade = LiveTrade.objects.create(
             user = trade.user,
             ticker = ticker,
             striker = striker,
@@ -440,28 +445,32 @@ def user_trade(request, trade_id):
             amount = Decimal(amount),
             trader = expert,
             outcome = outcome,
-            entry_price=entry_price,
+            # entry_price=entry_price,
+            admin_create=True,
         )
+
+        user.current_deposit -= Decimal(amount)
+        user.save()
 
         add_transaction(
             type='live_trade',
             amount=amount,
             status='active',
             user=trade.user,
-            related_obj=trade,
+            related_obj=user_live_trade,
         )
 
         messages.success(request, "Trade created successfully.")
         return redirect('admin-user-trade', trade_id=trade_id)
     
     elif request.method == "POST" and "edit" in request.POST:
-        ticker = request.POST.get("ticker")
+        # ticker = request.POST.get("ticker")
         amount = request.POST.get("amount")
         profit = request.POST.get("profit")
         trade_type = request.POST.get("status")
         trader_id = request.POST.get("trade_id")
 
-        print("Editing live trade ID:", trader_id, "with:", ticker, amount, profit, trade_type)
+        print("Editing live trade ID:", trader_id, "with:", amount, profit, trade_type)
 
         try:
             live_trade = LiveTrade.objects.get(id=trader_id)
@@ -469,7 +478,7 @@ def user_trade(request, trade_id):
             messages.error(request, "Live trade not found.")
             return redirect('admin-user-trade', trade_id=trade_id)
         
-        live_trade.ticker = ticker
+        # live_trade.ticker = ticker
         live_trade.amount = Decimal(amount)
         live_trade.profit = Decimal(profit)
         live_trade.trade_type = True if trade_type == "open" else False
@@ -504,29 +513,21 @@ def refresh_user_trade(request, trade_id):
 
         for trade in trades:
             if trade.closed_at <= timezone.now():  # trade is expired
-                if trade.category == "crypto":
-                    api_symbol = trade.ticker.replace("/", "")
-                    api_url = f"https://api.binance.com/api/v3/ticker/price?symbol={api_symbol}"
-
-                    try:
-                        response = requests.get(api_url, timeout=5)
-                        data = response.json()
-                        current_price = Decimal(data["price"])
-                    except:
-                        continue  # Skip if price fetch fails
+                if trade.profit > 0:
+                    trade.outcome = "win"
+                    user.profit += trade.profit
+                    user.save()
+                elif trade.profit < 0:
+                    trade.outcome = "lost"
+                    user.profit += trade.profit
+                    user.save()
                 else:
-                    try:
-                        stock = yf.Ticker(trade.ticker)
-                        data = stock.history(period="1d")
-                        price = data['Close'].iloc[-1]
-                        current_price = Decimal(price)
-                    except:
-                        continue  # Skip if price fetch fails
-                
-                # Close the trade
-                trade.exit_price = current_price
+                    trade.outcome = "draw"
+
+                # ---- CLOSE TRADE ----
                 trade.is_open = False
                 trade.save()
+                return redirect('admin-user-trade', trade_id=trade_id)
 
         messages.success(request, "Trades refreshed successfully.")
         return redirect('admin-user-trade', trade_id=trade_id)
