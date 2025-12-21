@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 import requests
+from django.db import transaction
+from django.db.models import F
 
 from account.models import Config, CopyTrade, InvestmentPlan, KycVerification, LiveTrade, MarketCategory, Payment, PaymentMethod, Portfolio, TradeRecord, Trader, Transaction, Withdrawal
 from account.utils import add_transaction, decode_amount, encode_amount, telegram
@@ -298,48 +300,37 @@ def invest(request):
     
     elif request.method == 'POST' and 'withdraw' in request.POST:
         port_id = request.POST.get('port_id')
-        withdraw_amount = request.POST.get('withdraw_amount')
-        currency = request.POST.get('currency')
-        address = request.POST.get('address')
-
-        print(port_id, withdraw_amount, currency, address)
+        withdraw_amount = Decimal(request.POST.get('withdraw_amount'))
 
         try:
             portfolio = Portfolio.objects.get(id=port_id, user=user)
-        except CopyTrade.DoesNotExist:
+        except Portfolio.DoesNotExist:
             messages.error(request, 'No such portfolio found')
             return redirect('invest')
 
-        if Decimal(withdraw_amount) <= 0:
+        if withdraw_amount <= 0:
             messages.error(request, 'Invalid amount entered')
             return redirect('invest')
 
-        if Decimal(withdraw_amount) > portfolio.amount_available:
-            messages.error(request, 'Amount exceeds available profit')
+        if withdraw_amount > portfolio.profit:
+            messages.error(request, 'Amount exceeds available balance')
             return redirect('invest')
+        
+        print(portfolio, portfolio.id)
 
-        # Process the withdrawal
-        portfolio.amount_available -= Decimal(withdraw_amount)
-        portfolio.save()
+        # ✅ ATOMIC OPERATION
+        with transaction.atomic():
+            Portfolio.objects.filter(
+                id=portfolio.id
+            ).update(
+                profit=F('profit') - withdraw_amount
+            )
 
-        # charges = Config.objects.first().withdrawal_charge
+            user.profit = F('profit') + withdraw_amount
+            user.save(update_fields=['profit'])
 
-        # withdraw = Withdrawal.objects.create(
-        #     user = request.user,
-        #     wallet_address = address,
-        #     amount = withdraw_amount,
-        #     name = currency,
-        #     withdrawal_type = 'profit',
-        #     charges = charges,
-        #     available_for_withdraw = Decimal(withdraw_amount) - Decimal(charges)
-        # )
-
-        user.profit += Decimal(withdraw_amount)
-        user.save()
-
-        # Add transaction record
         add_transaction(
-            type='trade',
+            type='withdrawal',
             amount=withdraw_amount,
             status='completed',
             user=user,
@@ -347,8 +338,8 @@ def invest(request):
         )
 
         telegram(
-            f"Hello Admin, {user.username} just requested a profit withdrawal of ${withdraw_amount} from investment."
-            f"\nGo to admin panel to confirm this."
+            f"Hello Admin, {user.username} just requested a profit withdrawal of "
+            f"${withdraw_amount} from investment."
         )
 
         messages.success(request, 'Withdrawal request submitted successfully')

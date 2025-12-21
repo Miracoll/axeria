@@ -592,7 +592,36 @@ def kyc(request):
 @allowed_users(allowed_roles=['admin'])
 def edit_portfolio(request):
     portfolios = Portfolio.objects.all().order_by('-setup_date')
-    return render(request, 'manager/edit_portifolios.html', {'portfolios':portfolios})
+    if request.method == "POST":
+
+        # ===== USER =====
+        user_id = request.POST.get("user_id")
+        user = get_object_or_404(User, id=user_id)
+
+        # ===== PORTFOLIO =====
+        portfolio_id = request.POST.get("portfolio_id")
+        plan_id = request.POST.get("plan_id")
+        portfolio = get_object_or_404(Portfolio, id=portfolio_id, user=user)
+        plan = get_object_or_404(InvestmentPlan, id=plan_id)
+
+        portfolio.plan = plan
+        portfolio.amount_invested = Decimal(request.POST.get("amount_invested", 0))
+        portfolio.amount_available = Decimal(request.POST.get("amount_available", 0))
+        portfolio.profit = Decimal(request.POST.get("portfolio_profit", 0))
+        portfolio.status = request.POST.get("status")
+        portfolio.bot_active = True if request.POST.get("bot_active") else False
+        portfolio.bot_name = request.POST.get("bot_name")
+
+        portfolio.save()
+
+        messages.success(request, "Client and portfolio updated successfully")
+        return redirect("admin-edit-portfolio")
+    
+    context = {
+        'portfolios':portfolios,
+        "plans": InvestmentPlan.objects.all(),
+    }
+    return render(request, 'manager/edit_portifolios.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])

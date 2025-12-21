@@ -104,7 +104,7 @@
 
                     <button class="btn-withdraw"
                             data-bs-toggle="modal"
-                            data-bs-target="#withdrawFundsModal"
+                            data-bs-target="#withdrawFundsModal{{p.id}}"
                             data-id="{{ p.id }}">
                         Withdraw Funds
                     </button>
@@ -219,8 +219,9 @@
 <!-- * Add More Funds Modal -->
 {% endfor %}
 
+{% for p in portfolios %}
 <!-- Withdraw Funds Modal -->
-<div class="modal fade" id="withdrawFundsModal">
+<div class="modal fade" id="withdrawFundsModal{{p.id}}">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -229,13 +230,15 @@
             </div>
             <div class="modal-body">
                 <div>
-                    <center>AVAILABLE BALANCE: <br /><b>$10,000.00</b></center>
+                    <center>AVAILABLE BALANCE: <br /><b>${{p.profit|intcomma}}</b></center>
                 </div>
                 <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="port_id" value="{{p.id}}">
                     <div class="form-group my-4">
                         <label for="withdraw_amount">Amount Available For Withdraw:</label>
-                        <input type="number" class="form-control" id="withdraw_amount" value="10000"
-                            name="withdraw_amount" style="background-color:black;color:white;" readonly="" />
+                        <input type="number" class="form-control" id="withdraw_amount" value="{{p.profit}}"
+                            name="withdraw_amount" style="background-color:black;color:white;" />
                     </div>
                     <button class="btn btn-danger w-100" name="withdraw">Withdraw Funds</button>
                 </form>
@@ -244,6 +247,7 @@
     </div>
 </div>
 <!-- * Withdraw Funds Modal -->
+ {% endfor %}
 
 <!-- Warning Modal -->
 <div class="modal fade" id="warningModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">

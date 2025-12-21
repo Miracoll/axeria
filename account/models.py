@@ -161,7 +161,7 @@ class Portfolio(models.Model):
     bot_name = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.user.username} - {self.plan.get_name_display()} (${self.amount_invested})"
+        return f"{self.user.username} - {self.plan.name} (${str(self.amount_invested)})"
     
 class Transaction(models.Model):
     TRANSACTION_TYPES = [

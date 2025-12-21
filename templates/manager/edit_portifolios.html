@@ -69,7 +69,7 @@
                                 <td>{{p.setup_date}}</td>
                                 <td>{{p.status|upper}}</td>
                                 <td>
-                                    <button type="button" class="btn btn-primary">
+                                    <button type="button" class="btn btn-primary" data-toggle='modal' data-target='#editUserInvest-{{p.id}}'>
                                         Manage
                                     </button>
                                 </td>
@@ -81,21 +81,6 @@
                             {% endfor %}
                         </tbody>
 
-                        <script>
-
-                            function showResult(str) {
-                                const xmlhttp = new XMLHttpRequest();
-                                xmlhttp.onreadystatechange = function () {
-                                    if (this.readyState == 4 && this.status == 200) {
-                                        document.querySelector("#livesearch").innerHTML = this.responseText;
-                                    }
-                                };
-                                xmlhttp.open("GET", "edit-portifolios_logic.php?q=" + encodeURIComponent(str), true);
-                                xmlhttp.send();
-                            }
-
-                        </script>
-
                     </table>
                 </div>
             </div>
@@ -103,6 +88,104 @@
 
     </div>
     <!-- /.container-fluid -->
+
+    {% for portfolio in portfolios %}
+    <div class="modal fade" id="editUserInvest-{{portfolio.id}}" tabindex="-1" role="dialog" aria-labelledby="Edit users modal"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit this portfolio</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+
+                    <form class="user" method="post" id="user-form">
+                        {% csrf_token %}
+                    
+                        <!-- PORTFOLIO -->
+                        <input type="hidden" name="user_id" value="{{ portfolio.user.id }}" />
+                        <input type="hidden" name="portfolio_id" value="{{ portfolio.id }}" />
+                    
+                        <h6 class="text-center">Portfolio Details</h6>
+                    
+                        <div class="form-group">
+                            <label>Investment Plan</label>
+                            <select name="plan_id" class="form-control">
+                                {% for plan in plans %}
+                                    <option value="{{ plan.id }}"
+                                        {% if plan.id == portfolio.plan.id %}selected{% endif %}>
+                                        {{ plan.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    
+                        <div class="form-group">
+                            <label>Amount Invested</label>
+                            <input type="number" step="0.01" class="form-control"
+                                   name="amount_invested"
+                                   value="{{ portfolio.amount_invested }}">
+                        </div>
+                    
+                        <div class="form-group">
+                            <label>Amount Available</label>
+                            <input type="number" step="0.01" class="form-control"
+                                   name="amount_available"
+                                   value="{{ portfolio.amount_available }}">
+                        </div>
+                    
+                        <div class="form-group">
+                            <label>Portfolio Profit</label>
+                            <input type="number" step="0.01" class="form-control"
+                                   name="portfolio_profit"
+                                   value="{{ portfolio.profit }}">
+                        </div>
+                    
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select name="status" class="form-control">
+                                {% for key, value in portfolio.STATUS_CHOICES %}
+                                    <option value="{{ key }}"
+                                        {% if key == portfolio.status %}selected{% endif %}>
+                                        {{ value }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="bot_active"
+                                       {% if portfolio.bot_active %}checked{% endif %}>
+                                Bot Active
+                            </label>
+                        </div>
+                    
+                        <div class="form-group">
+                            <label>Bot Name</label>
+                            <input type="text" class="form-control"
+                                   name="bot_name"
+                                   value="{{ portfolio.bot_name }}">
+                        </div>
+                    
+                        <button type="submit" name="update" class="btn btn-primary btn-user btn-block">
+                            Update Portfolio
+                        </button>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
 
 </div>
 {% endblock %}

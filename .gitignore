@@ -9,6 +9,7 @@ __pycache__/
 *.log
 *.db
 *.pot
+*.sqlite3
 
 # Django
 *.mo
