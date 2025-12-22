@@ -30,7 +30,7 @@
                                 <th>Amount</th>
                                 <th>Term</th>
                                 <th>Duration</th>
-                                <th>Commission</th>
+                                <!-- <th>Commission</th> -->
                                 <th>Edit</th>
                                 <th>Delete</th>
 
@@ -44,7 +44,7 @@
                                 <th>Amount</th>
                                 <th>Term </th>
                                 <th>Duration</th>
-                                <th>Commission</th>
+                                <!-- <th>Commission</th> -->
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>
@@ -59,15 +59,15 @@
                                 <td>${{p.minimum_investment}}</td>
                                 <td>{{p.term}}</td>
                                 <td>
-                                    {% if plan.duration_multiplier  == '1' %}
+                                    {% if p.duration_multiplier  == 1 %}
                                     day(s)
-                                    {% elif plan.duration_multiplier == '7' %}
+                                    {% elif p.duration_multiplier == 7 %}
                                     week(s)
                                     {% else %}
                                     month(s)
                                     {% endif %}
                                 </td>
-                                <td>${{p.referral_commission}}</td>
+                                <!-- <td>${{p.referral_commission}}</td> -->
                                 <td>
                                     <button class='btn btn-primary' data-toggle='modal'
                                         data-target='#editPlanModal-{{p.id}}'>Edit</button>

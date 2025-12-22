@@ -77,9 +77,9 @@
                     <div class="portfolio-badge">
                         <span class="portfolio-badge-label">Tenure</span>
                         <span class="portfolio-badge-value">{{ p.plan.term }} 
-                            {% if plan.duration_multiplier  == '1' %}
+                            {% if p.duration_multiplier  == 1 %}
                                 day(s)
-                                {% elif plan.duration_multiplier == '7' %}
+                                {% elif p.duration_multiplier == 7 %}
                                 week(s)
                                 {% else %}
                                 month(s)
