@@ -3,10 +3,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.models import Group
+from django.urls import reverse
 from django.utils import timezone
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
 
 from account.models import User
-from account.utils import get_client_ip
+from account.utils import get_client_ip, send_verification_email
 
 # Create your views here.
 
@@ -101,17 +106,73 @@ def signup_user(request):
             email=email
         )
 
+        user.is_active = False
+        user.save()
+
         # Add default group
         group, _ = Group.objects.get_or_create(name='trader')
         user.groups.add(group)
 
-        # Login user automatically (optional)
-        login(request, user)
+        # Generate UID and token
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = default_token_generator.make_token(user)
 
-        messages.success(request, 'Account created successfully!')
-        return redirect('home')
+        # Build verification link
+        verification_url = request.build_absolute_uri(
+            reverse('verify_email', kwargs={'uidb64': uid, 'token': token})
+        )
+
+        # Email content
+        send_verification_email(user, verification_url)
+
+        messages.success(request, 'Verification sent!')
+        return redirect('verification-sent')
 
     return render(request, 'interface/signup.html')
+
+def verification_sent(request):
+    return render(request, 'interface/verification_sent.html')
+
+def verify_email(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except (User.DoesNotExist, ValueError, TypeError, OverflowError):
+        user = None
+
+    if user and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        messages.success(request, "Email verified successfully!")
+        return redirect("login")
+    else:
+        messages.error(request, "Invalid or expired verification link.")
+        return redirect("verification-sent")
+    
+def resend_verification_email(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to resend verification link.")
+        return redirect("login")
+
+    user = request.user
+
+    if user.is_active:
+        messages.info(request, "Your email is already verified.")
+        return redirect("home")  # Change to your preferred page
+
+    # Generate new UID and token
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = default_token_generator.make_token(user)
+
+    verification_url = request.build_absolute_uri(
+        reverse("verify_email", kwargs={'uidb64': uid, 'token': token})
+    )
+
+    # Email content
+    send_verification_email(user, verification_url)
+
+    messages.success(request, "A new verification link has been sent to your email.")
+    return redirect("verification-sent")
 
 def logout_view(request):
     logout(request)

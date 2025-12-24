@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,7 +19,7 @@
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="{% static 'admin/css/sb-admin-2.min.css' %}" rel="stylesheet">
 
 </head>
 
@@ -36,16 +37,17 @@
                         <!-- Nested Row within Card Body -->
                         <div class="row">
                             <div class="col-lg-6 d-none d-lg-block bg-login-image">
-                                <img src="../css/images/Axeria-Re Coperate Mockup.jpg" width="100%" height="100%">
+                                <img src="{% static '../css/images/Axeria-Re Coperate Mockup.jpg' %}" width="100%" height="100%">
                             </div>
                             <div class="col-lg-6">
                                 <div class="p-5">
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                                     </div>
-                                    <form class="user" method="post" onsubmit="event.preventDefault(); window.location.href='index.html';">
+                                    <form class="user" method="post" action="{% url 'login' %}">
+                                        {% csrf_token %}
                                         <div class="form-group">
-                                            <input name="email" type="email" class="form-control form-control-user"
+                                            <input name="username" type="text" class="form-control form-control-user"
                                                 id="exampleInputEmail" aria-describedby="emailHelp"
                                                 placeholder="Enter Email Address...">
                                         </div>
@@ -68,7 +70,7 @@
                                     </form>
                                     <hr>
                                     <div class="text-center">
-                                        <a class="small" href="forgot-password.html">Forgot Password?</a>
+                                        <a class="small" href="#">Forgot Password?</a>
                                     </div>
                                    
                                 </div>
@@ -84,14 +86,14 @@
     </div>
 
     <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
     <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
+    <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
 
 </body>
 

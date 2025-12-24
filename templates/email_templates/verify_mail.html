@@ -1,0 +1,133 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify Your Email</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0f172a;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #ffffff;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #020617;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .email-header {
+            padding: 30px;
+            text-align: center;
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+        }
+
+        .email-header img {
+            max-width: 160px;
+        }
+
+        .email-body {
+            padding: 40px 30px;
+            line-height: 1.7;
+        }
+
+        .email-body h2 {
+            margin-top: 0;
+            font-size: 24px;
+            color: #ffffff;
+        }
+
+        .email-body p {
+            font-size: 15px;
+            color: #cbd5f5;
+        }
+
+        .verify-btn {
+            display: inline-block;
+            margin: 30px 0;
+            padding: 14px 28px;
+            background-color: #2563eb;
+            color: #ffffff !important;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 6px;
+        }
+
+        .verify-btn:hover {
+            background-color: #1e40af;
+        }
+
+        .email-footer {
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 13px;
+            color: #94a3b8;
+            background-color: #020617;
+            border-top: 1px solid #1e293b;
+        }
+
+        .email-footer a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            .email-body {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="email-container">
+        <!-- Header -->
+        <div class="email-header">
+            <img src="{% static 'images/2.png' %}" alt="Logo">
+        </div>
+
+        <!-- Body -->
+        <div class="email-body">
+            <h2>Hello {{ first_name }},</h2>
+
+            <p>
+                Thank you for creating an account with us.
+                Please confirm your email address by clicking the button below.
+            </p>
+
+            <div style="text-align: center;">
+                <a href="{{ verification_url }}" class="verify-btn">
+                    Verify Email Address
+                </a>
+            </div>
+
+            <p>
+                If the button doesn’t work, copy and paste the link below into your browser:
+            </p>
+
+            <p style="word-break: break-all; color:#93c5fd;">
+                {{ verification_url }}
+            </p>
+
+            <p>
+                If you did not create this account, please ignore this email.
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+            © {{ year }} Axeria. All rights reserved.
+        </div>
+    </div>
+
+</body>
+</html>

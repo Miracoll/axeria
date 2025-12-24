@@ -121,7 +121,7 @@ class InvestmentPlan(models.Model):
     maximum_investment = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     term = models.PositiveIntegerField(default=1)
     duration_multiplier = models.PositiveIntegerField(default=1)  # 1=day,7=week,30=month
-    duration = models.CharField(blank=True, null=True)
+    duration = models.CharField(blank=True, null=True, max_length=50)
 
     def __str__(self):
         return f"{self.name} - {self.percentage}%"

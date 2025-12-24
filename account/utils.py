@@ -4,6 +4,10 @@ from decimal import Decimal
 from django.utils.dateparse import parse_date
 from django.contrib.contenttypes.models import ContentType
 import requests
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.conf import settings
+from django.utils import timezone
 
 from account.models import Transaction
 
@@ -71,3 +75,22 @@ def telegram(message):
     for i in chat_id:
         url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={i}&text={message}"
         requests.get(url)
+
+def send_verification_email(user, verification_url):
+    subject = "Verify Your Email Address"
+
+    html_content = render_to_string("email_templates/verify_mail.html", {
+        "first_name": user.first_name,
+        "verification_url": verification_url,
+        "year": timezone.now().year
+    })
+
+    email = EmailMultiAlternatives(
+        subject=subject,
+        body="Please verify your email.",
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[user.email],
+    )
+
+    email.attach_alternative(html_content, "text/html")
+    email.send()

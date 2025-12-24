@@ -13,7 +13,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 import qrcode
 import requests
-import yfinance as yf
 from django.core.mail import EmailMultiAlternatives
 from django.utils.html import strip_tags
 
@@ -23,7 +22,7 @@ from utils.decorators import allowed_users
 
 # Create your views here.
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def home(request):
     total_deposit = Payment.objects.filter(status='completed').aggregate(total=Sum('amount'))['total'] or 0
@@ -44,7 +43,7 @@ def home(request):
     }
     return render(request, 'manager/index.html', context)
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def approve_payment(request):
     if request.method == "POST":
@@ -78,7 +77,7 @@ def approve_payment(request):
 
     return JsonResponse({"status": "error", "message": "Invalid request"})
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def decline_payment(request):
     if request.method == "POST":
@@ -104,7 +103,7 @@ def decline_payment(request):
 
     return JsonResponse({"status": "error", "message": "Invalid request"})
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def withdrawal(request):
     withdraws = Withdrawal.objects.all().order_by('-created_on')
@@ -114,7 +113,7 @@ def withdrawal(request):
     }
     return render(request, 'manager/withdrawal.html', context)
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def approve_withdrawal(request):
     if request.method == "POST":
@@ -144,7 +143,7 @@ def approve_withdrawal(request):
 
     return JsonResponse({"status": "error", "message": "Invalid request"})
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def decline_withdrawal(request):
     if request.method == "POST":
@@ -170,7 +169,7 @@ def decline_withdrawal(request):
 
     return JsonResponse({"status": "error", "message": "Invalid request"})
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def create_trader(request):
     if request.method == "POST":
@@ -261,7 +260,7 @@ def create_trader(request):
 
     return render(request, "manager/create_trader.html")
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def expert(request):
     traders = Trader.objects.all()
@@ -295,7 +294,7 @@ def expert(request):
 
     return render(request, 'manager/experts.html', {"traders": traders})
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 
 def edit_users(request):
@@ -369,7 +368,7 @@ def edit_users(request):
     users = User.objects.filter(groups__name='trader')
     return render(request, 'manager/edit_users.html', {'users': users})
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def manage_trade(request):
     trades = CopyTrade.objects.all().order_by('-opened_date')
@@ -389,7 +388,7 @@ def manage_trade(request):
             messages.error(request, "Trade record not found.")
     return render(request, 'manager/manage_trades.html', {'trades':trades})
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def user_trade(request, trade_id):
     trade = CopyTrade.objects.get(id=trade_id)
@@ -504,7 +503,7 @@ def user_trade(request, trade_id):
     }
     return render(request, 'manager/user_trade.html', context)
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def refresh_user_trade(request, trade_id):
     try:
@@ -535,7 +534,7 @@ def refresh_user_trade(request, trade_id):
         messages.error(request, "User not found.")
         return redirect('admin-user-trade', trade_id=trade_id)
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def delete_trade(request):
     if request.method == "POST":
@@ -550,7 +549,7 @@ def delete_trade(request):
 
     return JsonResponse({"status": "error", "message": "Invalid request"})
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def activate(request):
     if request.method == "POST":
@@ -568,7 +567,7 @@ def activate(request):
     users = User.objects.filter(groups__name='trader')
     return render(request, 'manager/activate.html', {'users':users})
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def kyc(request):
     if request.method == "POST":
@@ -588,7 +587,7 @@ def kyc(request):
     kycs = KycVerification.objects.all()
     return render(request, 'manager/kyc.html', {'kycs': kycs})
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def edit_portfolio(request):
     portfolios = Portfolio.objects.all().order_by('-setup_date')
@@ -623,13 +622,13 @@ def edit_portfolio(request):
     }
     return render(request, 'manager/edit_portifolios.html', context)
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def active_trade(request):
     trades = CopyTrade.objects.filter(is_active=True).order_by('-opened_date')
     return render(request, 'manager/active.html',{'trades':trades})
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def newsletter(request):
     if request.method == 'POST':
@@ -659,7 +658,7 @@ def newsletter(request):
 
     return render(request, 'manager/newsletter.html')
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def message(request):
     traders = User.objects.filter(groups__name='trader')
@@ -695,7 +694,7 @@ def message(request):
 
     return render(request, 'manager/messages.html', {'traders': traders})
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def change_password(request):
     if request.method == "POST":
@@ -732,7 +731,7 @@ def change_password(request):
 
     return render(request, 'manager/change_password.html')
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def change_username(request):
     if request.method == "POST":
@@ -758,7 +757,7 @@ def change_username(request):
 
     return render(request, 'manager/change_username.html')
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def change_email(request):
     if request.method == "POST":
@@ -783,7 +782,7 @@ def change_email(request):
         return redirect("admin-change-email")
     return render(request, 'manager/change_email.html')
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def site_info(request):
     config = Config.objects.first()
@@ -810,7 +809,7 @@ def site_info(request):
     return render(request, 'manager/site_info.html', {'config': config})
 
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def plans(request):
     if request.method == "POST" and "create-plan" in request.POST:
@@ -897,7 +896,7 @@ def plans(request):
     plans = InvestmentPlan.objects.all()
     return render(request, 'manager/plans.html', {'plans': plans})
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def payments(request):
     if request.method == "POST" and "create_payment" in request.POST:
@@ -977,7 +976,7 @@ def payments(request):
     context = {'payment_methods': payment_methods}
     return render(request, 'manager/payments.html', context)
 
-@login_required(login_url='login')
+@login_required(login_url='admin_login')
 @allowed_users(allowed_roles=['admin'])
 def update_config(request):
     config = Config.objects.first()
@@ -1003,3 +1002,6 @@ def update_config(request):
         'config': config
     }
     return render(request, 'manager/config.html', context)
+
+def admin_login(request):
+    return render(request, 'manager/login.html')
